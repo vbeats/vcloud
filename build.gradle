@@ -1,0 +1,129 @@
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
+
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version "${SpringBootVersion}"
+    id 'io.spring.dependency-management' version "${DependencyManagement}"
+}
+
+apply from: 'version.gradle'
+
+allprojects {
+    group 'com.codestepfish'
+    version '2023.0.1'
+
+    repositories {
+        maven {
+            url 'https://maven.aliyun.com/repository/public/'
+        }
+        mavenCentral()
+    }
+}
+
+subprojects {
+    def folders = ['service']
+    if (folders.contains(project.name)) {
+        return
+    }
+
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencyManagement {
+        imports {
+            mavenBom SpringBootPlugin.BOM_COORDINATES
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}"
+        }
+    }
+
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+
+    [compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
+
+    compileJava.options.compilerArgs.addAll(['-parameters'])
+
+    jar {
+        enabled = true
+    }
+
+    bootJar {
+        enabled = false
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    dependencies {
+        implementation 'org.springframework.cloud:spring-cloud-starter'
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+        annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+        testImplementation('org.springframework.boot:spring-boot-starter-test') {
+            exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+        }
+    }
+    test {
+        useJUnitPlatform()
+    }
+
+    // **************************** 模块自定义配置****************************
+    def baseModules = ['core', 'datasource']
+    if (baseModules.contains(project.name)) {
+        return
+    }
+
+    apply plugin: 'org.springframework.boot'
+
+    bootJar {
+        enabled = true
+        // springboot application 命名规范: group.项目名(首字母大写)Application
+        mainClass.set(rootProject.group + "." + project.name.substring(0, 1).toUpperCase() + project.name.substring(1) + "Application")
+        destinationDirectory = file(getRootProject().getBuildDir())
+        archiveFileName = project.name + '.jar'
+    }
+
+    dependencies {
+        implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
+        implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
+        implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
+        implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
+    }
+
+    switch (project.name) {
+        case 'gateway':
+            // 排除spring web相关依赖
+            dependencies {
+                implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+                implementation(project(":core")) {
+                    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
+                }
+            }
+            break
+        default:
+            dependencies {
+                implementation project(":core")
+            }
+    }
+
+    task copyResources(type: Copy) {
+        from "${project(':datasource').projectDir}/src/main/resources", "${project(':core').projectDir}/src/main/resources"
+
+        if (project.name != 'gateway') {
+            exclude "**/application.yml"  // gateway忽略spring web相关application.yml
+        }
+
+        into "${project.buildDir}/resources/main"
+        exclude '**/rebel.xml'
+        includeEmptyDirs = true
+    }
+
+    afterEvaluate {
+        tasks.matching { t -> t.name.startsWith('process')
+        }.each { it.dependsOn(copyResources) }
+    }
+}

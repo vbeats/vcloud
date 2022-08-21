@@ -1,0 +1,18 @@
+dependencies {
+    api project(':datasource')
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    api libs.get('validator')
+    api libs.get('guava')
+    api libs.get('hutool')
+    api libs.get('httpmime')
+    api libs.get('okhttp')
+    api libs.get('fastjson')
+    api libs.get('java-jwt')
+    api libs.get('jjwt')
+    api libs.get('jjwt-impl')
+    api libs.get('commons-text')
+    api libs.get('commons-io')
+    api libs.get('commons-fileupload')
+}

@@ -1,0 +1,24 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: admin
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: 66f88468-d028-4fca-b1d0-cc3ae48f3d67
+        group: DEFAULT_GROUP
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: 66f88468-d028-4fca-b1d0-cc3ae48f3d67
+        file-extension: yml
+        shared-configs:
+          - data-id: application-${spring.profiles.active}.yml
+            group: DEFAULT_GROUP
+            refresh: true
+          - data-id: datasource-${spring.profiles.active}.yml
+            group: DEFAULT_GROUP
+            refresh: true
+  profiles:
+    active: dev
