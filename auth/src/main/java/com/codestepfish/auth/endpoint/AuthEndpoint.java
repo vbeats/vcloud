@@ -4,13 +4,17 @@ import com.codestepfish.auth.dto.AuthParam;
 import com.codestepfish.auth.dto.AuthResponse;
 import com.codestepfish.auth.dto.Captcha;
 import com.codestepfish.auth.service.AuthService;
+import com.codestepfish.core.result.R;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -20,8 +24,8 @@ public class AuthEndpoint {
     private final AuthService authService;
 
     @PostMapping("/token")
-    public AuthResponse token(@RequestBody AuthParam param) {
-        log.info("用户认证: {}", param);
+    public AuthResponse token(@Valid @RequestBody AuthParam param, BindingResult result) {
+        R.handleErr(result);
         return authService.token(param);
     }
 

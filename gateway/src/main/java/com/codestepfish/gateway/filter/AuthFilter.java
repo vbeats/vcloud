@@ -33,6 +33,29 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private final AppConfig appConfig;
     private final AdminService adminService;
 
+    /**
+     * 添加用户信息到queryString
+     *
+     * @param appUser
+     * @param uri
+     * @return
+     */
+    @NotNull
+    private static StringBuilder getStringBuilder(AppUser appUser, URI uri) {
+        StringBuilder query = new StringBuilder();
+        String originalQuery = uri.getRawQuery();   // 原始queryString
+
+        if (StringUtils.hasText(originalQuery)) {
+            query.append(originalQuery);
+            if (originalQuery.charAt(originalQuery.length() - 1) != '&') {
+                query.append('&');
+            }
+        }
+
+        query.append("id=").append(appUser.getId()).append("&tenantCode=").append(appUser.getTenantCode());
+        return query;
+    }
+
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -87,29 +110,6 @@ public class AuthFilter implements GlobalFilter, Ordered {
                         UriComponentsBuilder.fromUri(uri).replaceQuery(query.toString()).build(true).toUri()
                 ).build()).build()
         );
-    }
-
-    /**
-     * 添加用户信息到queryString
-     *
-     * @param appUser
-     * @param uri
-     * @return
-     */
-    @NotNull
-    private static StringBuilder getStringBuilder(AppUser appUser, URI uri) {
-        StringBuilder query = new StringBuilder();
-        String originalQuery = uri.getRawQuery();   // 原始queryString
-
-        if (StringUtils.hasText(originalQuery)) {
-            query.append(originalQuery);
-            if (originalQuery.charAt(originalQuery.length() - 1) != '&') {
-                query.append('&');
-            }
-        }
-
-        query.append("id=").append(appUser.getId()).append("&tenantCode=").append(appUser.getTenantCode());
-        return query;
     }
 
     @Override

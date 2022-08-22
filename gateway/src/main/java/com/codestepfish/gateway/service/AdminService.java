@@ -13,7 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,7 +28,7 @@ public class AdminService extends ServiceImpl<AdminMapper, Admin> implements ISe
     private final TenantMapper tenantMapper;
     private final AdminRoleMapper adminRoleMapper;
     private final ApiScopeMapper apiScopeMapper;
-    private final ApiMapper apiMapper;
+    private final RoleApiMapper roleApiMapper;
 
     @Cacheable(cacheNames = CacheEnum.ADMIN_CACHE, key = "#id", unless = "#result==null")
     public AppUser findById(Long id) {
@@ -58,7 +60,15 @@ public class AdminService extends ServiceImpl<AdminMapper, Admin> implements ISe
     }
 
     public boolean existApiScope(Set<Long> roleIds, String path) {
-        Api api = apiMapper.selectOne(Wrappers.<Api>lambdaQuery().eq(Api::getPath, path));
-        return apiScopeMapper.exists(Wrappers.<ApiScope>lambdaQuery().eq(ApiScope::getApiId, api.getId()).in(ApiScope::getRoleId, roleIds));
+        List<ApiScope> apiScopes = apiScopeMapper.selectList(Wrappers.<ApiScope>lambdaQuery()
+                .eq(ApiScope::getApiPath, path)
+                .isNull(ApiScope::getDeleteTime));
+        if (CollectionUtils.isEmpty(apiScopes)) {
+            return false;
+        }
+
+        return roleApiMapper.exists(Wrappers.<RoleApi>lambdaQuery()
+                .in(RoleApi::getRoleId, roleIds)
+                .in(RoleApi::getApiScopeId, apiScopes.stream().map(ApiScope::getId).collect(Collectors.toList())));
     }
 }

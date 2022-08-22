@@ -66,7 +66,7 @@ public class AuthHandler {
         boolean apiScope = adminService.existApiScope(roleIds, path);
 
         if (!apiScope) {
-            log.error("admin用户: {} ,访问: {} 接口权限不足", id, path);
+            log.error("admin用户: {} ,访问接口: {} 权限不足", id, path);
             throw new AppException(RCode.ACCESS_DENY);
         }
 

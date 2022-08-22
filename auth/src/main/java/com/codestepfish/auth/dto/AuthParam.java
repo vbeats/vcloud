@@ -12,9 +12,16 @@ import javax.validation.constraints.NotEmpty;
 public class AuthParam {
 
     @NotEmpty(message = "认证类型不能为空")
-    private String grantType;  // 认证类型  mini_app , mp , password , refresh_token.....
+    private String grantType;  // 认证类型  GrantTypeEnum
 
+    @NotEmpty(message = "租户编号不能为空")
     private String tenantCode; // 租户编号
+
+    @NotEmpty(message = "客户端id不能为空")
+    private String clientId; // 客户端id
+
+    @NotEmpty(message = "客户端密钥不能为空")
+    private String clientSecret; // 客户端密钥
 
     // ********************* refresh token*********************
 
@@ -24,7 +31,7 @@ public class AuthParam {
 
     private String account;
 
-    private String password;
+    private String password; // RSA 加密后的密码
 
     // ********************* 图形验证码 *********************
 

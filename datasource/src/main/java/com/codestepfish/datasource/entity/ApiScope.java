@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 /**
  * api_scope
  */
@@ -20,20 +22,38 @@ public class ApiScope {
     private Long id;
 
     /**
-     * 角色id
-     */
-    @TableField(value = "role_id")
-    private Long roleId;
-
-    /**
      * 菜单id
      */
     @TableField(value = "menu_id")
     private Long menuId;
 
     /**
-     * api id
+     * api name
      */
-    @TableField(value = "api_id")
-    private Long apiId;
+    @TableField(value = "api_name")
+    private String apiName;
+
+    /**
+     * api path
+     */
+    @TableField(value = "api_path")
+    private String apiPath;
+
+    /**
+     * 权限字段
+     */
+    @TableField(value = "action")
+    private String action;
+
+    /**
+     * 备注
+     */
+    @TableField(value = "remark")
+    private String remark;
+
+    private LocalDateTime createTime;
+
+    private LocalDateTime updateTime;
+
+    private LocalDateTime deleteTime;
 }
