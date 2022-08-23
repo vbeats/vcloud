@@ -40,12 +40,6 @@ public class ApiScope {
     private String apiPath;
 
     /**
-     * 权限字段
-     */
-    @TableField(value = "action")
-    private String action;
-
-    /**
      * 备注
      */
     @TableField(value = "remark")

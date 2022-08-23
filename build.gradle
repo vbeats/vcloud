@@ -72,7 +72,7 @@ subprojects {
     }
 
     // **************************** 模块自定义配置****************************
-    def baseModules = ['core', 'datasource']
+    def baseModules = ['core', 'datasource', 'common']
     if (baseModules.contains(project.name)) {
         return
     }
@@ -99,9 +99,7 @@ subprojects {
             // 排除spring web相关依赖
             dependencies {
                 implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
-                implementation(project(":core")) {
-                    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
-                }
+                implementation project(":datasource")
             }
             break
         default:
@@ -111,10 +109,12 @@ subprojects {
     }
 
     task copyResources(type: Copy) {
-        from "${project(':datasource').projectDir}/src/main/resources", "${project(':core').projectDir}/src/main/resources"
+        from "${project(':common').projectDir}/src/main/resources"
+
+        from "${project(':datasource').projectDir}/src/main/resources"
 
         if (project.name != 'gateway') {
-            exclude "**/application.yml"  // gateway忽略spring web相关application.yml
+            from "${project(':core').projectDir}/src/main/resources"
         }
 
         into "${project.buildDir}/resources/main"

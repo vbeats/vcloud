@@ -34,12 +34,6 @@ public class Role {
     private String roleName;
 
     /**
-     * 权限字段
-     */
-    @TableField(value = "`action`")
-    private String action;
-
-    /**
      * 排序
      */
     @TableField(value = "`sort`")

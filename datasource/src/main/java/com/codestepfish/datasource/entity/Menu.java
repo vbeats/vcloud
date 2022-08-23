@@ -53,12 +53,6 @@ public class Menu {
     private String key;
 
     /**
-     * 权限字段
-     */
-    @TableField(value = "`action`")
-    private String action;
-
-    /**
      * 类型 0 菜单 1 按钮
      */
     @TableField(value = "`type`")

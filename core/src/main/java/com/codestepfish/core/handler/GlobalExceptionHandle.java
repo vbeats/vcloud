@@ -1,8 +1,8 @@
 package com.codestepfish.core.handler;
 
-import com.codestepfish.core.result.AppException;
-import com.codestepfish.core.result.R;
-import com.codestepfish.core.result.RCode;
+import com.codestepfish.common.result.AppException;
+import com.codestepfish.common.result.R;
+import com.codestepfish.common.result.RCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.validation.BindException;

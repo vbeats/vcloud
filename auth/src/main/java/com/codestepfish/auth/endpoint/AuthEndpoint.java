@@ -4,7 +4,7 @@ import com.codestepfish.auth.dto.AuthParam;
 import com.codestepfish.auth.dto.AuthResponse;
 import com.codestepfish.auth.dto.Captcha;
 import com.codestepfish.auth.service.AuthService;
-import com.codestepfish.core.result.R;
+import com.codestepfish.common.result.R;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

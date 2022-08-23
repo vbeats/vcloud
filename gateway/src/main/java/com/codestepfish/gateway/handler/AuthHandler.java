@@ -1,9 +1,9 @@
 package com.codestepfish.gateway.handler;
 
-import com.codestepfish.core.config.app.AppConfig;
-import com.codestepfish.core.model.AppUser;
-import com.codestepfish.core.result.AppException;
-import com.codestepfish.core.result.RCode;
+import com.codestepfish.common.config.app.AppConfig;
+import com.codestepfish.common.model.AppUser;
+import com.codestepfish.common.result.AppException;
+import com.codestepfish.common.result.RCode;
 import com.codestepfish.gateway.service.AdminService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;

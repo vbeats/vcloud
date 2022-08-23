@@ -1,4 +1,5 @@
 dependencies {
+    api project(":common")
     api libs.get('mysql')
     api libs.get('mybatis')
     api libs.get('mybatis-plus')
@@ -7,10 +8,13 @@ dependencies {
     api libs.get('cosid-mybatis')
     api libs.get('caffeine')
     api libs.get('commons-pool2')
+    api libs.get('validator')
 
     api 'org.springframework.boot:spring-boot-starter-data-jpa'
     api 'org.springframework.boot:spring-boot-starter-data-redis'
     api 'org.springframework.boot:spring-boot-starter-validation'
     api 'org.springframework.boot:spring-boot-starter-cache'
-    api("org.redisson:redisson-spring-boot-starter:${rootProject.RedissonVersion}")
+    api("org.redisson:redisson-spring-boot-starter:${rootProject.RedissonVersion}") {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
+    }
 }

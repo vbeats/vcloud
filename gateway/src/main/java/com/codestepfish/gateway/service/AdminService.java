@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.core.toolkit.ObjectUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.codestepfish.core.constant.redis.CacheEnum;
-import com.codestepfish.core.model.AppUser;
+import com.codestepfish.common.constant.redis.CacheEnum;
+import com.codestepfish.common.model.AppUser;
 import com.codestepfish.datasource.entity.*;
 import com.codestepfish.datasource.mapper.*;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +64,7 @@ public class AdminService extends ServiceImpl<AdminMapper, Admin> implements ISe
                 .eq(ApiScope::getApiPath, path)
                 .isNull(ApiScope::getDeleteTime));
         if (CollectionUtils.isEmpty(apiScopes)) {
-            return false;
+            return true;  // api_scope 未指定的接口不校验
         }
 
         return roleApiMapper.exists(Wrappers.<RoleApi>lambdaQuery()

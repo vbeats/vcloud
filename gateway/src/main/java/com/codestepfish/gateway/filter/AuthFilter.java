@@ -1,11 +1,11 @@
 package com.codestepfish.gateway.filter;
 
-import com.codestepfish.core.config.app.AppConfig;
-import com.codestepfish.core.constant.auth.AuthEnum;
-import com.codestepfish.core.model.AppUser;
-import com.codestepfish.core.result.AppException;
-import com.codestepfish.core.result.RCode;
-import com.codestepfish.core.util.JwtUtil;
+import com.codestepfish.common.config.app.AppConfig;
+import com.codestepfish.common.constant.auth.AuthEnum;
+import com.codestepfish.common.model.AppUser;
+import com.codestepfish.common.result.AppException;
+import com.codestepfish.common.result.RCode;
+import com.codestepfish.common.util.JwtUtil;
 import com.codestepfish.gateway.handler.AuthHandler;
 import com.codestepfish.gateway.service.AdminService;
 import io.jsonwebtoken.Claims;

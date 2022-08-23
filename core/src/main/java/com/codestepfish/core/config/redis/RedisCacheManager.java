@@ -1,7 +1,7 @@
 package com.codestepfish.core.config.redis;
 
-import com.codestepfish.core.config.app.AppConfig;
-import com.codestepfish.core.config.app.Cache;
+import com.codestepfish.common.config.app.AppConfig;
+import com.codestepfish.common.config.app.Cache;
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RedissonClient;
 import org.redisson.spring.cache.CacheConfig;

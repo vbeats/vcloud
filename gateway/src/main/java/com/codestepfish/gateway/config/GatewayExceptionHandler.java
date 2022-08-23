@@ -1,8 +1,8 @@
 package com.codestepfish.gateway.config;
 
 import com.alibaba.fastjson2.JSON;
-import com.codestepfish.core.result.AppException;
-import com.codestepfish.core.result.RCode;
+import com.codestepfish.common.result.AppException;
+import com.codestepfish.common.result.RCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.context.annotation.Configuration;
