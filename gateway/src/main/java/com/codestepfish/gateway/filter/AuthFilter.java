@@ -79,7 +79,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
         Claims claims = JwtUtil.decode(token);
 
         // token不是access_token
-        if (!AuthEnum.access_token.getKey().equalsIgnoreCase(claims.get("tokenType", String.class))) {
+        if (!AuthEnum.ACCESS_TOKEN.getKey().equalsIgnoreCase(claims.get("tokenType", String.class))) {
             throw new AppException(RCode.UNAUTHORIZED_ERROR);
         }
 

@@ -22,12 +22,6 @@ public class Admin {
     private Long id;
 
     /**
-     * 上级id 默认0
-     */
-    @TableField(value = "`p_id`")
-    private Long pId;
-
-    /**
      * 租户编号
      */
     @TableField(value = "tenant_code")
