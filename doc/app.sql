@@ -11,7 +11,7 @@
  Target Server Version : 80029
  File Encoding         : 65001
 
- Date: 23/08/2022 10:19:53
+ Date: 23/08/2022 14:16:14
 */
 
 SET NAMES utf8mb4;
@@ -226,6 +226,7 @@ CREATE TABLE `role_menu`  (
 DROP TABLE IF EXISTS `tenant`;
 CREATE TABLE `tenant`  (
   `id` bigint UNSIGNED NOT NULL,
+  `p_id` bigint UNSIGNED NOT NULL DEFAULT 0 COMMENT '上级id 默认0',
   `code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '租户编号',
   `tenant_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '租户名称',
   `status` tinyint(1) NOT NULL COMMENT '状态 0 禁用  1正常',
@@ -239,7 +240,7 @@ CREATE TABLE `tenant`  (
 -- ----------------------------
 -- Records of tenant
 -- ----------------------------
-INSERT INTO `tenant` VALUES (1, '00000000', '运营平台', 1, '运营平台', '2022-08-23 10:05:40.000', NULL, NULL);
+INSERT INTO `tenant` VALUES (1, 0, '00000000', '运营平台', 1, '运营平台', '2022-08-23 10:05:40.000', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for top_menu

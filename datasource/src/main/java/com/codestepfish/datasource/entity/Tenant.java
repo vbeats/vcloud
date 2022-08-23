@@ -21,6 +21,9 @@ public class Tenant {
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
+    @TableField(value = "p_id")
+    private Long pid;
+
     /**
      * 租户编号
      */
