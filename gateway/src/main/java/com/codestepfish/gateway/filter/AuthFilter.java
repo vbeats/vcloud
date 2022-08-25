@@ -1,5 +1,6 @@
 package com.codestepfish.gateway.filter;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.codestepfish.common.config.app.AppConfig;
 import com.codestepfish.common.constant.auth.AuthEnum;
 import com.codestepfish.common.model.AppUser;
@@ -18,12 +19,14 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -52,7 +55,11 @@ public class AuthFilter implements GlobalFilter, Ordered {
             }
         }
 
-        query.append("id=").append(appUser.getId()).append("&tenantCode=").append(appUser.getTenantCode());
+        Map<String, Object> params = BeanUtil.beanToMap(appUser, false, true);
+
+        if (!CollectionUtils.isEmpty(params)) {
+            params.forEach((key, value) -> query.append(key).append("=").append(value).append("&"));
+        }
         return query;
     }
 
@@ -79,13 +86,13 @@ public class AuthFilter implements GlobalFilter, Ordered {
         Claims claims = JwtUtil.decode(token);
 
         // token不是access_token
-        if (!AuthEnum.ACCESS_TOKEN.getKey().equalsIgnoreCase(claims.get("tokenType", String.class))) {
+        if (!AuthEnum.ACCESS_TOKEN.getKey().equalsIgnoreCase(claims.get("token_type", String.class))) {
             throw new AppException(RCode.UNAUTHORIZED_ERROR);
         }
 
         // ********************* 用户信息校验
         Long userId = claims.get("id", Long.class);
-        String userType = claims.get("userType", String.class);
+        String userType = claims.get("user_type", String.class);
 
         AppUser appUser = null;
 

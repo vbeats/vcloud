@@ -11,5 +11,6 @@ import java.io.Serializable;
 @ToString
 public class AppUser implements Serializable {
     private Long id;  // 用户id
+    private Long roleId; // 管理员用户 角色id
     private String tenantCode; // 租户编号
 }

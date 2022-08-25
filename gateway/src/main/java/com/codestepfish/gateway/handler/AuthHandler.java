@@ -13,8 +13,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.server.ServerWebExchange;
 
-import java.util.Set;
-
 @Slf4j
 public class AuthHandler {
 
@@ -55,15 +53,7 @@ public class AuthHandler {
 
         // 此admin用户是否有权限访问该url
 
-        // 1.此admin用户拥有的所有role
-        // 2. role是否有分配 此api的访问权限
-        Set<Long> roleIds = adminService.findRolesByAdminId(id);
-
-        if (CollectionUtils.isEmpty(roleIds)) {
-            throw new AppException(RCode.ACCESS_DENY);
-        }
-
-        boolean apiScope = adminService.existApiScope(roleIds, path);
+        boolean apiScope = adminService.existApiScope(appUser.getRoleId(), path);
 
         if (!apiScope) {
             log.error("admin用户: {} ,访问接口: {} 权限不足", id, path);

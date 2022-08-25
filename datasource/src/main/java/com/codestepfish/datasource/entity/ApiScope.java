@@ -36,8 +36,8 @@ public class ApiScope {
     /**
      * api path
      */
-    @TableField(value = "api_path")
-    private String apiPath;
+    @TableField(value = "path")
+    private String path;
 
     /**
      * 备注

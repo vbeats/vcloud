@@ -57,6 +57,12 @@ public class Admin {
     @TableField(value = "`status`")
     private Boolean status;
 
+    /**
+     * 角色id
+     */
+    @TableField(value = "role_id")
+    private Long roleId;
+
     @TableField(value = "create_time")
     private LocalDateTime createTime;
 
