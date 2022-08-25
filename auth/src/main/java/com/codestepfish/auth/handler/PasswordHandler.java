@@ -14,6 +14,7 @@ import com.codestepfish.datasource.entity.Tenant;
 import com.codestepfish.datasource.mapper.TenantMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +53,8 @@ public class PasswordHandler {
 
         Admin admin = adminService.getOne(Wrappers.<Admin>query().lambda()
                 .eq(Admin::getAccount, param.getAccount())
-                .eq(Admin::getPassword, password)
-                .eq(Admin::getTenantCode, param.getCode())
+                .eq(Admin::getPassword, DigestUtils.md5Hex(password))
+                .eq(Admin::getTenantCode, param.getTenantCode())
                 .eq(Admin::getStatus, true)
                 .isNull(Admin::getDeleteTime)
         );
@@ -61,7 +62,7 @@ public class PasswordHandler {
         Assert.notNull(admin, "凭证无效");
 
         Tenant tenant = tenantMapper.selectOne(Wrappers.<Tenant>query().lambda()
-                .eq(Tenant::getCode, param.getCode())
+                .eq(Tenant::getCode, param.getTenantCode())
                 .eq(Tenant::getStatus, true)
                 .isNull(Tenant::getDeleteTime)
         );
