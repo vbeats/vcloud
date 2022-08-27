@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.codestepfish.common.serializer.LongToStringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 /**
@@ -16,6 +18,8 @@ import lombok.*;
 @NoArgsConstructor
 @TableName(value = "top_menu")
 public class TopMenu {
+
+    @JsonSerialize(using = LongToStringSerializer.class)
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 

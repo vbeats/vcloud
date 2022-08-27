@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -17,7 +18,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "config_param")
-public class ConfigParam {
+public class ConfigParam implements Serializable {
+    private static final long serialVersionUID = 6218921664483018256L;
+
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
