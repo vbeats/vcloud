@@ -6,19 +6,27 @@ import cn.hutool.core.lang.tree.TreeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.codestepfish.admin.dto.admin.AdminInfo;
+import com.codestepfish.admin.dto.admin.PasswordIn;
 import com.codestepfish.admin.dto.menu.MenuQueryParam;
 import com.codestepfish.admin.service.*;
 import com.codestepfish.common.constant.config.ConfigParamEnum;
 import com.codestepfish.common.model.AppUser;
+import com.codestepfish.common.result.AppException;
+import com.codestepfish.common.result.RCode;
+import com.codestepfish.common.util.RsaUtil;
 import com.codestepfish.datasource.entity.*;
 import com.codestepfish.datasource.service.ConfigParamService;
 import com.google.common.base.Splitter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -33,6 +41,8 @@ public class BasicServiceImpl implements BasicService {
     private final TopMenuService topMenuService;
     private final TopMenuTreeService topMenuTreeService;
     private final ConfigParamService configParamService;
+    private final AdminService adminService;
+    private final AuthClientService authClientService;
 
     @Override
     public List<Tree<String>> menus(MenuQueryParam param, AppUser user) {
@@ -87,5 +97,33 @@ public class BasicServiceImpl implements BasicService {
     @Override
     public List<TopMenu> topMenus(AppUser user) {
         return topMenuService.list(Wrappers.<TopMenu>lambdaQuery().in(TopMenu::getTenantCode, user.getTenantCode()).orderByAsc(TopMenu::getSort));
+    }
+
+    @Override
+    public AdminInfo profile(AppUser user) {
+        Admin admin = adminService.getById(user.getId());
+        if (!admin.getStatus() || !ObjectUtils.isEmpty(admin.getDeleteTime())) {
+            throw new AppException(RCode.UNAUTHORIZED_ERROR);
+        }
+
+        return new AdminInfo(admin.getUsername(), admin.getPhone());
+    }
+
+    @Override
+    public void updateProfile(PasswordIn param, AppUser user) {
+        Admin admin = adminService.getById(user.getId());
+        AuthClient client = authClientService.getOne(Wrappers.<AuthClient>lambdaQuery()
+                .eq(AuthClient::getClientId, param.getClientId())
+                .eq(AuthClient::getClientSecret, param.getClientSecret())
+                .isNull(AuthClient::getDeleteTime)
+        );
+        Assert.isTrue(admin.getPassword().equals(DigestUtils.md5Hex(RsaUtil.decrypt(client.getPrivateKey(), param.getPassword()))), "原始密码不正确");
+        String newPassword = RsaUtil.decrypt(client.getPrivateKey(), param.getNewPassword());
+        Assert.hasText(newPassword, "新密码不符合安全要求");
+
+        admin.setPassword(DigestUtils.md5Hex(newPassword));
+        admin.setUpdateTime(LocalDateTime.now());
+
+        adminService.updateById(admin);
     }
 }

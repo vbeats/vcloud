@@ -8,7 +8,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class AuthResponse {
-
     private String accessToken;
     private String refreshToken;
 }

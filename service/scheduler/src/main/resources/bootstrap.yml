@@ -6,12 +6,12 @@ spring:
   cloud:
     nacos:
       discovery:
-        server-addr: 192.168.1.80:8848
-        namespace: c58967db-2412-43f5-b819-6198b6d6c447
+        server-addr: 127.0.0.1:8848
+        namespace: f821f088-4afe-4680-bdfd-94e5421f79a3
         group: DEFAULT_GROUP
       config:
-        server-addr: 192.168.1.80:8848
-        namespace: c58967db-2412-43f5-b819-6198b6d6c447
+        server-addr: 127.0.0.1:8848
+        namespace: f821f088-4afe-4680-bdfd-94e5421f79a3
         file-extension: yml
         shared-configs:
           - data-id: application-${spring.profiles.active}.yml

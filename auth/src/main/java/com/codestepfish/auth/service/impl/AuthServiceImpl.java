@@ -29,6 +29,7 @@ import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.awt.*;
 import java.time.LocalDateTime;
@@ -120,17 +121,22 @@ public class AuthServiceImpl implements AuthService {
     }
 
     AuthClient getAuthClient(String clientId, String clientSecret, String grantType) {
-        List<AuthClient> clients = authClientService.list(Wrappers.<AuthClient>lambdaQuery()
+        AuthClient client = authClientService.getOne(Wrappers.<AuthClient>lambdaQuery()
                 .eq(AuthClient::getClientId, clientId)
                 .eq(AuthClient::getClientSecret, clientSecret)
                 .isNull(AuthClient::getDeleteTime)
         );
 
-        if (clients.isEmpty()) {
+        if (ObjectUtils.isEmpty(client)) {
             throw new AppException(RCode.UNAUTHORIZED_ERROR);
         }
 
-        return clients.stream().filter(e -> Splitter.on(",").omitEmptyStrings().trimResults().splitToList(e.getGrantTypes())
-                .contains(grantType)).findFirst().orElseThrow(() -> new AppException(RCode.UNAUTHORIZED_ERROR));
+        List<String> grantTypes = Splitter.on(",").omitEmptyStrings().trimResults().splitToList(client.getGrantTypes());
+
+        if (grantTypes.contains(grantType)) {
+            return client;
+        } else {
+            throw new AppException(RCode.UNAUTHORIZED_ERROR);
+        }
     }
 }
