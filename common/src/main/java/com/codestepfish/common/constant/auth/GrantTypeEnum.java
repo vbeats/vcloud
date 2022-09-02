@@ -12,8 +12,8 @@ import java.util.Map;
 public enum GrantTypeEnum {
     WX_APP("wx_app", "微信小程序"),
     WX_MP("wx_mp", "微信公众号"),
-    PASSWORD("password", "密码登录"),
-    SMS("sms", "短信登录"),
+    PASSWORD("password", "密码登陆"),
+    SMS("sms", "短信登陆"),
     REFRESH_TOKEN("refresh_token", "刷新token"),
     ;
 

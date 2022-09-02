@@ -4,6 +4,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.codestepfish.common.serializer.LocalDateTimeDeserializer;
+import com.codestepfish.common.serializer.LocalDateTimeSerializer;
+import com.codestepfish.common.serializer.LongToStringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,6 +23,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @TableName(value = "auth_client")
 public class AuthClient {
+
+    @JsonSerialize(using = LongToStringSerializer.class)
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
@@ -69,12 +76,18 @@ public class AuthClient {
     @TableField(value = "remark")
     private String remark;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @TableField(value = "create_time")
     private LocalDateTime createTime;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @TableField(value = "update_time")
     private LocalDateTime updateTime;
 
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @TableField(value = "delete_time")
     private LocalDateTime deleteTime;
 }
