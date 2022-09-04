@@ -6,11 +6,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.client.ClientQueryIn;
 import com.codestepfish.admin.service.AuthClientService;
 import com.codestepfish.admin.service.ClientService;
+import com.codestepfish.common.constant.redis.CacheEnum;
 import com.codestepfish.common.result.PageOut;
 import com.codestepfish.datasource.entity.AuthClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
@@ -47,22 +49,23 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void add(AuthClient client) {
-        AuthClient exist = authClientService.getOne(Wrappers.<AuthClient>lambdaQuery().eq(AuthClient::getClientId, client.getClientId()));
+        AuthClient exist = authClientService.getOne(Wrappers.<AuthClient>lambdaQuery().eq(AuthClient::getClientId, client.getClientId()).isNull(AuthClient::getDeleteTime));
         Assert.isNull(exist, "客户端ID已存在");
 
-        client.setCreateTime(LocalDateTime.now());
         authClientService.save(client);
     }
 
+    @CacheEvict(cacheNames = CacheEnum.ADMIN_CACHE, allEntries = true)
     @Override
     public void update(AuthClient client) {
-        AuthClient exist = authClientService.getOne(Wrappers.<AuthClient>lambdaQuery().eq(AuthClient::getClientId, client.getClientId()));
+        AuthClient exist = authClientService.getOne(Wrappers.<AuthClient>lambdaQuery().eq(AuthClient::getClientId, client.getClientId()).isNull(AuthClient::getDeleteTime));
         Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(client.getId()), "客户端ID已存在");
 
         client.setUpdateTime(LocalDateTime.now());
         authClientService.updateById(client);
     }
 
+    @CacheEvict(cacheNames = CacheEnum.ADMIN_CACHE, allEntries = true)
     @Override
     public void delete(AuthClient client) {
         AuthClient authClient = authClientService.getById(client.getId());

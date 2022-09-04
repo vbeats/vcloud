@@ -25,8 +25,8 @@ public class Menu {
     /**
      * 上级  默认0
      */
-    @TableField(value = "`p_id`")
-    private Long pId;
+    @TableField(value = "pid")
+    private Long pid;
 
     /**
      * 菜单/按钮名称

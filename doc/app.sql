@@ -31,9 +31,9 @@ CREATE TABLE `admin`
     `phone`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '手机号',
     `status`      tinyint(1)                                                   NOT NULL COMMENT '状态 0 禁用  1 正常',
     `role_id`     bigint UNSIGNED                                              NOT NULL COMMENT '角色id',
-    `create_time` datetime(3)                                                  NOT NULL,
-    `update_time` datetime(3)                                                  NULL DEFAULT NULL,
-    `delete_time` datetime(3)                                                  NULL DEFAULT NULL,
+    `create_time` datetime(3)                                                  NOT NULL DEFAULT NOW(3),
+    `update_time` datetime(3)                                                  NULL     DEFAULT NULL,
+    `delete_time` datetime(3)                                                  NULL     DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -56,10 +56,10 @@ CREATE TABLE `api_scope`
     `menu_id`     bigint UNSIGNED                                               NOT NULL COMMENT '菜单id',
     `api_name`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '接口名称',
     `path`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'api path',
-    `remark`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '备注',
-    `create_time` datetime(3)                                                   NOT NULL,
-    `update_time` datetime(3)                                                   NULL DEFAULT NULL,
-    `delete_time` datetime(3)                                                   NULL DEFAULT NULL,
+    `remark`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
+    `create_time` datetime(3)                                                   NOT NULL DEFAULT NOW(3),
+    `update_time` datetime(3)                                                   NULL     DEFAULT NULL,
+    `delete_time` datetime(3)                                                   NULL     DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -84,8 +84,8 @@ CREATE TABLE `auth_client`
     `refresh_token_expire` bigint                                                         NOT NULL DEFAULT 30 COMMENT 'refresh_token有效时长 (天) 默认30',
     `private_key`          varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'rsa私钥',
     `public_key`           varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'rsa公钥',
-    `remark`               varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '备注',
-    `create_time`          datetime(3)                                                    NOT NULL,
+    `remark`               varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
+    `create_time`          datetime(3)                                                    NOT NULL DEFAULT NOW(3),
     `update_time`          datetime(3)                                                    NULL     DEFAULT NULL,
     `delete_time`          datetime(3)                                                    NULL     DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
@@ -112,10 +112,10 @@ CREATE TABLE `config_param`
     `id`           bigint UNSIGNED                                                NOT NULL,
     `config_key`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '配置key',
     `config_value` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '配置value',
-    `remark`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '配置说明',
-    `create_time`  datetime(3)                                                    NOT NULL,
-    `update_time`  datetime(3)                                                    NULL DEFAULT NULL,
-    `delete_time`  datetime(3)                                                    NULL DEFAULT NULL,
+    `remark`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL DEFAULT '' COMMENT '配置说明',
+    `create_time`  datetime(3)                                                    NOT NULL DEFAULT NOW(3),
+    `update_time`  datetime(3)                                                    NULL     DEFAULT NULL,
+    `delete_time`  datetime(3)                                                    NULL     DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -133,7 +133,7 @@ DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu`
 (
     `id`          bigint UNSIGNED                                                NOT NULL,
-    `p_id`        tinyint                                                        NOT NULL DEFAULT 0 COMMENT '上级  默认0',
+    `pid`         tinyint                                                        NOT NULL DEFAULT 0 COMMENT '上级  默认0',
     `title`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '菜单/按钮名称',
     `path`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL DEFAULT '' COMMENT '前端路由',
     `icon`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT 'icon图标',
@@ -141,7 +141,7 @@ CREATE TABLE `menu`
     `type`        tinyint(1)                                                     NOT NULL COMMENT '类型 0 菜单 1 按钮',
     `sort`        int                                                            NOT NULL DEFAULT 0 COMMENT '顺序 ',
     `remark`      varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
-    `create_time` datetime(3)                                                    NOT NULL,
+    `create_time` datetime(3)                                                    NOT NULL DEFAULT NOW(3),
     `update_time` datetime(3)                                                    NULL     DEFAULT NULL,
     `delete_time` datetime                                                       NULL     DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
@@ -172,17 +172,17 @@ VALUES (8, 1, '参数设置', '/param', 'Cpu', 'cpu', 0, 6, '', now(3), NULL, NU
 INSERT INTO `menu`
 VALUES (9, 1, '应用管理', '/client', 'Coordinate', 'coordinate', 0, 7, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (10, 2, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (10, 1, '行政区划', '/region', 'MapLocation', 'region', 0, 8, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (11, 2, '角色配置', '', '', 'role', 1, 0, '', now(3), NULL, NULL);
+VALUES (11, 2, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (12, 2, '密码重置', '', '', 'resetpwd', 1, 0, '', now(3), NULL, NULL);
+VALUES (12, 2, '角色配置', '', '', 'role', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (13, 2, '账号解封', '', '', 'deblock', 1, 0, '', now(3), NULL, NULL);
+VALUES (13, 2, '密码重置', '', '', 'resetpwd', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (14, 2, '禁用', '', '', 'block', 1, 0, '', now(3), NULL, NULL);
+VALUES (14, 2, '账号解封', '', '', 'unblock', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (15, 2, '查看', '', '', 'detail', 1, 0, '', now(3), NULL, NULL);
+VALUES (15, 2, '禁用', '', '', 'block', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
 VALUES (16, 2, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
@@ -190,63 +190,57 @@ VALUES (17, 2, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
 VALUES (18, 3, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (19, 3, '查看', '', '', 'detail', 1, 0, '', now(3), NULL, NULL);
+VALUES (19, 3, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (20, 3, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (20, 3, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (21, 3, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (21, 3, '禁用', '', '', 'block', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (22, 3, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (22, 3, '解封', '', '', 'unblock', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
 VALUES (23, 3, '新增子级', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
 VALUES (24, 4, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (25, 4, '查看', '', '', 'detail', 1, 0, '', now(3), NULL, NULL);
+VALUES (25, 4, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (26, 4, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (26, 4, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (27, 4, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (27, 4, '新增子项', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (28, 4, '新增子项', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
+VALUES (28, 5, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (29, 5, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (29, 5, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (30, 5, '菜单配置', '', '', 'menu', 1, 0, '', now(3), NULL, NULL);
+VALUES (30, 5, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (31, 5, '查看', '', '', 'detail', 1, 0, '', now(3), NULL, NULL);
+VALUES (31, 5, '菜单配置', '', '', 'menu', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (32, 5, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (32, 6, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (33, 5, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (33, 6, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (34, 6, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (34, 6, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
 VALUES (35, 6, '权限设置', '', '', 'permission', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (36, 6, '查看', '', '', 'detail', 1, 0, '', now(3), NULL, NULL);
+VALUES (36, 7, '权限配置', '', '', 'permission', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (37, 6, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (37, 8, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (38, 6, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (38, 8, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (39, 7, '权限配置', '', '', 'permission', 1, 0, '', now(3), NULL, NULL);
+VALUES (39, 8, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (40, 8, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (40, 9, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (41, 8, '查看', '', '', 'detail', 1, 0, '', now(3), NULL, NULL);
+VALUES (41, 9, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (42, 8, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (42, 9, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (43, 8, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (43, 10, '新增下级', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (44, 9, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (45, 9, '查看', '', '', 'detail', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (46, 9, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (47, 9, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (44, 10, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 
 -- ----------------------------
 -- Table structure for region
@@ -254,15 +248,13 @@ VALUES (47, 9, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 DROP TABLE IF EXISTS `region`;
 CREATE TABLE `region`
 (
-    `id`            bigint UNSIGNED                                              NOT NULL,
-    `province_code` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '省 自治区 直辖市 特区 行政区划编号',
-    `city_code`     varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '市 自治州 盟 直辖市下属辖区 汇总码',
-    `district_code` varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '区县 编号',
-    `province_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '省级名称',
-    `city_name`     varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '市级名称',
-    `district_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '区县名称',
-    `zip_code`      varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '邮编',
-    `sort`          int                                                          NOT NULL DEFAULT 0 COMMENT '顺序',
+    `id`       bigint UNSIGNED                                               NOT NULL,
+    `pid`      bigint UNSIGNED                                               NOT NULL DEFAULT 0 COMMENT '上级id',
+    `code`     varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '2位区划编号/汇总码',
+    `name`     varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '名称',
+    `zip_code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL DEFAULT '' COMMENT '邮编',
+    `sort`     int                                                           NOT NULL DEFAULT 0 COMMENT '顺序',
+    `type`     tinyint(1)                                                    NOT NULL DEFAULT 0 COMMENT '类型 0:省/自治区/直辖市/特区 1:市/自治州/盟/直辖市下属辖区 2:区县 3:乡镇/街道 4:村/小区',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
@@ -283,8 +275,8 @@ CREATE TABLE `role`
     `tenant_code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '租户编号',
     `role_name`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '角色名称',
     `sort`        int UNSIGNED                                                   NOT NULL DEFAULT 0 COMMENT '排序',
-    `remark`      varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '备注',
-    `create_time` datetime(3)                                                    NOT NULL,
+    `remark`      varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
+    `create_time` datetime(3)                                                    NOT NULL DEFAULT NOW(3),
     `update_time` datetime(3)                                                    NULL     DEFAULT NULL,
     `delete_time` datetime(3)                                                    NULL     DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
@@ -425,12 +417,6 @@ INSERT INTO `role_menu`
 VALUES (43, 1, 43);
 INSERT INTO `role_menu`
 VALUES (44, 1, 44);
-INSERT INTO `role_menu`
-VALUES (45, 1, 45);
-INSERT INTO `role_menu`
-VALUES (46, 1, 46);
-INSERT INTO `role_menu`
-VALUES (47, 1, 47);
 
 -- ----------------------------
 -- Table structure for tenant
@@ -439,12 +425,12 @@ DROP TABLE IF EXISTS `tenant`;
 CREATE TABLE `tenant`
 (
     `id`          bigint UNSIGNED                                                NOT NULL,
-    `p_id`        bigint UNSIGNED                                                NOT NULL DEFAULT 0 COMMENT '上级id 默认0',
+    `pid`         bigint UNSIGNED                                                NOT NULL DEFAULT 0 COMMENT '上级id 默认0',
     `code`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '租户编号',
     `tenant_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '租户名称',
     `status`      tinyint(1)                                                     NOT NULL COMMENT '状态 0 禁用  1正常',
-    `remark`      varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '备注',
-    `create_time` datetime(3)                                                    NOT NULL,
+    `remark`      varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
+    `create_time` datetime(3)                                                    NOT NULL DEFAULT NOW(3),
     `update_time` datetime(3)                                                    NULL     DEFAULT NULL,
     `delete_time` datetime(3)                                                    NULL     DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE

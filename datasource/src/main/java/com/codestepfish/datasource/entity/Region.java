@@ -20,40 +20,22 @@ public class Region {
     private Long id;
 
     /**
-     * 省 自治区 直辖市 特区 行政区划编号
+     * 上级id
      */
-    @TableField(value = "province_code")
-    private String provinceCode;
+    @TableField(value = "pid")
+    private Long pid;
 
     /**
-     * 市 自治州 盟 直辖市下属辖区 汇总码
+     * 2位区划编号/汇总码
      */
-    @TableField(value = "city_code")
-    private String cityCode;
+    @TableField(value = "code")
+    private String code;
 
     /**
-     * 区县 编号
+     * 名称
      */
-    @TableField(value = "district_code")
-    private String districtCode;
-
-    /**
-     * 省级名称
-     */
-    @TableField(value = "province_name")
-    private String provinceName;
-
-    /**
-     * 市级名称
-     */
-    @TableField(value = "city_name")
-    private String cityName;
-
-    /**
-     * 区县名称
-     */
-    @TableField(value = "district_name")
-    private String districtName;
+    @TableField(value = "name")
+    private String name;
 
     /**
      * 邮编
@@ -66,4 +48,10 @@ public class Region {
      */
     @TableField(value = "`sort`")
     private Integer sort;
+
+    /**
+     * 类型 0:省/自治区/直辖市/特区 1:市/自治州/盟/直辖市下属辖区 2:区县 3:乡镇/街道 4:村/小区
+     */
+    @TableField(value = "`type`")
+    private Integer type;
 }

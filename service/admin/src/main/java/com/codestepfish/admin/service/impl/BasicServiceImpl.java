@@ -72,7 +72,7 @@ public class BasicServiceImpl implements BasicService {
                 ConfigParam tenantDefaultMenu = configParamService.getConfigByKey(ConfigParamEnum.TENANT_MENU.getKey());
                 List<Menu> ms = menuService.list(Wrappers.<Menu>lambdaQuery().in(Menu::getKey, Splitter.on(",").omitEmptyStrings().trimResults().splitToList(tenantDefaultMenu.getConfigValue())));
                 Set<Long> ids = ms.stream().map(Menu::getId).collect(Collectors.toSet());
-                lambdaQuery.in(Menu::getId, ids).or().in(Menu::getPId, ids);
+                lambdaQuery.in(Menu::getId, ids).or().in(Menu::getPid, ids);
             }
         }
 
@@ -81,16 +81,17 @@ public class BasicServiceImpl implements BasicService {
         TreeNodeConfig config = new TreeNodeConfig();
         config.setWeightKey("sort");
         config.setDeep(3);
-        config.setParentIdKey("pId");
+        config.setParentIdKey("pid");
 
         return TreeUtil.build(menus, "0", config, (node, treeNode) -> {
             treeNode.setId(String.valueOf(node.getId()));
-            treeNode.setParentId(String.valueOf(node.getPId()));
+            treeNode.setParentId(String.valueOf(node.getPid()));
             treeNode.putExtra("title", node.getTitle());
             treeNode.putExtra("path", node.getPath());
             treeNode.putExtra("key", node.getKey());
             treeNode.putExtra("icon", node.getIcon());
             treeNode.putExtra("type", node.getType().getValue());
+            treeNode.putExtra("sort", node.getSort());
         });
     }
 

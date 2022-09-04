@@ -1,68 +1,60 @@
-package com.codestepfish.datasource.entity;
+package com.codestepfish.admin.dto.tenant;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.codestepfish.common.serializer.LocalDateTimeDeserializer;
 import com.codestepfish.common.serializer.LocalDateTimeSerializer;
 import com.codestepfish.common.serializer.LongToStringSerializer;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-/**
- * 角色
- */
 @Getter
 @Setter
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
-@TableName(value = "`role`")
-public class Role {
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
+public class TenantOut {
     @JsonSerialize(using = LongToStringSerializer.class)
     private Long id;
+
+    @JsonSerialize(using = LongToStringSerializer.class)
+    private Long pid;
 
     /**
      * 租户编号
      */
-    @TableField(value = "tenant_code")
-    private String tenantCode;
+    private String code;
 
     /**
-     * 角色名称
+     * 租户名称
      */
-    @TableField(value = "role_name")
-    private String roleName;
+    private String tenantName;
 
     /**
-     * 排序
+     * 状态 0 禁用  1正常
      */
-    @TableField(value = "`sort`")
-    private Integer sort;
+    private Boolean status;
 
     /**
      * 备注
      */
-    @TableField(value = "remark")
     private String remark;
 
-    @TableField(value = "create_time")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createTime;
 
-    @TableField(value = "update_time")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime updateTime;
 
-    @TableField(value = "delete_time")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime deleteTime;
+
+    @JsonProperty(value = "hasChildren")
+    private Boolean hasChildren = false;
+
+    private List<TenantOut> children;
 }

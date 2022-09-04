@@ -69,7 +69,9 @@ public class AuthFilter implements GlobalFilter, Ordered {
         String path = request.getURI().getPath();
 
         // *************************** uri校验
-        if (AuthHandler.handleSkipUrls(appConfig, exchange, chain, path)) return chain.filter(exchange);
+        if (AuthHandler.handleSkipUrls(appConfig, exchange, chain, path)) {
+            return chain.filter(exchange);
+        }
 
         // ************************* 校验token
         String token = "";

@@ -2,6 +2,7 @@ package com.codestepfish.auth.handler;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.codestepfish.auth.dto.AuthParam;
+import com.codestepfish.auth.mapper.TenantMapper;
 import com.codestepfish.auth.service.AdminService;
 import com.codestepfish.common.constant.captcha.CaptchaEnum;
 import com.codestepfish.common.model.AppUser;
@@ -11,7 +12,6 @@ import com.codestepfish.common.util.RsaUtil;
 import com.codestepfish.datasource.entity.Admin;
 import com.codestepfish.datasource.entity.AuthClient;
 import com.codestepfish.datasource.entity.Tenant;
-import com.codestepfish.datasource.mapper.TenantMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;

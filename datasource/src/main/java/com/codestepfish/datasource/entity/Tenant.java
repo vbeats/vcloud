@@ -4,6 +4,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.codestepfish.common.serializer.LocalDateTimeDeserializer;
+import com.codestepfish.common.serializer.LocalDateTimeSerializer;
+import com.codestepfish.common.serializer.LongToStringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -18,11 +23,14 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @TableName(value = "tenant")
 public class Tenant {
+
     @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @JsonSerialize(using = LongToStringSerializer.class)
     private Long id;
 
-    @TableField(value = "p_id")
-    private Long pid;
+    @TableField(value = "pid")
+    @JsonSerialize(using = LongToStringSerializer.class)
+    private Long pid = 0L;
 
     /**
      * 租户编号
@@ -40,7 +48,7 @@ public class Tenant {
      * 状态 0 禁用  1正常
      */
     @TableField(value = "`status`")
-    private Boolean status;
+    private Boolean status = true;
 
     /**
      * 备注
@@ -49,11 +57,17 @@ public class Tenant {
     private String remark;
 
     @TableField(value = "create_time")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createTime;
 
     @TableField(value = "update_time")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime updateTime;
 
     @TableField(value = "delete_time")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime deleteTime;
 }

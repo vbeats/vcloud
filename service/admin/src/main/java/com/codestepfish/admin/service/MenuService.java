@@ -2,8 +2,8 @@ package com.codestepfish.admin.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.codestepfish.admin.mapper.MenuMapper;
 import com.codestepfish.datasource.entity.Menu;
-import com.codestepfish.datasource.mapper.MenuMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
