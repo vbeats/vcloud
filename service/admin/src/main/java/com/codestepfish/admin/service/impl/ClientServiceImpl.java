@@ -49,7 +49,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void add(AuthClient client) {
-        AuthClient exist = authClientService.getOne(Wrappers.<AuthClient>lambdaQuery().eq(AuthClient::getClientId, client.getClientId()).isNull(AuthClient::getDeleteTime));
+        AuthClient exist = authClientService.getOne(Wrappers.<AuthClient>lambdaQuery().eq(AuthClient::getClientId, client.getClientId()));
         Assert.isNull(exist, "客户端ID已存在");
 
         authClientService.save(client);
@@ -58,7 +58,7 @@ public class ClientServiceImpl implements ClientService {
     @CacheEvict(cacheNames = CacheEnum.ADMIN_CACHE, allEntries = true)
     @Override
     public void update(AuthClient client) {
-        AuthClient exist = authClientService.getOne(Wrappers.<AuthClient>lambdaQuery().eq(AuthClient::getClientId, client.getClientId()).isNull(AuthClient::getDeleteTime));
+        AuthClient exist = authClientService.getOne(Wrappers.<AuthClient>lambdaQuery().eq(AuthClient::getClientId, client.getClientId()));
         Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(client.getId()), "客户端ID已存在");
 
         client.setUpdateTime(LocalDateTime.now());

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codestepfish.admin.mapper.AdminMapper">
+    <select id="listAdmins" resultType="com.codestepfish.admin.dto.admin.AdminVo">
+        select a.id          id,
+               a.account     account,
+               a.username    username,
+               a.phone       phone,
+               a.status      status,
+               a.role_id     role_id,
+               r.role_name   role_name,
+               a.create_time create_time,
+               a.update_time update_time,
+               a.delete_time delete_time
+        from admin a
+                 left join role r on r.id = a.role_id
+        where a.delete_time is null
+        <if test="account != null and account != ''">
+            and a.account = #{account}
+        </if>
+        <if test="phone != null and phone != ''">
+            and a.phone = #{phone}
+        </if>
+        <if test="tenant_code != null and tenant_code != ''">
+            and a.tenant_code = #{tenant_code}
+        </if>
+        order by a.create_time asc
+    </select>
+</mapper>

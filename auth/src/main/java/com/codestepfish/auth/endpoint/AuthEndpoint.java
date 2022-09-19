@@ -31,4 +31,5 @@ public class AuthEndpoint {
     public Captcha getCaptcha() {
         return authService.getCaptcha();
     }
+
 }

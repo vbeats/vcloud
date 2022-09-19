@@ -4,26 +4,26 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.codestepfish.admin.dto.admin.AdminInfo;
 import com.codestepfish.admin.dto.admin.PasswordIn;
 import com.codestepfish.admin.dto.menu.MenuQueryParam;
 import com.codestepfish.admin.service.*;
-import com.codestepfish.common.constant.config.ConfigParamEnum;
 import com.codestepfish.common.model.AppUser;
 import com.codestepfish.common.result.AppException;
 import com.codestepfish.common.result.RCode;
 import com.codestepfish.common.util.RsaUtil;
-import com.codestepfish.datasource.entity.*;
-import com.codestepfish.datasource.service.ConfigParamService;
-import com.google.common.base.Splitter;
+import com.codestepfish.datasource.entity.Admin;
+import com.codestepfish.datasource.entity.AuthClient;
+import com.codestepfish.datasource.entity.Menu;
+import com.codestepfish.datasource.entity.RoleMenu;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
@@ -38,9 +38,6 @@ public class BasicServiceImpl implements BasicService {
 
     private final MenuService menuService;
     private final RoleMenuService roleMenuService;
-    private final TopMenuService topMenuService;
-    private final TopMenuTreeService topMenuTreeService;
-    private final ConfigParamService configParamService;
     private final AdminService adminService;
     private final AuthClientService authClientService;
 
@@ -60,20 +57,7 @@ public class BasicServiceImpl implements BasicService {
 
             Set<Long> menuIds = roleMenus.stream().map(RoleMenu::getMenuId).collect(Collectors.toSet());
 
-            if (!ObjectUtils.isEmpty(param.getTopMenuId())) {
-                List<TopMenuTree> menuTrees = topMenuTreeService.list(Wrappers.<TopMenuTree>lambdaQuery().eq(TopMenuTree::getTopId, param.getTopMenuId()));
-                menuIds.addAll(menuTrees.stream().map(TopMenuTree::getMenuId).collect(Collectors.toSet()));
-            }
-
             lambdaQuery.in(Menu::getId, menuIds);
-        } else {
-            // 当前租户 分配的所有菜单 按钮
-            if (!user.getTenantCode().equals(configParamService.getConfigByKey(ConfigParamEnum.SUPER_TENANT.getKey()))) {
-                ConfigParam tenantDefaultMenu = configParamService.getConfigByKey(ConfigParamEnum.TENANT_MENU.getKey());
-                List<Menu> ms = menuService.list(Wrappers.<Menu>lambdaQuery().in(Menu::getKey, Splitter.on(",").omitEmptyStrings().trimResults().splitToList(tenantDefaultMenu.getConfigValue())));
-                Set<Long> ids = ms.stream().map(Menu::getId).collect(Collectors.toSet());
-                lambdaQuery.in(Menu::getId, ids).or().in(Menu::getPid, ids);
-            }
         }
 
         menus = menuService.list(lambdaQuery.isNull(Menu::getDeleteTime));
@@ -93,11 +77,6 @@ public class BasicServiceImpl implements BasicService {
             treeNode.putExtra("type", node.getType().getValue());
             treeNode.putExtra("sort", node.getSort());
         });
-    }
-
-    @Override
-    public List<TopMenu> topMenus(AppUser user) {
-        return topMenuService.list(Wrappers.<TopMenu>lambdaQuery().in(TopMenu::getTenantCode, user.getTenantCode()).orderByAsc(TopMenu::getSort));
     }
 
     @Override

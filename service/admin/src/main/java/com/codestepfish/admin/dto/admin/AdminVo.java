@@ -1,62 +1,49 @@
-package com.codestepfish.datasource.entity;
+package com.codestepfish.admin.dto.admin;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import com.codestepfish.common.serializer.LocalDateTimeDeserializer;
 import com.codestepfish.common.serializer.LocalDateTimeSerializer;
 import com.codestepfish.common.serializer.LongToStringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-/**
- * 角色
- */
 @Getter
 @Setter
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
-@TableName(value = "`role`")
-public class Role {
-    @TableId(value = "id", type = IdType.ASSIGN_ID)
+public class AdminVo {
+
+    private Long tenantId;
+
     @JsonSerialize(using = LongToStringSerializer.class)
     private Long id;
 
-    /**
-     * 角色名称
-     */
-    @TableField(value = "role_name")
+    private String account;
+
+    private String username;
+
+    private String password;
+
+    private String phone;
+
+    private Boolean status;
+
+    private Long roleId;
     private String roleName;
 
-    /**
-     * 角色编号
-     */
-    @TableField(value = "`code`")
-    private String code;
-
-    /**
-     * 备注
-     */
-    @TableField(value = "remark")
-    private String remark;
-
-    @TableField(value = "create_time")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createTime;
 
-    @TableField(value = "update_time")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime updateTime;
 
-    @TableField(value = "delete_time")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime deleteTime;
+
+    private String clientId;
+    private String clientSecret;
 }

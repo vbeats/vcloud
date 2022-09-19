@@ -9,5 +9,4 @@ import lombok.ToString;
 @ToString
 public class MenuQueryParam {
     private Boolean isAll = false; // 是否加载所有菜单数据
-    private Long topMenuId; // 顶部菜单id
 }

@@ -47,16 +47,7 @@ public class AuthHandler {
      */
     public static AppUser handleAdmin(AdminService adminService, Long id, String path) {
         AppUser appUser = adminService.findById(id);
-        if (ObjectUtils.isEmpty(appUser)) {
-            throw new AppException(RCode.ACCESS_DENY);
-        }
-
-        // 此admin用户是否有权限访问该url
-
-        boolean apiScope = adminService.existApiScope(appUser.getRoleId(), path);
-
-        if (!apiScope) {
-            log.error("admin用户: {} ,访问接口: {} 权限不足", id, path);
+        if (ObjectUtils.isEmpty(appUser) || ObjectUtils.isEmpty(appUser.getRoleId())) {
             throw new AppException(RCode.ACCESS_DENY);
         }
 

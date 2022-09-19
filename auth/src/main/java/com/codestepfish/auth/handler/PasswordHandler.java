@@ -69,6 +69,6 @@ public class PasswordHandler {
 
         Assert.notNull(tenant, "凭证无效");
 
-        return new AppUser(admin.getId(), admin.getRoleId(), tenant.getCode());
+        return new AppUser(admin.getId(), admin.getRoleId(), tenant.getId(), tenant.getCode());
     }
 }

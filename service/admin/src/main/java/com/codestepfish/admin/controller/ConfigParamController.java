@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.codestepfish.admin.dto.config.ConfigQueryIn;
 import com.codestepfish.common.constant.redis.CacheEnum;
 import com.codestepfish.common.result.PageOut;
+import com.codestepfish.core.annotation.PreAuth;
 import com.codestepfish.datasource.entity.ConfigParam;
 import com.codestepfish.datasource.service.ConfigParamService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/configParam")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@PreAuth
 public class ConfigParamController {
 
     private final ConfigParamService configParamService;
@@ -34,7 +36,7 @@ public class ConfigParamController {
     @PostMapping("/add")
     public void add(@RequestBody ConfigParam configParam) {
 
-        ConfigParam exist = configParamService.getOne(Wrappers.<ConfigParam>lambdaQuery().eq(ConfigParam::getConfigKey, configParam.getConfigKey()).isNull(ConfigParam::getDeleteTime));
+        ConfigParam exist = configParamService.getOne(Wrappers.<ConfigParam>lambdaQuery().eq(ConfigParam::getConfigKey, configParam.getConfigKey()));
         Assert.isNull(exist, "key已存在");
 
         configParamService.save(configParam);
@@ -43,7 +45,7 @@ public class ConfigParamController {
     @PostMapping("/update")
     @CacheEvict(cacheNames = CacheEnum.CONFIG_CACHE, key = "#configParam.configKey")
     public void update(@RequestBody ConfigParam configParam) {
-        ConfigParam exist = configParamService.getOne(Wrappers.<ConfigParam>lambdaQuery().eq(ConfigParam::getConfigKey, configParam.getConfigKey()).isNull(ConfigParam::getConfigKey));
+        ConfigParam exist = configParamService.getOne(Wrappers.<ConfigParam>lambdaQuery().eq(ConfigParam::getConfigKey, configParam.getConfigKey()));
         Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(configParam.getId()), "客户端ID已存在");
 
         configParam.setUpdateTime(LocalDateTime.now());

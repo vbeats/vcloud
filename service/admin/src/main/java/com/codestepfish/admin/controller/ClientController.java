@@ -3,6 +3,7 @@ package com.codestepfish.admin.controller;
 import com.codestepfish.admin.dto.client.ClientQueryIn;
 import com.codestepfish.admin.service.ClientService;
 import com.codestepfish.common.result.PageOut;
+import com.codestepfish.core.annotation.PreAuth;
 import com.codestepfish.datasource.entity.AuthClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/client")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@PreAuth
 public class ClientController {
 
     private final ClientService clientService;

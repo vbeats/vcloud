@@ -47,30 +47,6 @@ INSERT INTO `admin`
 VALUES (1, '00000000', 'admin', '超级管理员', md5('123456'), '18615262691', 1, 1, now(3), NULL, NULL);
 
 -- ----------------------------
--- Table structure for api_scope
--- ----------------------------
-DROP TABLE IF EXISTS `api_scope`;
-CREATE TABLE `api_scope`
-(
-    `id`          bigint UNSIGNED                                               NOT NULL,
-    `menu_id`     bigint UNSIGNED                                               NOT NULL COMMENT '菜单id',
-    `api_name`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '接口名称',
-    `path`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'api path',
-    `remark`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
-    `create_time` datetime(3)                                                   NOT NULL DEFAULT NOW(3),
-    `update_time` datetime(3)                                                   NULL     DEFAULT NULL,
-    `delete_time` datetime(3)                                                   NULL     DEFAULT NULL,
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '接口权限'
-  ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of api_scope
--- ----------------------------
-
--- ----------------------------
 -- Table structure for auth_client
 -- ----------------------------
 DROP TABLE IF EXISTS `auth_client`;
@@ -126,6 +102,11 @@ CREATE TABLE `config_param`
 -- Records of config_param
 -- ----------------------------
 
+INSERT INTO `config_param`
+VALUES (1, 'super_tenant', '00000000', '运营平台租户编号', now(3), null, null);
+INSERT INTO `config_param`
+VALUES (2, 'super_role', 'super_admin', '超级管理员角色编号', now(3), null, null);
+
 -- ----------------------------
 -- Table structure for menu
 -- ----------------------------
@@ -133,7 +114,7 @@ DROP TABLE IF EXISTS `menu`;
 CREATE TABLE `menu`
 (
     `id`          bigint UNSIGNED                                                NOT NULL,
-    `pid`         tinyint                                                        NOT NULL DEFAULT 0 COMMENT '上级  默认0',
+    `pid`         bigint                                                         NOT NULL DEFAULT 0 COMMENT '上级  默认0',
     `title`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '菜单/按钮名称',
     `path`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL DEFAULT '' COMMENT '前端路由',
     `icon`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT 'icon图标',
@@ -156,91 +137,82 @@ CREATE TABLE `menu`
 INSERT INTO `menu`
 VALUES (1, 0, '系统管理', '/system', 'Setting', 'setting', 0, 99999, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (2, 1, '用户管理', '/user', 'User', 'user', 0, 0, '', now(3), NULL, NULL);
+VALUES (2, 1, '租户管理', '/tenant', 'Operation', 'operation', 0, 1, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (3, 1, '租户管理', '/tenant', 'Operation', 'operation', 0, 1, '', now(3), NULL, NULL);
+VALUES (3, 1, '菜单管理', '/menu', 'Menu', 'menu', 0, 2, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (4, 1, '菜单管理', '/menu', 'Menu', 'menu', 0, 2, '', now(3), NULL, NULL);
+VALUES (4, 1, '角色管理', '/role', 'Avatar', 'avatar', 0, 3, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (5, 1, '顶部菜单', '/tmenu', 'Grape', 'grape', 0, 3, '', now(3), NULL, NULL);
+VALUES (5, 1, '用户管理', '/user', 'User', 'user', 0, 5, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (6, 1, '角色管理', '/role', 'Avatar', 'avatar', 0, 4, '', now(3), NULL, NULL);
+VALUES (6, 1, '参数设置', '/param', 'Cpu', 'cpu', 0, 6, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (7, 1, '接口权限', '/apiscope', 'Rank', 'rank', 0, 5, '', now(3), NULL, NULL);
+VALUES (7, 1, '应用管理', '/client', 'Coordinate', 'coordinate', 0, 7, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (8, 1, '参数设置', '/param', 'Cpu', 'cpu', 0, 6, '', now(3), NULL, NULL);
+VALUES (8, 1, '行政区划', '/region', 'MapLocation', 'region', 0, 8, '', now(3), NULL, NULL);
+
 INSERT INTO `menu`
-VALUES (9, 1, '应用管理', '/client', 'Coordinate', 'coordinate', 0, 7, '', now(3), NULL, NULL);
+VALUES (10, 2, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (10, 1, '行政区划', '/region', 'MapLocation', 'region', 0, 8, '', now(3), NULL, NULL);
+VALUES (11, 2, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (11, 2, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (12, 2, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (12, 2, '角色配置', '', '', 'role', 1, 0, '', now(3), NULL, NULL);
+VALUES (13, 2, '禁用', '', '', 'block', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (13, 2, '密码重置', '', '', 'resetpwd', 1, 0, '', now(3), NULL, NULL);
+VALUES (14, 2, '解封', '', '', 'unblock', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (14, 2, '账号解封', '', '', 'unblock', 1, 0, '', now(3), NULL, NULL);
+VALUES (15, 2, '新增子级', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
+
 INSERT INTO `menu`
-VALUES (15, 2, '禁用', '', '', 'block', 1, 0, '', now(3), NULL, NULL);
+VALUES (16, 3, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (16, 2, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (17, 3, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (17, 2, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (18, 3, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (18, 3, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (19, 3, '新增子项', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
+
 INSERT INTO `menu`
-VALUES (19, 3, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (20, 4, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (20, 3, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (21, 4, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (21, 3, '禁用', '', '', 'block', 1, 0, '', now(3), NULL, NULL);
+VALUES (22, 4, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (22, 3, '解封', '', '', 'unblock', 1, 0, '', now(3), NULL, NULL);
+VALUES (23, 4, '菜单配置', '', '', 'menu', 1, 0, '', now(3), NULL, NULL);
+
 INSERT INTO `menu`
-VALUES (23, 3, '新增子级', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
+VALUES (25, 5, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (24, 4, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (26, 5, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (25, 4, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (27, 5, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (26, 4, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (28, 5, '禁用', '', '', 'block', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (27, 4, '新增子项', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
+VALUES (29, 5, '密码重置', '', '', 'resetpwd', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (28, 5, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (30, 5, '账号解封', '', '', 'unblock', 1, 0, '', now(3), NULL, NULL);
+
 INSERT INTO `menu`
-VALUES (29, 5, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (31, 6, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (30, 5, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (32, 6, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (31, 5, '菜单配置', '', '', 'menu', 1, 0, '', now(3), NULL, NULL);
+VALUES (33, 6, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+
 INSERT INTO `menu`
-VALUES (32, 6, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (34, 7, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (33, 6, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (35, 7, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (34, 6, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (36, 7, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+
 INSERT INTO `menu`
-VALUES (35, 6, '权限设置', '', '', 'permission', 1, 0, '', now(3), NULL, NULL);
+VALUES (37, 8, '新增下级', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (36, 7, '权限配置', '', '', 'permission', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (37, 8, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (38, 8, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (39, 8, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (40, 9, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (41, 9, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (42, 9, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (43, 10, '新增下级', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (44, 10, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (38, 8, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 
 -- ----------------------------
 -- Table structure for region
@@ -272,9 +244,8 @@ DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role`
 (
     `id`          bigint UNSIGNED                                                NOT NULL,
-    `tenant_code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '租户编号',
     `role_name`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '角色名称',
-    `sort`        int UNSIGNED                                                   NOT NULL DEFAULT 0 COMMENT '排序',
+    `code`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '角色编号',
     `remark`      varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
     `create_time` datetime(3)                                                    NOT NULL DEFAULT NOW(3),
     `update_time` datetime(3)                                                    NULL     DEFAULT NULL,
@@ -289,27 +260,7 @@ CREATE TABLE `role`
 -- Records of role
 -- ----------------------------
 INSERT INTO `role`
-VALUES (1, '00000000', '超级管理员', 0, '超级管理员', now(3), NULL, NULL);
-
--- ----------------------------
--- Table structure for role_api
--- ----------------------------
-DROP TABLE IF EXISTS `role_api`;
-CREATE TABLE `role_api`
-(
-    `id`           bigint UNSIGNED NOT NULL,
-    `role_id`      bigint UNSIGNED NOT NULL COMMENT '角色id',
-    `menu_id`      bigint UNSIGNED NOT NULL COMMENT '菜单id',
-    `api_scope_id` bigint UNSIGNED NOT NULL COMMENT 'api scope id',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色-接口权限'
-  ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of role_api
--- ----------------------------
+VALUES (1, '超级管理员', 'super_admin', '超级管理员', now(3), NULL, NULL);
 
 -- ----------------------------
 -- Table structure for role_menu
@@ -345,8 +296,7 @@ INSERT INTO `role_menu`
 VALUES (7, 1, 7);
 INSERT INTO `role_menu`
 VALUES (8, 1, 8);
-INSERT INTO `role_menu`
-VALUES (9, 1, 9);
+
 INSERT INTO `role_menu`
 VALUES (10, 1, 10);
 INSERT INTO `role_menu`
@@ -405,18 +355,6 @@ INSERT INTO `role_menu`
 VALUES (37, 1, 37);
 INSERT INTO `role_menu`
 VALUES (38, 1, 38);
-INSERT INTO `role_menu`
-VALUES (39, 1, 39);
-INSERT INTO `role_menu`
-VALUES (40, 1, 40);
-INSERT INTO `role_menu`
-VALUES (41, 1, 41);
-INSERT INTO `role_menu`
-VALUES (42, 1, 42);
-INSERT INTO `role_menu`
-VALUES (43, 1, 43);
-INSERT INTO `role_menu`
-VALUES (44, 1, 44);
 
 -- ----------------------------
 -- Table structure for tenant
@@ -444,46 +382,5 @@ CREATE TABLE `tenant`
 -- ----------------------------
 INSERT INTO `tenant`
 VALUES (1, 0, '00000000', '运营平台', 1, '运营平台', now(3), NULL, NULL);
-
--- ----------------------------
--- Table structure for top_menu
--- ----------------------------
-DROP TABLE IF EXISTS `top_menu`;
-CREATE TABLE `top_menu`
-(
-    `id`          bigint                                                       NOT NULL,
-    `tenant_code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '租户编号',
-    `title`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单名称',
-    `key`         varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '唯一标识key',
-    `icon`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'icon图标',
-    `sort`        int                                                          NOT NULL DEFAULT 0 COMMENT '顺序',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '顶部菜单'
-  ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of top_menu
--- ----------------------------
-
--- ----------------------------
--- Table structure for top_menu_tree
--- ----------------------------
-DROP TABLE IF EXISTS `top_menu_tree`;
-CREATE TABLE `top_menu_tree`
-(
-    `id`      bigint UNSIGNED NOT NULL,
-    `top_id`  bigint UNSIGNED NOT NULL COMMENT 'top_menu id',
-    `menu_id` bigint UNSIGNED NOT NULL COMMENT '菜单id',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '顶部菜单-菜单'
-  ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of top_menu_tree
--- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;

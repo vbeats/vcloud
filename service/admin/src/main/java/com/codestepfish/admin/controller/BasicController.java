@@ -6,7 +6,6 @@ import com.codestepfish.admin.dto.admin.PasswordIn;
 import com.codestepfish.admin.dto.menu.MenuQueryParam;
 import com.codestepfish.admin.service.BasicService;
 import com.codestepfish.common.model.AppUser;
-import com.codestepfish.datasource.entity.TopMenu;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +25,6 @@ public class BasicController {
     @PostMapping("/menus")
     public List<Tree<String>> menus(@RequestBody MenuQueryParam param, AppUser user) {
         return basicService.menus(param, user);
-    }
-
-    @PostMapping("/topMenus")
-    public List<TopMenu> topMenus(AppUser user) {
-        return basicService.topMenus(user);
     }
 
     @PostMapping("/profile")

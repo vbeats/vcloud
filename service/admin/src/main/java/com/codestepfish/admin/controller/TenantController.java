@@ -5,7 +5,9 @@ import com.codestepfish.admin.dto.tenant.TenantOut;
 import com.codestepfish.admin.dto.tenant.TenantQueryIn;
 import com.codestepfish.admin.service.TenantService;
 import com.codestepfish.common.constant.redis.CacheEnum;
+import com.codestepfish.common.model.AppUser;
 import com.codestepfish.common.result.PageOut;
+import com.codestepfish.core.annotation.PreAuth;
 import com.codestepfish.datasource.entity.Tenant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/tenant")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@PreAuth
 public class TenantController {
 
     private final TenantService tenantService;
@@ -34,14 +37,19 @@ public class TenantController {
         return tenantService.listTenant(param);
     }
 
+    @PostMapping("/listV2")
+    public List<TenantOut> listV2(AppUser user) {
+        return tenantService.listV2(user);
+    }
+
     @PostMapping("/sub")
-    public List<TenantOut> subTenant(@RequestBody TenantQueryIn param) {
-        return tenantService.subTenant(param);
+    public List<TenantOut> subTenant(@RequestBody TenantQueryIn param, AppUser user) {
+        return tenantService.subTenant(param, user);
     }
 
     @PostMapping("/add")
     public String add(@RequestBody Tenant tenant) {
-        Tenant exist = tenantService.getOne(Wrappers.<Tenant>lambdaQuery().eq(Tenant::getCode, tenant.getCode()).isNull(Tenant::getDeleteTime));
+        Tenant exist = tenantService.getOne(Wrappers.<Tenant>lambdaQuery().eq(Tenant::getCode, tenant.getCode()));
         Assert.isNull(exist, "租户编号已存在");
 
         tenantService.save(tenant);
@@ -51,7 +59,7 @@ public class TenantController {
     @PostMapping("/update")
     @CacheEvict(value = CacheEnum.ADMIN_CACHE, allEntries = true)
     public void update(@RequestBody Tenant tenant) {
-        Tenant exist = tenantService.getOne(Wrappers.<Tenant>lambdaQuery().eq(Tenant::getCode, tenant.getCode()).isNull(Tenant::getDeleteTime));
+        Tenant exist = tenantService.getOne(Wrappers.<Tenant>lambdaQuery().eq(Tenant::getCode, tenant.getCode()));
         Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(tenant.getId()), "租户编号已存在");
 
         tenant.setUpdateTime(LocalDateTime.now());

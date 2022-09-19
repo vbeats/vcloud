@@ -1,7 +1,9 @@
 package com.codestepfish.admin.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.codestepfish.admin.dto.admin.AdminVo;
 import com.codestepfish.admin.mapper.AdminMapper;
 import com.codestepfish.datasource.entity.Admin;
 import lombok.RequiredArgsConstructor;
@@ -13,4 +15,9 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AdminService extends ServiceImpl<AdminMapper, Admin> implements IService<Admin> {
+    private final AdminMapper adminMapper;
+
+    public Page<AdminVo> listAdmins(Page<AdminVo> page, String code, String account, String phone) {
+        return adminMapper.listAdmins(page, code, account, phone);
+    }
 }

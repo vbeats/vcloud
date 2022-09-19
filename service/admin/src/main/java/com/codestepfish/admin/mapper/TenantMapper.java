@@ -14,4 +14,6 @@ public interface TenantMapper extends BaseMapper<Tenant> {
     Page<TenantOut> listTenant(Page<PageOut> page, @Param("param") TenantQueryIn param);
 
     List<TenantOut> listTenant(@Param("param") TenantQueryIn param);
+
+    List<TenantOut> listTenantV2(@Param("id") Long id);
 }
