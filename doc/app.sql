@@ -26,11 +26,11 @@ CREATE TABLE `admin`
     `id`          bigint UNSIGNED                                              NOT NULL,
     `tenant_code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '租户编号',
     `account`     varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '账号',
-    `username`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户名 (仅作展示用)',
-    `password`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '密码',
-    `phone`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '手机号',
-    `status`      tinyint(1)                                                   NOT NULL COMMENT '状态 0 禁用  1 正常',
-    `role_id`     bigint UNSIGNED                                              NOT NULL COMMENT '角色id',
+    `username`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '用户名 (仅作展示用)',
+    `password`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '密码',
+    `phone`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '手机号',
+    `status`      tinyint(1)                                                   NOT NULL DEFAULT 1 COMMENT '状态 0 禁用  1 正常',
+    `role_id`     bigint UNSIGNED                                              NULL COMMENT '角色id',
     `create_time` datetime(3)                                                  NOT NULL DEFAULT NOW(3),
     `update_time` datetime(3)                                                  NULL     DEFAULT NULL,
     `delete_time` datetime(3)                                                  NULL     DEFAULT NULL,
@@ -106,6 +106,8 @@ INSERT INTO `config_param`
 VALUES (1, 'super_tenant', '00000000', '运营平台租户编号', now(3), null, null);
 INSERT INTO `config_param`
 VALUES (2, 'super_role', 'super_admin', '超级管理员角色编号', now(3), null, null);
+INSERT INTO `config_param`
+VALUES (3, 'default_password', '123456', '管理员默认密码', now(3), null, null);
 
 -- ----------------------------
 -- Table structure for menu

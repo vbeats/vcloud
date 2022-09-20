@@ -1,9 +1,6 @@
 package com.codestepfish.datasource.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -36,7 +33,7 @@ public class Admin {
     /**
      * 用户名 (仅作展示用)
      */
-    @TableField(value = "username")
+    @TableField(value = "username", updateStrategy = FieldStrategy.IGNORED)
     private String username;
 
     /**
@@ -48,7 +45,7 @@ public class Admin {
     /**
      * 手机号
      */
-    @TableField(value = "phone")
+    @TableField(value = "phone", updateStrategy = FieldStrategy.IGNORED)
     private String phone;
 
     /**
@@ -60,7 +57,7 @@ public class Admin {
     /**
      * 角色id
      */
-    @TableField(value = "role_id")
+    @TableField(value = "role_id", updateStrategy = FieldStrategy.IGNORED)
     private Long roleId;
 
     @TableField(value = "create_time")
