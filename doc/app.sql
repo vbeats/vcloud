@@ -150,8 +150,6 @@ INSERT INTO `menu`
 VALUES (6, 1, '参数设置', '/param', 'Cpu', 'cpu', 0, 6, '', now(3), NULL, NULL);
 INSERT INTO `menu`
 VALUES (7, 1, '应用管理', '/client', 'Coordinate', 'coordinate', 0, 7, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (8, 1, '行政区划', '/region', 'MapLocation', 'region', 0, 8, '', now(3), NULL, NULL);
 
 INSERT INTO `menu`
 VALUES (10, 2, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
@@ -210,34 +208,6 @@ INSERT INTO `menu`
 VALUES (35, 7, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
 VALUES (36, 7, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
-
-INSERT INTO `menu`
-VALUES (37, 8, '新增下级', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (38, 8, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
-
--- ----------------------------
--- Table structure for region
--- ----------------------------
-DROP TABLE IF EXISTS `region`;
-CREATE TABLE `region`
-(
-    `id`       bigint UNSIGNED                                               NOT NULL,
-    `pid`      bigint UNSIGNED                                               NOT NULL DEFAULT 0 COMMENT '上级id',
-    `code`     varchar(2) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '2位区划编号/汇总码',
-    `name`     varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '名称',
-    `zip_code` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL DEFAULT '' COMMENT '邮编',
-    `sort`     int                                                           NOT NULL DEFAULT 0 COMMENT '顺序',
-    `type`     tinyint(1)                                                    NOT NULL DEFAULT 0 COMMENT '类型 0:省/自治区/直辖市/特区 1:市/自治州/盟/直辖市下属辖区 2:区县 3:乡镇/街道 4:村/小区',
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '行政区划'
-  ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of region
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for role
@@ -353,10 +323,6 @@ INSERT INTO `role_menu`
 VALUES (35, 1, 35);
 INSERT INTO `role_menu`
 VALUES (36, 1, 36);
-INSERT INTO `role_menu`
-VALUES (37, 1, 37);
-INSERT INTO `role_menu`
-VALUES (38, 1, 38);
 
 -- ----------------------------
 -- Table structure for tenant
