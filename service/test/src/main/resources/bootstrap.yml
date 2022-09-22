@@ -1,0 +1,24 @@
+server:
+  port: 8084
+spring:
+  application:
+    name: test
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: f821f088-4afe-4680-bdfd-94e5421f79a3
+        group: DEFAULT_GROUP
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: f821f088-4afe-4680-bdfd-94e5421f79a3
+        file-extension: yml
+        shared-configs:
+          - data-id: application-${spring.profiles.active}.yml
+            group: DEFAULT_GROUP
+            refresh: true
+          - data-id: datasource-${spring.profiles.active}.yml
+            group: DEFAULT_GROUP
+            refresh: true
+  profiles:
+    active: dev
