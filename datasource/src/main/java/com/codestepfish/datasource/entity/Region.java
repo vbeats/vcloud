@@ -26,16 +26,16 @@ public class Region {
     private Long pid;
 
     /**
-     * 2位区划编号/汇总码
-     */
-    @TableField(value = "code")
-    private String code;
-
-    /**
      * 名称
      */
     @TableField(value = "name")
     private String name;
+
+    /**
+     * 行政编码
+     */
+    @TableField(value = "code")
+    private String code;
 
     /**
      * 邮编

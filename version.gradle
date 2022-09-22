@@ -1,29 +1,31 @@
 ext {
     versions = [
-            fastjson         : '2.0.11',
+            fastjson         : '2.0.14',
+            jackson          : '2.13.4',
             commonsText      : '1.9',
             mysql            : '8.0.30',
             xxlJob           : '2.3.1',
             mybatis          : '2.2.2',
             mybatisPlus      : '3.5.2',
-            cosid            : '1.14.3',
+            cosid            : '1.14.6',
             httpmime         : '4.5.13',
-            hutool           : '5.8.5',
+            hutool           : '5.8.7',
             commonsFileupload: '1.4',
             commonsPool      : '2.11.1',
             commonsIo        : '2.11.0',
             okhttp           : '4.10.0',
             guava            : '31.1-jre',
-            validator        : '7.0.5.Final',
+            validator        : '8.0.0.Final',
             easyexcel        : '3.1.1',
             javaJwt          : '4.0.0',
-            jjwt             : '0.9.1',
-            jjwtImpl         : '0.11.5',
+            jjwt             : '0.11.5',
             caffeine         : '3.1.1',
+            'tlog'           : '1.5.0'
     ]
 
     libs = [
             'fastjson'          : "com.alibaba.fastjson2:fastjson2:${versions.fastjson}",
+            'jackson'           : "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}",
             'mysql'             : "mysql:mysql-connector-java:${versions.mysql}",
             'xxl-job'           : "com.xuxueli:xxl-job-core:${versions.xxlJob}",
             'mybatis'           : "org.mybatis.spring.boot:mybatis-spring-boot-starter:${versions.mybatis}",
@@ -42,8 +44,10 @@ ext {
             'validator'         : "org.hibernate.validator:hibernate-validator:${versions.validator}",
             'excel'             : "com.alibaba:easyexcel:${versions.easyexcel}",
             'java-jwt'          : "com.auth0:java-jwt:${versions.javaJwt}",
-            'jjwt'              : "io.jsonwebtoken:jjwt:${versions.jjwt}",
-            'jjwt-impl'         : "io.jsonwebtoken:jjwt-impl:${versions.jjwtImpl}",
+            'jjwt'              : "io.jsonwebtoken:jjwt-api:${versions.jjwt}",
+            'jjwt-impl'         : "io.jsonwebtoken:jjwt-impl:${versions.jjwt}",
+            'jjwt-jackson'      : "io.jsonwebtoken:jjwt-jackson:${versions.jjwt}",
             'caffeine'          : "com.github.ben-manes.caffeine:caffeine:${versions.caffeine}",
+            'tlog'              : "com.yomahub:tlog-all-spring-boot-starter:${versions.tlog}"
     ]
 }

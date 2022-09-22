@@ -92,6 +92,9 @@ subprojects {
         implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
         implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
         implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
+        implementation(libs.get('tlog')) {
+            exclude group: 'pull-parser', module: 'pull-parser'
+        }
     }
 
     switch (project.name) {
