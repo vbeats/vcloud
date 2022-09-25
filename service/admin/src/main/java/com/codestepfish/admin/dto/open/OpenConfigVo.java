@@ -1,4 +1,4 @@
-package com.codestepfish.admin.dto.admin;
+package com.codestepfish.admin.dto.open;
 
 import com.codestepfish.common.serializer.LocalDateTimeDeserializer;
 import com.codestepfish.common.serializer.LocalDateTimeSerializer;
@@ -7,31 +7,28 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-public class AdminVo {
-
-    private Long tenantId;
-    private String tenantName;
+@ToString
+public class OpenConfigVo {
 
     @JsonSerialize(using = LongToStringSerializer.class)
     private Long id;
 
-    private String account;
+    @JsonSerialize(using = LongToStringSerializer.class)
+    private Long tenantId;
 
-    private String username;
+    private String tenantName;
 
-    private String password;
+    private String name;
 
-    private String phone;
+    private Integer type;
 
-    private Boolean status;
-
-    private Long roleId;
-    private String roleName;
+    private String config;
 
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -44,7 +41,4 @@ public class AdminVo {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime deleteTime;
-
-    private String clientId;
-    private String clientSecret;
 }

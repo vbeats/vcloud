@@ -5,6 +5,7 @@ import com.codestepfish.common.model.AppUser;
 import com.codestepfish.common.result.AppException;
 import com.codestepfish.common.result.RCode;
 import com.codestepfish.gateway.service.AdminService;
+import com.codestepfish.gateway.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.util.AntPathMatcher;
@@ -47,6 +48,15 @@ public class AuthHandler {
      */
     public static AppUser handleAdmin(AdminService adminService, Long id, String path) {
         AppUser appUser = adminService.findById(id);
+        if (ObjectUtils.isEmpty(appUser) || ObjectUtils.isEmpty(appUser.getRoleId())) {
+            throw new AppException(RCode.ACCESS_DENY);
+        }
+
+        return appUser;
+    }
+
+    public static AppUser handleUser(UserService userService, Long id) {
+        AppUser appUser = userService.findById(id);
         if (ObjectUtils.isEmpty(appUser) || ObjectUtils.isEmpty(appUser.getRoleId())) {
             throw new AppException(RCode.ACCESS_DENY);
         }

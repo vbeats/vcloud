@@ -31,7 +31,7 @@ public class AuthAspect {
     private final ConfigParamService configParamService;
 
     @Around("@annotation(com.codestepfish.core.annotation.PreAuth) || @within(com.codestepfish.core.annotation.PreAuth)")
-    public Object logParam(ProceedingJoinPoint point) throws Throwable {
+    public Object handleAuth(ProceedingJoinPoint point) throws Throwable {
         //获取request 参数----> 来自gateway
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 

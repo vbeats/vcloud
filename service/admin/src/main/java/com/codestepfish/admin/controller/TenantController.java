@@ -38,6 +38,7 @@ public class TenantController {
     }
 
     @PostMapping("/listV2")
+    @PreAuth(superOnly = false)
     public List<TenantOut> listV2(AppUser user) {
         return tenantService.listV2(user);
     }

@@ -3,6 +3,8 @@
 <mapper namespace="com.codestepfish.admin.mapper.AdminMapper">
     <select id="listAdmins" resultType="com.codestepfish.admin.dto.admin.AdminVo">
         select a.id          id,
+               t.id          tenant_id,
+               t.tenant_name tenant_name,
                a.account     account,
                a.username    username,
                a.phone       phone,
@@ -13,8 +15,10 @@
                a.update_time update_time,
                a.delete_time delete_time
         from admin a
+                 left join tenant t on a.tenant_code = t.code
                  left join role r on r.id = a.role_id
         where a.delete_time is null
+          and t.delete_time is null
         <if test="account != null and account != ''">
             and a.account = #{account}
         </if>

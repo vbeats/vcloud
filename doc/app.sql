@@ -74,7 +74,7 @@ CREATE TABLE `auth_client`
 -- Records of auth_client
 -- ----------------------------
 INSERT INTO `auth_client`
-VALUES (1, 'de0b55913ac7', '939da067-8899-40a0-9c21-15f0b0001add', 'wx_app,wx_mp,password,sms,refresh_token', 7200, 30,
+VALUES (1, 'de0b55913ac7', '939da067-8899-40a0-9c21-15f0b0001add', 'wx_miniapp,wx_mp,wx_cp,wx_open,ali_miniapp,password,sms,refresh_token', 7200, 30,
         '-----BEGIN PRIVATE KEY-----\r\n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\r\nnflau0Dmk4OSv3b6D3qXBYkw6/Lx\r\n-----END PRIVATE KEY-----',
         '-----BEGIN PUBLIC KEY-----\r\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA9il0ZDHwNwEGLKjvCYpJ\r\nfjDrM7J2UxXwgwoe+Pgnlvg+jIrXYSe5vwLtrjqJ5M7jlmH4qbG2PYT2WlRkA5Ip\r\nzeOWYph6vAVth7CnHX+Kda/TWJD4dEEcCn+Hk8ulkCf5a0+cBnw/vyJ3+GD8z5f5\r\nZQJ3YJ0CoPepsdEKRfKQd3eSBGppXz2UmEvCFi10sQGQFOIRcdqL3tUYkJGnJSzZ\r\noDlqwWyI84mM6JE8NNhSxvZYTy9UQj9ytI3sFhB7jlGigxxVZdayohKQH/FTzi7S\r\n/w1ZDWXitnwhlV5rdIP0/SWedrvebJkdkpvjq0W2MkWo4YFSJHXYtK9pJy1lfxw8\r\nef3VKf0m86KaoufyOLA/Fljnq3rjRmaOvG9ASJ7EPYKPzSlbqE4nhDH39MBrBc3a\r\nKbindh8rWi5Gy8JtT0F81//KbG6eH3EgSIuOTIrk/iAmeLTk6uGYhj9csVhneesM\r\nJRCu3JjbRLHzbP0ikrxvbokw/5xsrQOiqFy5UgB/nn8MNyrwKpcdNKeB84b+bTQi\r\n95kqT1tlh/EtYrHW5B8WLXe+/Mfbj4fq8H1rHj1uWbZ3PzewyouhLw+J7F7XueBv\r\n4U0UYaqN/brlXXMxrwS82XfYWbwH3aBsLuye0qAHwiSCXSrRYoE6Gp6sOS0PYcWe\r\nGEXbVfSC09jud0HFx3+RaFUCAwEAAQ==\r\n-----END PUBLIC KEY-----',
         '默认配置', now(3), NULL, NULL);
@@ -149,7 +149,9 @@ VALUES (5, 1, '用户管理', '/user', 'User', 'user', 0, 5, '', now(3), NULL, N
 INSERT INTO `menu`
 VALUES (6, 1, '参数设置', '/param', 'Cpu', 'cpu', 0, 6, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (7, 1, '应用管理', '/client', 'Coordinate', 'coordinate', 0, 7, '', now(3), NULL, NULL);
+VALUES (7, 1, '密钥管理', '/client', 'Coordinate', 'coordinate', 0, 7, '', now(3), NULL, NULL);
+INSERT INTO `menu`
+VALUES (8, 1, '开放平台', '/open', 'Magnet', 'magnet', 0, 8, '', now(3), NULL, NULL);
 
 INSERT INTO `menu`
 VALUES (10, 2, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
@@ -208,6 +210,13 @@ INSERT INTO `menu`
 VALUES (35, 7, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
 VALUES (36, 7, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+
+INSERT INTO `menu`
+VALUES (37, 8, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+INSERT INTO `menu`
+VALUES (38, 8, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+INSERT INTO `menu`
+VALUES (39, 8, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
 
 -- ----------------------------
 -- Table structure for role
@@ -323,6 +332,12 @@ INSERT INTO `role_menu`
 VALUES (35, 1, 35);
 INSERT INTO `role_menu`
 VALUES (36, 1, 36);
+INSERT INTO `role_menu`
+VALUES (37, 1, 37);
+INSERT INTO `role_menu`
+VALUES (38, 1, 38);
+INSERT INTO `role_menu`
+VALUES (39, 1, 39);
 
 -- ----------------------------
 -- Table structure for tenant
@@ -350,5 +365,45 @@ CREATE TABLE `tenant`
 -- ----------------------------
 INSERT INTO `tenant`
 VALUES (1, 0, '00000000', '运营平台', 1, '运营平台', now(3), NULL, NULL);
+
+-- ----------------------------
+-- Table structure for open_config
+-- ----------------------------
+DROP TABLE IF EXISTS `open_config`;
+CREATE TABLE `open_config`
+(
+    `id`          bigint UNSIGNED                                               NOT NULL,
+    `tenant_id`   bigint UNSIGNED                                               NOT NULL DEFAULT 0 COMMENT '所属租户  默认0 未分配',
+    `name`        varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '名称',
+    `type`        tinyint UNSIGNED                                              NOT NULL COMMENT '开放平台类型',
+    `config`      json                                                          NOT NULL COMMENT '参数配置',
+    `create_time` datetime(3)                                                   NOT NULL DEFAULT NOW(3),
+    `update_time` datetime(3)                                                   NULL     DEFAULT NULL,
+    `delete_time` datetime(3)                                                   NULL     DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '第三方开放平台'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for user
+-- ----------------------------
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user`
+(
+    `id`          bigint UNSIGNED                                              NOT NULL,
+    `tenant_id`   bigint UNSIGNED                                              NOT NULL COMMENT '所属租户id',
+    `open_id`     bigint UNSIGNED                                              NOT NULL COMMENT '第三方开放平台id',
+    `open_info`   json                                                         NOT NULL COMMENT '第三方开放平台用户信息(unionid openid...)',
+    `phone`       varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '手机号',
+    `create_time` datetime(3)                                                  NOT NULL DEFAULT NOW(3),
+    `update_time` datetime(3)                                                  NULL     DEFAULT NULL,
+    `delete_time` datetime(3)                                                  NULL     DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户会员'
+  ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

@@ -9,6 +9,7 @@ import com.codestepfish.common.result.RCode;
 import com.codestepfish.common.util.JwtUtil;
 import com.codestepfish.gateway.handler.AuthHandler;
 import com.codestepfish.gateway.service.AdminService;
+import com.codestepfish.gateway.service.UserService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,8 @@ public class AuthFilter implements GlobalFilter, Ordered {
 
     private final AppConfig appConfig;
     private final AdminService adminService;
+
+    private final UserService userService;
 
     /**
      * 添加用户信息到queryString
@@ -104,7 +107,7 @@ public class AuthFilter implements GlobalFilter, Ordered {
                 appUser = AuthHandler.handleAdmin(adminService, userId, path);
                 break;
             case "user":
-                // todo user 相关处理
+                appUser = AuthHandler.handleUser(userService, userId);
                 break;
             default:
                 throw new AppException(RCode.UNAUTHORIZED_ERROR);

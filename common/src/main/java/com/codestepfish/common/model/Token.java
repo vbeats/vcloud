@@ -17,7 +17,8 @@ import java.io.Serializable;
 public class Token implements Serializable {
     private static final long serialVersionUID = -1962424963088919992L;
 
-    private Long id;   // 用户id
+    private Long id;   // 用户id (admin or user)
+    private Long tenantId;
     private String tokenType;  // token类型   access_token | refresh_token
     private String userType; // 用户类型   admin | user
 }

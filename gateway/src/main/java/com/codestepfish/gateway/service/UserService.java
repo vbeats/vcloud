@@ -6,35 +6,32 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.codestepfish.common.constant.redis.CacheEnum;
 import com.codestepfish.common.model.AppUser;
-import com.codestepfish.datasource.entity.Admin;
 import com.codestepfish.datasource.entity.Tenant;
-import com.codestepfish.gateway.mapper.AdminMapper;
+import com.codestepfish.datasource.entity.User;
+import com.codestepfish.gateway.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
-@Service
 @Slf4j
+@Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class AdminService extends ServiceImpl<AdminMapper, Admin> implements IService<Admin> {
+public class UserService extends ServiceImpl<UserMapper, User> implements IService<User> {
+
     private final TenantService tenantService;
 
-    @Cacheable(cacheNames = CacheEnum.ADMIN_CACHE, key = "#id", unless = "#result==null")
+    @Cacheable(cacheNames = CacheEnum.USER_CACHE, key = "#id", unless = "#result==null")
     public AppUser findById(Long id) {
-        Admin admin = this.getOne(Wrappers.<Admin>lambdaQuery()
-                .eq(Admin::getId, id)
-                .eq(Admin::getStatus, true)
-                .isNull(Admin::getDeleteTime)
-        );
+        User user = this.getOne(Wrappers.<User>lambdaQuery().eq(User::getId, id).isNull(User::getDeleteTime));
 
-        if (ObjectUtils.isEmpty(admin)) {
+        if (ObjectUtils.isEmpty(user)) {
             return null;
         }
 
         Tenant tenant = tenantService.getOne(Wrappers.<Tenant>lambdaQuery()
-                .eq(Tenant::getCode, admin.getTenantCode())
+                .eq(Tenant::getId, user.getTenantId())
                 .eq(Tenant::getStatus, true)
                 .isNull(Tenant::getDeleteTime)
         );
@@ -43,6 +40,6 @@ public class AdminService extends ServiceImpl<AdminMapper, Admin> implements ISe
             return null;
         }
 
-        return new AppUser(id, admin.getRoleId(), tenant.getId(), admin.getTenantCode());
+        return new AppUser(id, 0L, tenant.getId(), tenant.getCode());
     }
 }

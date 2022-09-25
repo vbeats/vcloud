@@ -4,7 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSON;
 import com.google.common.base.Splitter;
 import com.google.common.base.Stopwatch;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -22,10 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Aspect
@@ -48,6 +45,10 @@ public class LogAspect {
         Stopwatch stopwatch = Stopwatch.createStarted();
         try {
             sb.append("Uri: " + request.getRequestURI() + "\n");
+
+            // headers
+            sb.append("Headers: " + handleHeaders(request) + "\n");
+
             // queryString 参数
             sb.append("QueryString: " + handleQueryString(request.getQueryString()) + "\n");
 
@@ -71,6 +72,21 @@ public class LogAspect {
             sb.append("***************************** Request End *******************************\n");
             log.info("{}", sb);
         }
+    }
+
+    private String handleHeaders(HttpServletRequest request) {
+        @Getter
+        @Setter
+        @AllArgsConstructor
+        @NoArgsConstructor
+        class Header {
+            private String key;
+            private String value;
+        }
+        List<Header> headers = new ArrayList<>();
+        request.getHeaderNames().asIterator().forEachRemaining(s -> headers.add(new Header(s, request.getHeader(s))));
+
+        return JSON.toJSONString(headers);
     }
 
     // queryString
