@@ -3,6 +3,7 @@ package com.codestepfish.datasource.config.redis;
 import com.codestepfish.common.config.app.AppConfig;
 import com.codestepfish.common.config.app.Cache;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
 import org.redisson.spring.cache.CacheConfig;
 import org.redisson.spring.cache.RedissonSpringCacheManager;
@@ -20,15 +21,27 @@ import java.util.Set;
 
 @Configuration
 @EnableCaching
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RedisCacheManagerConfig {
     private final AppConfig appConfig;
+
+    /*public static void main(String[] args) throws IOException {
+        Config config = new Config();
+        config.useSingleServer().setAddress("redis://127.0.0.1:6379")
+                .setDatabase(0).setKeepAlive(true)
+                .setConnectionMinimumIdleSize(10)
+                .setConnectionPoolSize(32)
+                .setTimeout(1000);
+        config.setCodec(new JsonJacksonCodec());
+        log.info("config: {}", config.toYAML());
+    }*/
 
     @Bean
     @Primary
     CacheManager cacheManager(RedissonClient redissonClient) {
         // ****************cache***************************
-        Map<String, CacheConfig> config = new HashMap<String, CacheConfig>();
+        Map<String, CacheConfig> config = new HashMap<>();
         // 过期时间   最长空闲时间
         Set<Cache> cache = appConfig.getCaches();
         if (!CollectionUtils.isEmpty(cache)) {
@@ -38,5 +51,4 @@ public class RedisCacheManagerConfig {
         RedissonSpringCacheManager cacheManager = new RedissonSpringCacheManager(redissonClient, config);
         return cacheManager;
     }
-
 }
