@@ -1,11 +1,11 @@
 package com.codestepfish.datasource.entity;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.codestepfish.datasource.model.OpenConfigData;
 import com.codestepfish.datasource.type.OpenTypeEnum;
 import lombok.*;
 
@@ -49,7 +49,7 @@ public class OpenConfig implements Serializable {
      * 参数配置
      */
     @TableField(value = "config", typeHandler = FastjsonTypeHandler.class)
-    private JSONObject config;
+    private OpenConfigData config;
 
     @TableField(value = "create_time")
     private LocalDateTime createTime;

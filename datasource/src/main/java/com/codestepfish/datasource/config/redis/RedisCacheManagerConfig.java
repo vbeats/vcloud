@@ -1,4 +1,4 @@
-package com.codestepfish.core.config.redis;
+package com.codestepfish.datasource.config.redis;
 
 import com.codestepfish.common.config.app.AppConfig;
 import com.codestepfish.common.config.app.Cache;
@@ -21,19 +21,22 @@ import java.util.Set;
 @Configuration
 @EnableCaching
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class RedisCacheManager {
+public class RedisCacheManagerConfig {
     private final AppConfig appConfig;
 
     @Bean
     @Primary
     CacheManager cacheManager(RedissonClient redissonClient) {
+        // ****************cache***************************
         Map<String, CacheConfig> config = new HashMap<String, CacheConfig>();
         // 过期时间   最长空闲时间
         Set<Cache> cache = appConfig.getCaches();
         if (!CollectionUtils.isEmpty(cache)) {
             cache.forEach(it -> config.put("cache:" + it.getCacheName(), new CacheConfig(it.getTtl(), it.getMaxIdleTime())));
         }
-        return new RedissonSpringCacheManager(redissonClient, config);
+
+        RedissonSpringCacheManager cacheManager = new RedissonSpringCacheManager(redissonClient, config);
+        return cacheManager;
     }
 
 }

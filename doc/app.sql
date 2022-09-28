@@ -103,7 +103,7 @@ CREATE TABLE `config_param`
 -- ----------------------------
 
 INSERT INTO `config_param`
-VALUES (1, 'super_tenant', '00000000', '运营平台租户编号', now(3), null, null);
+VALUES (1, 'super_tenant', '1', '运营平台租户id', now(3), null, null);
 INSERT INTO `config_param`
 VALUES (2, 'super_role', 'super_admin', '超级管理员角色编号', now(3), null, null);
 INSERT INTO `config_param`
@@ -392,14 +392,12 @@ CREATE TABLE `open_config`
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`
 (
-    `id`          bigint UNSIGNED                                              NOT NULL,
-    `tenant_id`   bigint UNSIGNED                                              NOT NULL COMMENT '所属租户id',
-    `open_id`     bigint UNSIGNED                                              NOT NULL COMMENT '第三方开放平台id',
-    `open_info`   json                                                         NOT NULL COMMENT '第三方开放平台用户信息(unionid openid...)',
-    `phone`       varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '手机号',
-    `create_time` datetime(3)                                                  NOT NULL DEFAULT NOW(3),
-    `update_time` datetime(3)                                                  NULL     DEFAULT NULL,
-    `delete_time` datetime(3)                                                  NULL     DEFAULT NULL,
+    `id`          bigint UNSIGNED NOT NULL,
+    `tenant_id`   bigint UNSIGNED NOT NULL COMMENT '所属租户id',
+    `open_info`   json            NOT NULL COMMENT '第三方开放平台-用户信息(openid: unionid openid phone...)',
+    `create_time` datetime(3)     NOT NULL DEFAULT NOW(3),
+    `update_time` datetime(3)     NULL     DEFAULT NULL,
+    `delete_time` datetime(3)     NULL     DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4

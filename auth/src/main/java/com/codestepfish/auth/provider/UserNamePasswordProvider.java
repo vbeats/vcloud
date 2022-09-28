@@ -71,7 +71,7 @@ public class UserNamePasswordProvider implements AuthProvider {
 
         Assert.notNull(tenant, "凭证无效");
 
-        AppUser user = new AppUser(admin.getId(), admin.getRoleId(), tenant.getId(), tenant.getCode());
+        AppUser user = new AppUser(admin.getId(), admin.getRoleId(), tenant.getId());
 
         AuthResponse response = new AuthResponse();
 

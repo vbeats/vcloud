@@ -1,9 +1,9 @@
 package com.codestepfish.datasource.entity;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.codestepfish.datasource.model.UserOpenInfo;
 import lombok.*;
 import me.ahoo.cosid.annotation.CosId;
 
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "`user`")
+@TableName(value = "`user`", autoResultMap = true)
 public class User implements Serializable {
     private static final long serialVersionUID = 6212633406797709469L;
 
@@ -32,22 +32,10 @@ public class User implements Serializable {
     private Long tenantId;
 
     /**
-     * 第三方开放平台id
-     */
-    @TableField(value = "open_id")
-    private Long openId;
-
-    /**
-     * 第三方开放平台用户信息(unionid openid...)
+     * 第三方开放平台用户信息(open_id, unionid openid...)
      */
     @TableField(value = "open_info", typeHandler = FastjsonTypeHandler.class)
-    private JSONObject openInfo;
-
-    /**
-     * 手机号
-     */
-    @TableField(value = "phone")
-    private String phone;
+    private UserOpenInfo openInfo;
 
     @TableField(value = "create_time")
     private LocalDateTime createTime;

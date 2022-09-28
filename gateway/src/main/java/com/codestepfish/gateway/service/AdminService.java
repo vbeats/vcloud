@@ -43,6 +43,6 @@ public class AdminService extends ServiceImpl<AdminMapper, Admin> implements ISe
             return null;
         }
 
-        return new AppUser(id, admin.getRoleId(), tenant.getId(), admin.getTenantCode());
+        return new AppUser(id, admin.getRoleId(), tenant.getId());
     }
 }

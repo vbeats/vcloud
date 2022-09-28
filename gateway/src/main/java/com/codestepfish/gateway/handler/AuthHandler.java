@@ -47,20 +47,20 @@ public class AuthHandler {
      * @return 自定义AppUser对象
      */
     public static AppUser handleAdmin(AdminService adminService, Long id, String path) {
-        AppUser appUser = adminService.findById(id);
-        if (ObjectUtils.isEmpty(appUser) || ObjectUtils.isEmpty(appUser.getRoleId())) {
+        AppUser admin = adminService.findById(id);
+        if (ObjectUtils.isEmpty(admin) || ObjectUtils.isEmpty(admin.getRoleId())) {
             throw new AppException(RCode.ACCESS_DENY);
         }
 
-        return appUser;
+        return admin;
     }
 
     public static AppUser handleUser(UserService userService, Long id) {
-        AppUser appUser = userService.findById(id);
-        if (ObjectUtils.isEmpty(appUser) || ObjectUtils.isEmpty(appUser.getRoleId())) {
+        AppUser user = userService.findById(id);
+        if (ObjectUtils.isEmpty(user)) {
             throw new AppException(RCode.ACCESS_DENY);
         }
 
-        return appUser;
+        return user;
     }
 }

@@ -1,6 +1,5 @@
 package com.codestepfish.admin.service;
 
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -48,10 +47,10 @@ public class TenantService extends ServiceImpl<TenantMapper, Tenant> implements 
     }
 
     public List<TenantOut> listV2(AppUser user) {
-        Long id = null;
-        if (!configParamService.getConfigByKey(ConfigParamEnum.SUPER_TENANT.getKey()).getConfigValue().equals(user.getTenantCode())) {
-            Tenant t = this.getOne(Wrappers.<Tenant>lambdaQuery().eq(Tenant::getCode, user.getTenantCode()));
-            id = t.getId();
+        Long id = user.getTenantId();
+
+        if (configParamService.getConfigByKey(ConfigParamEnum.SUPER_TENANT.getKey()).getConfigValue().equals(String.valueOf(user.getTenantId()))) {
+            id = null;
         }
 
         return tenantMapper.listTenantV2(id);

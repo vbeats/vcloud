@@ -56,9 +56,9 @@ public class AuthAspect {
     // 某些接口只能平台管理员访问
     private void handleSuperOnlyValid(HttpServletRequest request) {
 
-        String tenantCode = request.getParameter("tenantCode");
+        String tenantId = request.getParameter("tenantId");
 
-        if (!tenantCode.equals(configParamService.getConfigByKey(ConfigParamEnum.SUPER_TENANT.getKey()).getConfigValue())) {
+        if (!configParamService.getConfigByKey(ConfigParamEnum.SUPER_TENANT.getKey()).getConfigValue().equals(tenantId)) {
             log.error("用户id: {} 请求资源: {} 无权访问", request.getParameter("id"), request.getRequestURI());
             throw new AppException(RCode.ACCESS_DENY);
         }

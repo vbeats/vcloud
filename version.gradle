@@ -20,11 +20,13 @@ ext {
             javaJwt          : '4.0.0',
             jjwt             : '0.11.5',
             caffeine         : '3.1.1',
-            'tlog'           : '1.5.0'
+            tlog             : '1.5.0',
+            wxJava           : '4.4.0'
     ]
 
     libs = [
             'fastjson'          : "com.alibaba.fastjson2:fastjson2:${versions.fastjson}",
+            'fastjson-ext'      : "com.alibaba.fastjson2:fastjson2-extension:${versions.fastjson}",
             'jackson'           : "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}",
             'mysql'             : "mysql:mysql-connector-java:${versions.mysql}",
             'xxl-job'           : "com.xuxueli:xxl-job-core:${versions.xxlJob}",
@@ -48,6 +50,10 @@ ext {
             'jjwt-impl'         : "io.jsonwebtoken:jjwt-impl:${versions.jjwt}",
             'jjwt-jackson'      : "io.jsonwebtoken:jjwt-jackson:${versions.jjwt}",
             'caffeine'          : "com.github.ben-manes.caffeine:caffeine:${versions.caffeine}",
-            'tlog'              : "com.yomahub:tlog-all-spring-boot-starter:${versions.tlog}"
+            'tlog'              : "com.yomahub:tlog-all-spring-boot-starter:${versions.tlog}",
+            'wx-miniapp'        : "com.github.binarywang:weixin-java-miniapp:${versions.wxJava}",
+            'wx-mp'             : "com.github.binarywang:weixin-java-mp:${versions.wxJava}",
+            'wx-cp'             : "com.github.binarywang:weixin-java-cp:${versions.wxJava}",
+            'wx-open'           : "com.github.binarywang:weixin-java-open:${versions.wxJava}",
     ]
 }

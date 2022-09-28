@@ -40,6 +40,6 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IServi
             return null;
         }
 
-        return new AppUser(id, 0L, tenant.getId(), tenant.getCode());
+        return new AppUser(id, 0L, tenant.getId());
     }
 }

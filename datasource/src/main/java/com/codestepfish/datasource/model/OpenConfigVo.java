@@ -1,4 +1,4 @@
-package com.codestepfish.admin.dto.open;
+package com.codestepfish.datasource.model;
 
 import com.codestepfish.common.serializer.LocalDateTimeDeserializer;
 import com.codestepfish.common.serializer.LocalDateTimeSerializer;

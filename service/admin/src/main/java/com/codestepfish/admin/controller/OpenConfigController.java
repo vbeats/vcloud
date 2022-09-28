@@ -4,16 +4,19 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.open.OpenConfigQueryIn;
-import com.codestepfish.admin.dto.open.OpenConfigVo;
-import com.codestepfish.admin.service.OpenConfigService;
+import com.codestepfish.common.constant.redis.CacheEnum;
 import com.codestepfish.common.model.AppUser;
 import com.codestepfish.common.result.PageOut;
 import com.codestepfish.core.annotation.PreAuth;
 import com.codestepfish.datasource.entity.OpenConfig;
+import com.codestepfish.datasource.model.OpenConfigData;
+import com.codestepfish.datasource.model.OpenConfigVo;
+import com.codestepfish.datasource.service.OpenConfigService;
 import com.codestepfish.datasource.type.OpenTypeEnum;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,12 +57,13 @@ public class OpenConfigController {
         config.setTenantId(param.getTenantId());
         config.setName(param.getName());
         config.setType(OpenTypeEnum.find(param.getType()));
-        config.setConfig(JSON.parseObject(param.getConfig()));
+        config.setConfig(JSON.parseObject(param.getConfig(), OpenConfigData.class));
         config.setCreateTime(LocalDateTime.now());
         openConfigService.save(config);
     }
 
     @PostMapping("/update")
+    @CacheEvict(cacheNames = CacheEnum.OPEN_CACHE, allEntries = true)
     public void update(@RequestBody OpenConfigVo param) {
         Assert.hasText(param.getName(), "参数错误");
         OpenConfig exist = openConfigService.getOne(Wrappers.<OpenConfig>lambdaQuery().eq(OpenConfig::getTenantId, param.getTenantId()).eq(OpenConfig::getName, param.getName()).isNull(OpenConfig::getDeleteTime));
@@ -68,12 +72,13 @@ public class OpenConfigController {
         OpenConfig config = openConfigService.getById(param.getId());
         config.setName(param.getName());
         config.setType(OpenTypeEnum.find(param.getType()));
-        config.setConfig(JSON.parseObject(param.getConfig()));
+        config.setConfig(JSON.parseObject(param.getConfig(), OpenConfigData.class));
         config.setUpdateTime(LocalDateTime.now());
         openConfigService.updateById(config);
     }
 
     @PostMapping("/delete")
+    @CacheEvict(cacheNames = CacheEnum.OPEN_CACHE, allEntries = true)
     public void delete(@RequestBody OpenConfigVo param) {
         OpenConfig config = openConfigService.getById(param.getId());
         config.setDeleteTime(LocalDateTime.now());
