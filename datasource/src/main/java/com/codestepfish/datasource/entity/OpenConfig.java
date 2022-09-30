@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.codestepfish.datasource.model.OpenConfigData;
 import com.codestepfish.datasource.type.OpenTypeEnum;
 import lombok.*;
@@ -48,7 +48,7 @@ public class OpenConfig implements Serializable {
     /**
      * 参数配置
      */
-    @TableField(value = "config", typeHandler = FastjsonTypeHandler.class)
+    @TableField(value = "config", typeHandler = JacksonTypeHandler.class)
     private OpenConfigData config;
 
     @TableField(value = "create_time")

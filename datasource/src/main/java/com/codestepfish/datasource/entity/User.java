@@ -2,7 +2,7 @@ package com.codestepfish.datasource.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
 import com.codestepfish.datasource.model.UserOpenInfo;
 import lombok.*;
 import me.ahoo.cosid.annotation.CosId;
@@ -34,7 +34,7 @@ public class User implements Serializable {
     /**
      * 第三方开放平台用户信息(open_id, unionid openid...)
      */
-    @TableField(value = "open_info", typeHandler = FastjsonTypeHandler.class)
+    @TableField(value = "open_info", typeHandler = JacksonTypeHandler.class)
     private UserOpenInfo openInfo;
 
     @TableField(value = "create_time")
