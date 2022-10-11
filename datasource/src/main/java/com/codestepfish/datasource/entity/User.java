@@ -2,11 +2,12 @@ package com.codestepfish.datasource.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.codestepfish.datasource.config.mybatis.Fastjson2TypeHandler;
 import com.codestepfish.datasource.model.UserOpenInfo;
 import lombok.*;
 import me.ahoo.cosid.annotation.CosId;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @TableName(value = "`user`", autoResultMap = true)
 public class User implements Serializable {
+    @Serial
     private static final long serialVersionUID = 6212633406797709469L;
 
     @CosId(value = "user")
@@ -34,7 +36,7 @@ public class User implements Serializable {
     /**
      * 第三方开放平台用户信息(open_id, unionid openid...)
      */
-    @TableField(value = "open_info", typeHandler = JacksonTypeHandler.class)
+    @TableField(value = "open_info", typeHandler = Fastjson2TypeHandler.class)
     private UserOpenInfo openInfo;
 
     @TableField(value = "create_time")

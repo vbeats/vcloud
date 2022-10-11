@@ -16,9 +16,16 @@ allprojects {
         maven {
             url 'https://maven.aliyun.com/repository/public/'
         }
+        maven {
+            url 'https://repo.spring.io/release'
+        }
         mavenCentral()
     }
 }
+
+def profile = System.getProperty('profile') ? System.getProperty('profile') : 'dev'
+
+println("Current Profile: " + profile)
 
 subprojects {
     def folders = ['service']

@@ -4,11 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import com.codestepfish.datasource.config.mybatis.Fastjson2TypeHandler;
 import com.codestepfish.datasource.model.OpenConfigData;
 import com.codestepfish.datasource.type.OpenTypeEnum;
 import lombok.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @TableName(value = "`open_config`", autoResultMap = true)
 public class OpenConfig implements Serializable {
+    @Serial
     private static final long serialVersionUID = -1985083744027019776L;
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
@@ -48,7 +50,7 @@ public class OpenConfig implements Serializable {
     /**
      * 参数配置
      */
-    @TableField(value = "config", typeHandler = JacksonTypeHandler.class)
+    @TableField(value = "config", typeHandler = Fastjson2TypeHandler.class)
     private OpenConfigData config;
 
     @TableField(value = "create_time")
