@@ -1,5 +1,9 @@
 # vcloud
 
+```bash
+gradle xxx:build -Dprofile=prod/dev
+```
+
 ## todo
 
 - [ ] [doc](https://doc.bootvue.com) 在搞
