@@ -1,5 +1,8 @@
 package com.codestepfish.core.handler;
 
+import cn.dev33.satoken.exception.NotPermissionException;
+import cn.dev33.satoken.exception.NotRoleException;
+import cn.dev33.satoken.exception.SaTokenException;
 import com.codestepfish.common.result.AppException;
 import com.codestepfish.common.result.R;
 import com.codestepfish.common.result.RCode;
@@ -25,6 +28,16 @@ public class GlobalExceptionHandle {
     public <T> R<T> handleException(IllegalArgumentException e) {
         log.error("拦截到IllegalArgumentException异常: ", e);
         return R.error(new AppException(RCode.PARAM_ERROR.getCode(), e.getMessage()));
+    }
+
+    @ExceptionHandler(value = SaTokenException.class)
+    @ResponseBody
+    public <T> R<T> handleException(SaTokenException e) {
+        if (e instanceof NotRoleException || e instanceof NotPermissionException) {
+            return R.error(new AppException(RCode.ACCESS_DENY));
+        } else {
+            return R.error(new AppException(RCode.UNAUTHORIZED_ERROR));
+        }
     }
 
     @ExceptionHandler(value = {Exception.class})

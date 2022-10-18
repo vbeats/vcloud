@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-public class FeignRequestInterceptor implements RequestInterceptor {
+public class FeignRequestInterceptor implements RequestInterceptor {  // feign 请求拦截器
 
     @Override
     public void apply(RequestTemplate requestTemplate) {
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
 
-        // feign 请求 添加 AppUser 参数
+        // feign 请求 添加 原始请求头
 
         Map<String, String[]> parameterMap = request.getParameterMap();
 

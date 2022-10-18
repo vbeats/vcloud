@@ -8,5 +8,5 @@ import lombok.Setter;
 @Setter
 public class RoleParamIn extends PageIn {
     private String roleName;
-    private String code;
+    private String action;
 }

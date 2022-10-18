@@ -1,20 +1,21 @@
 package com.codestepfish.admin.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.codestepfish.admin.dto.tenant.TenantOut;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.tenant.TenantQueryIn;
-import com.codestepfish.admin.service.TenantService;
 import com.codestepfish.common.constant.redis.CacheEnum;
-import com.codestepfish.common.model.AppUser;
 import com.codestepfish.common.result.PageOut;
-import com.codestepfish.core.annotation.PreAuth;
 import com.codestepfish.datasource.entity.Tenant;
+import com.codestepfish.datasource.service.TenantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,25 +28,43 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/tenant")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@PreAuth
+@SaCheckRole(value = {"super_admin"})
 public class TenantController {
 
     private final TenantService tenantService;
 
     @PostMapping("/list")
-    public PageOut<List<TenantOut>> list(@RequestBody TenantQueryIn param) {
-        return tenantService.listTenant(param);
+    public PageOut<List<Tenant>> list(@RequestBody TenantQueryIn param) {
+        if (StringUtils.hasText(param.getCode()) || StringUtils.hasText(param.getTenantName())) {
+            param.setPid(null);
+        }
+        Page<Tenant> pages = tenantService.listTenant(new Page<>(param.getCurrent(), param.getPageSize()), param.getPid(), param.getCode(), param.getTenantName());
+
+        PageOut<List<Tenant>> out = new PageOut<>();
+
+        out.setTotal(pages.getTotal());
+        out.setRows(pages.getRecords());
+
+        return out;
     }
 
     @PostMapping("/listV2")
-    @PreAuth(superOnly = false)
-    public List<TenantOut> listV2(AppUser user) {
-        return tenantService.listV2(user);
+    @SaCheckRole(value = {"admin"})
+    public List<Tenant> listV2() {
+        Long id = StpUtil.getLoginIdAsLong();
+
+        Long tenantId = Long.valueOf(String.valueOf(StpUtil.getExtra("tenantId")));
+        if (id.equals(1L)) {
+            tenantId = null;
+        }
+
+        return tenantService.listV2(tenantId);
     }
 
     @PostMapping("/sub")
-    public List<TenantOut> subTenant(@RequestBody TenantQueryIn param, AppUser user) {
-        return tenantService.subTenant(param, user);
+    @SaCheckRole(value = {"admin"})
+    public List<Tenant> subTenant(@RequestBody TenantQueryIn param) {
+        return tenantService.subTenant(param.getPid());
     }
 
     @PostMapping("/add")
@@ -58,7 +77,7 @@ public class TenantController {
     }
 
     @PostMapping("/update")
-    @CacheEvict(value = CacheEnum.ADMIN_CACHE, allEntries = true)
+    @CacheEvict(value = {CacheEnum.ADMIN_CACHE}, allEntries = true)
     public void update(@RequestBody Tenant tenant) {
         Tenant exist = tenantService.getOne(Wrappers.<Tenant>lambdaQuery().eq(Tenant::getCode, tenant.getCode()));
         Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(tenant.getId()), "租户编号已存在");
@@ -68,7 +87,7 @@ public class TenantController {
     }
 
     @PostMapping("/delete")
-    @CacheEvict(value = CacheEnum.ADMIN_CACHE, allEntries = true)
+    @CacheEvict(value = {CacheEnum.ADMIN_CACHE}, allEntries = true)
     public void delete(@RequestBody Tenant tenant) {
         Tenant t = tenantService.getById(tenant.getId());
 
@@ -82,13 +101,13 @@ public class TenantController {
     }
 
     @PostMapping("/block")
-    @CacheEvict(value = CacheEnum.ADMIN_CACHE, allEntries = true)
+    @CacheEvict(value = {CacheEnum.ADMIN_CACHE}, allEntries = true)
     public void block(@RequestBody List<Tenant> tenants) {
         toggleBlockStatus(tenants, false);
     }
 
     @PostMapping("/unblock")
-    @CacheEvict(value = CacheEnum.ADMIN_CACHE, allEntries = true)
+    @CacheEvict(value = {CacheEnum.ADMIN_CACHE}, allEntries = true)
     public void unblock(@RequestBody List<Tenant> tenants) {
         toggleBlockStatus(tenants, true);
     }

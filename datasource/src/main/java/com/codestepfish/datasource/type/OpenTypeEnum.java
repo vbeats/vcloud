@@ -1,6 +1,7 @@
 package com.codestepfish.datasource.type;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 
 @Getter
 @AllArgsConstructor
+@JsonFormat(shape = JsonFormat.Shape.NUMBER)
 public enum OpenTypeEnum {  // 第三方开放平台类型
     WX_MINIAPP(0, "微信小程序"),
     WX_MP(1, "微信公众平台"),

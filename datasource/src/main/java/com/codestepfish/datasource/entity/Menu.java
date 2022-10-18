@@ -8,11 +8,15 @@ import com.codestepfish.common.serializer.LocalDateTimeDeserializer;
 import com.codestepfish.common.serializer.LocalDateTimeSerializer;
 import com.codestepfish.common.serializer.LongToStringSerializer;
 import com.codestepfish.datasource.type.MenuTypeEnum;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 菜单
@@ -23,7 +27,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "menu")
-public class Menu {
+public class Menu implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -6423035146241385171L;
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     @JsonSerialize(using = LongToStringSerializer.class)
@@ -61,6 +67,12 @@ public class Menu {
     private String key;
 
     /**
+     * 权限字段
+     */
+    @TableField(value = "`action`")
+    private String action;
+
+    /**
      * 类型 0 菜单 1 按钮
      */
     @TableField(value = "`type`")
@@ -92,4 +104,13 @@ public class Menu {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime deleteTime;
+
+    // ------------------------------------------------------------------
+
+    @JsonProperty(value = "hasChildren")
+    @TableField(exist = false, value = "has_children")
+    private Boolean hasChildren;
+
+    @TableField(exist = false, value = "children")
+    private List<Menu> children;
 }

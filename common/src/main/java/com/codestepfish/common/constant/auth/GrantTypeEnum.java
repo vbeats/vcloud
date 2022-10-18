@@ -17,7 +17,6 @@ public enum GrantTypeEnum {
     ALI_MINIAPP("ali_miniapp", "支付宝小程序"),
     PASSWORD("password", "密码登陆"),
     SMS("sms", "短信登陆"),
-    REFRESH_TOKEN("refresh_token", "刷新token"),
     ;
 
     private static final Map<String, GrantTypeEnum> lookup = new HashMap<>();

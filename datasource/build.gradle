@@ -9,6 +9,8 @@ dependencies {
     api libs.get('caffeine')
     api libs.get('commons-pool2')
     api libs.get('validator')
+    api libs.get('sa-token-jwt')
+    api libs.get('sa-token-redis')
 
     api 'org.springframework.boot:spring-boot-starter-data-jpa'
     api 'org.springframework.boot:spring-boot-starter-data-redis'

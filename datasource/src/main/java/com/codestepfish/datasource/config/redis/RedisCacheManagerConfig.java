@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.util.CollectionUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Configuration
 @EnableCaching
@@ -43,7 +43,7 @@ public class RedisCacheManagerConfig {
         // ****************cache***************************
         Map<String, CacheConfig> config = new HashMap<>();
         // 过期时间   最长空闲时间
-        Set<Cache> cache = appConfig.getCaches();
+        List<Cache> cache = appConfig.getCaches();
         if (!CollectionUtils.isEmpty(cache)) {
             cache.forEach(it -> config.put("cache:" + it.getCacheName(), new CacheConfig(it.getTtl(), it.getMaxIdleTime())));
         }

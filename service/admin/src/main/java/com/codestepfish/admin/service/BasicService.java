@@ -4,14 +4,13 @@ import cn.hutool.core.lang.tree.Tree;
 import com.codestepfish.admin.dto.admin.AdminInfo;
 import com.codestepfish.admin.dto.admin.PasswordIn;
 import com.codestepfish.admin.dto.menu.MenuQueryParam;
-import com.codestepfish.common.model.AppUser;
 
 import java.util.List;
 
 public interface BasicService {
-    List<Tree<String>> menus(MenuQueryParam param, AppUser user);
+    List<Tree<String>> menus(MenuQueryParam param);
 
-    AdminInfo profile(AppUser user);
+    AdminInfo profile();
 
-    void updateProfile(PasswordIn param, AppUser user);
+    void updateProfile(PasswordIn param);
 }

@@ -1,5 +1,6 @@
 package com.codestepfish.auth.dto;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
 import com.codestepfish.common.serializer.LongToStringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
@@ -14,6 +15,6 @@ public class AuthResponse {
     private Long id;  // 用户id (admin or user)
     @JsonSerialize(using = LongToStringSerializer.class)
     private Long tenantId;
-    private String accessToken;
-    private String refreshToken;
+
+    private SaTokenInfo token;
 }

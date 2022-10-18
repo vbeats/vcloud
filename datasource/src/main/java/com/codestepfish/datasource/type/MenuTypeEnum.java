@@ -1,6 +1,7 @@
 package com.codestepfish.datasource.type;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,6 +11,7 @@ import java.util.Map;
 
 @Getter
 @AllArgsConstructor
+@JsonFormat(shape = JsonFormat.Shape.NUMBER_INT)
 public enum MenuTypeEnum {  // 菜单类型
     MENU(0, "菜单"),
     BUTTON(1, "按钮");

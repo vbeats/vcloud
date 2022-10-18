@@ -47,69 +47,6 @@ INSERT INTO `admin`
 VALUES (1, '00000000', 'admin', '超级管理员', md5('123456'), '18615262691', 1, 1, now(3), NULL, NULL);
 
 -- ----------------------------
--- Table structure for auth_client
--- ----------------------------
-DROP TABLE IF EXISTS `auth_client`;
-CREATE TABLE `auth_client`
-(
-    `id`                   bigint UNSIGNED                                                NOT NULL,
-    `client_id`            varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT 'client id',
-    `client_secret`        varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT 'secret',
-    `grant_types`          varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '授权类型',
-    `access_token_expire`  bigint                                                         NOT NULL DEFAULT 7200 COMMENT 'access_token有效时长 (秒) 默认7200',
-    `refresh_token_expire` bigint                                                         NOT NULL DEFAULT 30 COMMENT 'refresh_token有效时长 (天) 默认30',
-    `private_key`          varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'rsa私钥',
-    `public_key`           varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT 'rsa公钥',
-    `remark`               varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
-    `create_time`          datetime(3)                                                    NOT NULL DEFAULT NOW(3),
-    `update_time`          datetime(3)                                                    NULL     DEFAULT NULL,
-    `delete_time`          datetime(3)                                                    NULL     DEFAULT NULL,
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = 'client参数'
-  ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of auth_client
--- ----------------------------
-INSERT INTO `auth_client`
-VALUES (1, 'de0b55913ac7', '939da067-8899-40a0-9c21-15f0b0001add', 'wx_miniapp,wx_mp,wx_cp,wx_open,ali_miniapp,password,sms,refresh_token', 7200, 30,
-        '-----BEGIN PRIVATE KEY-----\r\n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\r\nnflau0Dmk4OSv3b6D3qXBYkw6/Lx\r\n-----END PRIVATE KEY-----',
-        '-----BEGIN PUBLIC KEY-----\r\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA9il0ZDHwNwEGLKjvCYpJ\r\nfjDrM7J2UxXwgwoe+Pgnlvg+jIrXYSe5vwLtrjqJ5M7jlmH4qbG2PYT2WlRkA5Ip\r\nzeOWYph6vAVth7CnHX+Kda/TWJD4dEEcCn+Hk8ulkCf5a0+cBnw/vyJ3+GD8z5f5\r\nZQJ3YJ0CoPepsdEKRfKQd3eSBGppXz2UmEvCFi10sQGQFOIRcdqL3tUYkJGnJSzZ\r\noDlqwWyI84mM6JE8NNhSxvZYTy9UQj9ytI3sFhB7jlGigxxVZdayohKQH/FTzi7S\r\n/w1ZDWXitnwhlV5rdIP0/SWedrvebJkdkpvjq0W2MkWo4YFSJHXYtK9pJy1lfxw8\r\nef3VKf0m86KaoufyOLA/Fljnq3rjRmaOvG9ASJ7EPYKPzSlbqE4nhDH39MBrBc3a\r\nKbindh8rWi5Gy8JtT0F81//KbG6eH3EgSIuOTIrk/iAmeLTk6uGYhj9csVhneesM\r\nJRCu3JjbRLHzbP0ikrxvbokw/5xsrQOiqFy5UgB/nn8MNyrwKpcdNKeB84b+bTQi\r\n95kqT1tlh/EtYrHW5B8WLXe+/Mfbj4fq8H1rHj1uWbZ3PzewyouhLw+J7F7XueBv\r\n4U0UYaqN/brlXXMxrwS82XfYWbwH3aBsLuye0qAHwiSCXSrRYoE6Gp6sOS0PYcWe\r\nGEXbVfSC09jud0HFx3+RaFUCAwEAAQ==\r\n-----END PUBLIC KEY-----',
-        '默认配置', now(3), NULL, NULL);
-
--- ----------------------------
--- Table structure for config_param
--- ----------------------------
-DROP TABLE IF EXISTS `config_param`;
-CREATE TABLE `config_param`
-(
-    `id`           bigint UNSIGNED                                                NOT NULL,
-    `config_key`   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '配置key',
-    `config_value` varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '配置value',
-    `remark`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL DEFAULT '' COMMENT '配置说明',
-    `create_time`  datetime(3)                                                    NOT NULL DEFAULT NOW(3),
-    `update_time`  datetime(3)                                                    NULL     DEFAULT NULL,
-    `delete_time`  datetime(3)                                                    NULL     DEFAULT NULL,
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '系统参数'
-  ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of config_param
--- ----------------------------
-
-INSERT INTO `config_param`
-VALUES (1, 'super_tenant', '1', '运营平台租户id', now(3), null, null);
-INSERT INTO `config_param`
-VALUES (2, 'super_role', 'super_admin', '超级管理员角色编号', now(3), null, null);
-INSERT INTO `config_param`
-VALUES (3, 'default_password', '123456', '管理员默认密码', now(3), null, null);
-
--- ----------------------------
 -- Table structure for menu
 -- ----------------------------
 DROP TABLE IF EXISTS `menu`;
@@ -121,6 +58,7 @@ CREATE TABLE `menu`
     `path`        varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL DEFAULT '' COMMENT '前端路由',
     `icon`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT 'icon图标',
     `key`         varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '唯一key标识',
+    `action`      varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '权限字段',
     `type`        tinyint(1)                                                     NOT NULL COMMENT '类型 0 菜单 1 按钮',
     `sort`        int                                                            NOT NULL DEFAULT 0 COMMENT '顺序 ',
     `remark`      varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
@@ -137,86 +75,68 @@ CREATE TABLE `menu`
 -- Records of menu
 -- ----------------------------
 INSERT INTO `menu`
-VALUES (1, 0, '系统管理', '/system', 'Setting', 'setting', 0, 99999, '', now(3), NULL, NULL);
+VALUES (1, 0, '系统管理', '/system', 'Setting', 'setting', '', 0, 99999, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (2, 1, '租户管理', '/tenant', 'Operation', 'operation', 0, 1, '', now(3), NULL, NULL);
+VALUES (2, 1, '租户管理', '/tenant', 'Operation', 'operation', '', 0, 1, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (3, 1, '菜单管理', '/menu', 'Menu', 'menu', 0, 2, '', now(3), NULL, NULL);
+VALUES (3, 1, '菜单管理', '/menu', 'Menu', 'menu', '', 0, 2, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (4, 1, '角色管理', '/role', 'Avatar', 'avatar', 0, 3, '', now(3), NULL, NULL);
+VALUES (4, 1, '角色管理', '/role', 'Avatar', 'avatar', '', 0, 3, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (5, 1, '用户管理', '/user', 'User', 'user', 0, 5, '', now(3), NULL, NULL);
+VALUES (5, 1, '用户管理', '/user', 'User', 'user', '', 0, 5, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (6, 1, '参数设置', '/param', 'Cpu', 'cpu', 0, 6, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (7, 1, '密钥管理', '/client', 'Coordinate', 'coordinate', 0, 7, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (8, 1, '开放平台', '/open', 'Magnet', 'magnet', 0, 8, '', now(3), NULL, NULL);
+VALUES (6, 1, '开放平台', '/open', 'Magnet', 'magnet', '', 0, 6, '', now(3), NULL, NULL);
 
 INSERT INTO `menu`
-VALUES (10, 2, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (10, 2, '新增', '', '', '', 'tenant.add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (11, 2, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (11, 2, '编辑', '', '', '', 'tenant.edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (12, 2, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (12, 2, '删除', '', '', '', 'tenant.del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (13, 2, '禁用', '', '', 'block', 1, 0, '', now(3), NULL, NULL);
+VALUES (13, 2, '禁用', '', '', '', 'tenant.block', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (14, 2, '解封', '', '', 'unblock', 1, 0, '', now(3), NULL, NULL);
+VALUES (14, 2, '解封', '', '', '', 'tenant.unblock', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (15, 2, '新增子级', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
+VALUES (15, 2, '新增子级', '', '', '', 'tenant.addsub', 1, 0, '', now(3), NULL, NULL);
 
 INSERT INTO `menu`
-VALUES (16, 3, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (16, 3, '新增', '', '', '', 'menu.add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (17, 3, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (17, 3, '编辑', '', '', '', 'menu.edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (18, 3, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (18, 3, '删除', '', '', '', 'menu.del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (19, 3, '新增子项', '', '', 'addsub', 1, 0, '', now(3), NULL, NULL);
+VALUES (19, 3, '新增子项', '', '', '', 'menu.addsub', 1, 0, '', now(3), NULL, NULL);
 
 INSERT INTO `menu`
-VALUES (20, 4, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (20, 4, '新增', '', '', '', 'role.add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (21, 4, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (21, 4, '编辑', '', '', '', 'role.edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (22, 4, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (22, 4, '删除', '', '', '', 'role.del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (23, 4, '菜单配置', '', '', 'menu', 1, 0, '', now(3), NULL, NULL);
+VALUES (23, 4, '菜单配置', '', '', '', 'role.menu', 1, 0, '', now(3), NULL, NULL);
 
 INSERT INTO `menu`
-VALUES (25, 5, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (24, 5, '新增', '', '', '', 'user.add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (26, 5, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (25, 5, '编辑', '', '', '', 'user.edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (27, 5, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (26, 5, '删除', '', '', '', 'user.del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (28, 5, '禁用', '', '', 'block', 1, 0, '', now(3), NULL, NULL);
+VALUES (27, 5, '禁用', '', '', '', 'user.block', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (29, 5, '密码重置', '', '', 'resetpwd', 1, 0, '', now(3), NULL, NULL);
+VALUES (28, 5, '密码重置', '', '', '', 'user.resetpwd', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (30, 5, '账号解封', '', '', 'unblock', 1, 0, '', now(3), NULL, NULL);
+VALUES (29, 5, '账号解封', '', '', '', 'user.unblock', 1, 0, '', now(3), NULL, NULL);
 
 INSERT INTO `menu`
-VALUES (31, 6, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
+VALUES (30, 6, '新增', '', '', '', 'open.add', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (32, 6, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
+VALUES (31, 6, '编辑', '', '', '', 'open.edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (33, 6, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
-
-INSERT INTO `menu`
-VALUES (34, 7, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (35, 7, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (36, 7, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
-
-INSERT INTO `menu`
-VALUES (37, 8, '新增', '', '', 'add', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (38, 8, '编辑', '', '', 'edit', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (39, 8, '删除', '', '', 'del', 1, 0, '', now(3), NULL, NULL);
+VALUES (32, 6, '删除', '', '', '', 'open.del', 1, 0, '', now(3), NULL, NULL);
 
 -- ----------------------------
 -- Table structure for role
@@ -226,7 +146,7 @@ CREATE TABLE `role`
 (
     `id`          bigint UNSIGNED                                                NOT NULL,
     `role_name`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '角色名称',
-    `code`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '角色编号',
+    `action`      varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '权限字段',
     `remark`      varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
     `create_time` datetime(3)                                                    NOT NULL DEFAULT NOW(3),
     `update_time` datetime(3)                                                    NULL     DEFAULT NULL,
@@ -273,10 +193,6 @@ INSERT INTO `role_menu`
 VALUES (5, 1, 5);
 INSERT INTO `role_menu`
 VALUES (6, 1, 6);
-INSERT INTO `role_menu`
-VALUES (7, 1, 7);
-INSERT INTO `role_menu`
-VALUES (8, 1, 8);
 
 INSERT INTO `role_menu`
 VALUES (10, 1, 10);
@@ -324,20 +240,6 @@ INSERT INTO `role_menu`
 VALUES (31, 1, 31);
 INSERT INTO `role_menu`
 VALUES (32, 1, 32);
-INSERT INTO `role_menu`
-VALUES (33, 1, 33);
-INSERT INTO `role_menu`
-VALUES (34, 1, 34);
-INSERT INTO `role_menu`
-VALUES (35, 1, 35);
-INSERT INTO `role_menu`
-VALUES (36, 1, 36);
-INSERT INTO `role_menu`
-VALUES (37, 1, 37);
-INSERT INTO `role_menu`
-VALUES (38, 1, 38);
-INSERT INTO `role_menu`
-VALUES (39, 1, 39);
 
 -- ----------------------------
 -- Table structure for tenant

@@ -2,22 +2,19 @@ package com.codestepfish.auth.provider;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
-import cn.hutool.core.bean.BeanUtil;
+import cn.dev33.satoken.stp.SaLoginConfig;
+import cn.dev33.satoken.stp.SaLoginModel;
+import cn.dev33.satoken.stp.StpUtil;
 import com.codestepfish.auth.dto.AuthParam;
 import com.codestepfish.auth.dto.AuthResponse;
-import com.codestepfish.auth.service.UserService;
-import com.codestepfish.common.constant.auth.AuthEnum;
-import com.codestepfish.common.model.AppUser;
-import com.codestepfish.common.model.Token;
 import com.codestepfish.common.result.AppException;
 import com.codestepfish.common.result.RCode;
-import com.codestepfish.common.util.JwtUtil;
-import com.codestepfish.datasource.entity.AuthClient;
 import com.codestepfish.datasource.entity.OpenConfig;
 import com.codestepfish.datasource.entity.User;
 import com.codestepfish.datasource.model.UserOpenInfo;
 import com.codestepfish.datasource.model.WxMiniAppUserInfo;
 import com.codestepfish.datasource.service.OpenConfigService;
+import com.codestepfish.datasource.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -36,7 +33,7 @@ public class WxMiniAppAuthProvider implements AuthProvider {   // 微信小程�
     private final UserService userService;
 
     @Override
-    public AuthResponse handleAuth(AuthParam param, AuthClient client) {
+    public AuthResponse handleAuth(AuthParam param) {
         String code = param.getWxParam().getCode();
         String appid = param.getWxParam().getAppid();
 
@@ -44,7 +41,7 @@ public class WxMiniAppAuthProvider implements AuthProvider {   // 微信小程�
         OpenConfig openConfig = openConfigService.findWByWxMiniAppid(appid);
         Long tenantId = openConfig.getTenantId();
 
-        WxMaService wxMaService = openConfigService.findWxMaServiceByAppid(openConfig, WxMaService.class);
+        WxMaService wxMaService = openConfigService.findWxServiceByAppid(openConfig, WxMaService.class);
         try {
             WxMaJscode2SessionResult sessionInfo = wxMaService.getUserService().getSessionInfo(code);
             String openid = sessionInfo.getOpenid();
@@ -60,7 +57,7 @@ public class WxMiniAppAuthProvider implements AuthProvider {   // 微信小程�
                 log.info("微信小程序: {} 租户: {} 不存在此用户openid: {}  新增用户...", appid, tenantId, openid);
                 user = new User();
                 UserOpenInfo openInfo = new UserOpenInfo();
-                openInfo.setOpenId(openConfig.getId());
+                openInfo.setOpenConfigId(openConfig.getId());
                 openInfo.setWxMiniApp(new WxMiniAppUserInfo(openid, unionid, ""));
                 user.setOpenInfo(openInfo);
             }
@@ -69,17 +66,19 @@ public class WxMiniAppAuthProvider implements AuthProvider {   // 微信小程�
 
             userService.saveOrUpdate(user);
 
-            AppUser u = new AppUser(user.getId(), 0L, tenantId);
-
             AuthResponse response = new AuthResponse();
-
-            Token accessToken = new Token(user.getId(), tenantId, AuthEnum.ACCESS_TOKEN.getKey(), "user");
-            Token refreshToken = new Token(user.getId(), tenantId, AuthEnum.REFRESH_TOKEN.getKey(), "user");
 
             response.setId(user.getId());
             response.setTenantId(tenantId);
-            response.setAccessToken(JwtUtil.encode(LocalDateTime.now().plusSeconds(client.getAccessTokenExpire()).plusMinutes(5L), BeanUtil.beanToMap(accessToken, true, true)));
-            response.setRefreshToken(JwtUtil.encode(LocalDateTime.now().plusDays(client.getRefreshTokenExpire()).plusMinutes(5L), BeanUtil.beanToMap(refreshToken, true, true)));
+
+            SaLoginModel extra = SaLoginConfig
+                    .setDevice("wx_app")   // 微信小程序
+                    .setExtra("tenantId", tenantId)
+                    .setExtra("type", "user");
+
+            StpUtil.login(user.getId(), extra);
+
+            response.setToken(StpUtil.getTokenInfo());
 
             return response;
 

@@ -1,4 +1,6 @@
 dependencies {
+    api libs.get('sa-token')
+    api libs.get('sa-token-aop')
     api project(':datasource')
     api 'org.springframework.boot:spring-boot-starter-web'
     api 'org.springframework.cloud:spring-cloud-starter-openfeign'

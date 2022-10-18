@@ -1,5 +1,6 @@
 package com.codestepfish.admin.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNodeConfig;
 import cn.hutool.core.lang.tree.TreeUtil;
@@ -8,15 +9,15 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.codestepfish.admin.dto.admin.AdminInfo;
 import com.codestepfish.admin.dto.admin.PasswordIn;
 import com.codestepfish.admin.dto.menu.MenuQueryParam;
-import com.codestepfish.admin.service.*;
-import com.codestepfish.common.model.AppUser;
+import com.codestepfish.admin.service.BasicService;
 import com.codestepfish.common.result.AppException;
 import com.codestepfish.common.result.RCode;
-import com.codestepfish.common.util.RsaUtil;
 import com.codestepfish.datasource.entity.Admin;
-import com.codestepfish.datasource.entity.AuthClient;
 import com.codestepfish.datasource.entity.Menu;
 import com.codestepfish.datasource.entity.RoleMenu;
+import com.codestepfish.datasource.service.AdminService;
+import com.codestepfish.datasource.service.MenuService;
+import com.codestepfish.datasource.service.RoleMenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -39,17 +40,16 @@ public class BasicServiceImpl implements BasicService {
     private final MenuService menuService;
     private final RoleMenuService roleMenuService;
     private final AdminService adminService;
-    private final AuthClientService authClientService;
 
     @Override
-    public List<Tree<String>> menus(MenuQueryParam param, AppUser user) {
+    public List<Tree<String>> menus(MenuQueryParam param) {
 
         LambdaQueryWrapper<Menu> lambdaQuery = Wrappers.lambdaQuery();
         List<Menu> menus;
 
         if (!param.getIsAll()) {
             // 当前用户角色能看到的菜单 按钮
-            List<RoleMenu> roleMenus = roleMenuService.list(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, user.getRoleId()));
+            List<RoleMenu> roleMenus = roleMenuService.list(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, adminService.findById(StpUtil.getLoginIdAsLong()).getRoleId()));
 
             if (CollectionUtils.isEmpty(roleMenus)) {
                 return null;
@@ -73,6 +73,7 @@ public class BasicServiceImpl implements BasicService {
             treeNode.putExtra("title", node.getTitle());
             treeNode.putExtra("path", node.getPath());
             treeNode.putExtra("key", node.getKey());
+            treeNode.putExtra("action", node.getAction());
             treeNode.putExtra("icon", node.getIcon());
             treeNode.putExtra("type", node.getType().getValue());
             treeNode.putExtra("sort", node.getSort());
@@ -80,8 +81,8 @@ public class BasicServiceImpl implements BasicService {
     }
 
     @Override
-    public AdminInfo profile(AppUser user) {
-        Admin admin = adminService.getById(user.getId());
+    public AdminInfo profile() {
+        Admin admin = adminService.getById(StpUtil.getLoginIdAsLong());
         if (!admin.getStatus() || !ObjectUtils.isEmpty(admin.getDeleteTime())) {
             throw new AppException(RCode.UNAUTHORIZED_ERROR);
         }
@@ -90,18 +91,13 @@ public class BasicServiceImpl implements BasicService {
     }
 
     @Override
-    public void updateProfile(PasswordIn param, AppUser user) {
-        Admin admin = adminService.getById(user.getId());
-        AuthClient client = authClientService.getOne(Wrappers.<AuthClient>lambdaQuery()
-                .eq(AuthClient::getClientId, param.getClientId())
-                .eq(AuthClient::getClientSecret, param.getClientSecret())
-                .isNull(AuthClient::getDeleteTime)
-        );
-        Assert.isTrue(admin.getPassword().equals(DigestUtils.md5Hex(RsaUtil.decrypt(client.getPrivateKey(), param.getPassword()))), "原始密码不正确");
-        String newPassword = RsaUtil.decrypt(client.getPrivateKey(), param.getNewPassword());
-        Assert.hasText(newPassword, "新密码不符合安全要求");
+    public void updateProfile(PasswordIn param) {
+        Admin admin = adminService.getById(StpUtil.getLoginIdAsLong());
 
-        admin.setPassword(DigestUtils.md5Hex(newPassword));
+        Assert.isTrue(admin.getPassword().equals(DigestUtils.md5Hex(param.getPassword())), "原始密码不正确");
+        Assert.hasText(param.getNewPassword(), "新密码不符合安全要求");
+
+        admin.setPassword(DigestUtils.md5Hex(param.getNewPassword()));
         admin.setUpdateTime(LocalDateTime.now());
 
         adminService.updateById(admin);

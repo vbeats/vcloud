@@ -17,5 +17,4 @@ dependencies {
     api libs.get('wx-mp')
     api libs.get('wx-cp')
     api libs.get('wx-open')
-    api libs.get('wx-miniapp')
 }

@@ -1,8 +1,15 @@
 package com.codestepfish.datasource.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.codestepfish.common.serializer.LocalDateTimeDeserializer;
+import com.codestepfish.common.serializer.LocalDateTimeSerializer;
+import com.codestepfish.common.serializer.LongToStringSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -14,8 +21,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "`admin`")
-public class Admin {
+public class Admin implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 3642304959523068028L;
+
     @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @JsonSerialize(using = LongToStringSerializer.class)
     private Long id;
 
     /**
@@ -58,14 +69,35 @@ public class Admin {
      * 角色id
      */
     @TableField(value = "role_id", updateStrategy = FieldStrategy.IGNORED)
+    @JsonSerialize(using = LongToStringSerializer.class)
     private Long roleId;
 
     @TableField(value = "create_time")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createTime;
 
     @TableField(value = "update_time")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime updateTime;
 
     @TableField(value = "delete_time")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime deleteTime;
+
+
+    // -------------------------------------
+    @TableField(value = "tenant_id", exist = false)
+    @JsonSerialize(using = LongToStringSerializer.class)
+    private Long tenantId;
+
+    @TableField(value = "tenant_name", exist = false)
+    private String tenantName;
+
+    @TableField(value = "role_name", exist = false)
+    private String roleName;
+
+
 }

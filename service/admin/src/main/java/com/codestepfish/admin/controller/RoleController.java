@@ -1,21 +1,21 @@
 package com.codestepfish.admin.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.role.AssignRoleMenuIn;
 import com.codestepfish.admin.dto.role.RoleParamIn;
-import com.codestepfish.admin.service.RoleMenuService;
-import com.codestepfish.admin.service.RoleService;
-import com.codestepfish.common.constant.config.ConfigParamEnum;
+import com.codestepfish.common.constant.redis.CacheEnum;
 import com.codestepfish.common.result.PageOut;
-import com.codestepfish.core.annotation.PreAuth;
 import com.codestepfish.datasource.entity.Role;
 import com.codestepfish.datasource.entity.RoleMenu;
-import com.codestepfish.datasource.service.ConfigParamService;
+import com.codestepfish.datasource.service.RoleMenuService;
+import com.codestepfish.datasource.service.RoleService;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
@@ -33,11 +33,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/role")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@PreAuth
+@SaCheckRole(value = {"super_admin"})
 public class RoleController {
 
     private final RoleService roleService;
-    private final ConfigParamService configParamService;
     private final RoleMenuService roleMenuService;
 
     @PostMapping("/list")
@@ -46,8 +45,8 @@ public class RoleController {
         if (StringUtils.hasText(param.getRoleName())) {
             wrapper.eq(Role::getRoleName, param.getRoleName());
         }
-        if (StringUtils.hasText(param.getCode())) {
-            wrapper.eq(Role::getCode, param.getCode());
+        if (StringUtils.hasText(param.getAction())) {
+            wrapper.eq(Role::getAction, param.getAction());
         }
 
         Page<Role> pages = roleService.page(new Page<>(param.getCurrent(), param.getPageSize()), wrapper);
@@ -66,26 +65,30 @@ public class RoleController {
 
     @PostMapping("/add")
     public void add(@RequestBody Role role) {
-        Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getCode, role.getCode()));
+        Assert.isTrue("admin".equalsIgnoreCase(role.getAction()), "保留字段");
+        Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getAction, role.getAction()));
         Assert.isNull(exist, "角色编号已存在");
 
         roleService.save(role);
     }
 
     @PostMapping("/update")
+    @CacheEvict(cacheNames = {CacheEnum.ROLE_CACHE, CacheEnum.PERMISSION_CACHE}, allEntries = true)
     public void update(@RequestBody Role role) {
-        Assert.isTrue(!configParamService.getConfigByKey(ConfigParamEnum.SUPER_ROLE.getKey()).getConfigValue().equals(role.getCode()), "超级管理员不可修改");
-        Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getCode, role.getCode()));
-        Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(role.getId()), "角色编号已存在");
+        Assert.isTrue(!"super_admin".equalsIgnoreCase(role.getAction()), "超级管理员不可修改");
+        Assert.isTrue("admin".equalsIgnoreCase(role.getAction()), "保留字段");
+        Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getAction, role.getAction()));
+        Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(role.getId()), "权限编号已存在");
 
         role.setUpdateTime(LocalDateTime.now());
         roleService.updateById(role);
     }
 
     @PostMapping("/delete")
+    @CacheEvict(cacheNames = {CacheEnum.ROLE_CACHE, CacheEnum.PERMISSION_CACHE}, allEntries = true)
     public void delete(@RequestBody Role role) {
         Role r = roleService.getById(role.getId());
-        Assert.isTrue(!configParamService.getConfigByKey(ConfigParamEnum.SUPER_ROLE.getKey()).getConfigValue().equals(role.getCode()), "超级管理员不可删除");
+        Assert.isTrue(!"super_admin".equalsIgnoreCase(role.getAction()), "超级管理员不可删除");
 
         r.setDeleteTime(LocalDateTime.now());
         roleService.updateById(r);
@@ -95,10 +98,11 @@ public class RoleController {
     }
 
     @PostMapping("/assignMenu")
+    @CacheEvict(cacheNames = {CacheEnum.ROLE_CACHE, CacheEnum.PERMISSION_CACHE}, allEntries = true)
     public void assignMenu(@RequestBody AssignRoleMenuIn param) {
 
         Role role = roleService.getById(param.getRoleId());
-        Assert.isTrue(!configParamService.getConfigByKey(ConfigParamEnum.SUPER_ROLE.getKey()).getConfigValue().equals(role.getCode()), "超级管理员不可操作");
+        Assert.isTrue(!"super_admin".equalsIgnoreCase(role.getAction()), "超级管理员不可操作");
 
         if (CollectionUtils.isEmpty(param.getMenuIds())) {
             roleMenuService.remove(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, param.getRoleId()));

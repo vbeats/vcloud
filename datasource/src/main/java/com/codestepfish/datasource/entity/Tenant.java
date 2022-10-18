@@ -7,11 +7,15 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.codestepfish.common.serializer.LocalDateTimeDeserializer;
 import com.codestepfish.common.serializer.LocalDateTimeSerializer;
 import com.codestepfish.common.serializer.LongToStringSerializer;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 租户
@@ -22,7 +26,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "tenant")
-public class Tenant {
+public class Tenant implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 2779190417236513615L;
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     @JsonSerialize(using = LongToStringSerializer.class)
@@ -70,4 +76,12 @@ public class Tenant {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime deleteTime;
+
+    // ----------------------------
+    @JsonProperty(value = "hasChildren")
+    @TableField(value = "has_children", exist = false)
+    private Boolean hasChildren = false;
+
+    @TableField(value = "children", exist = false)
+    private List<Tenant> children;
 }

@@ -35,5 +35,4 @@ public class WebConfig implements WebMvcConfigurer {
         converter.setObjectMapper(mapper);
         converters.add(converter);
     }
-
 }

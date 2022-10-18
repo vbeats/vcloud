@@ -3,11 +3,14 @@ package com.codestepfish.datasource.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
 public class OpenConfigData implements Serializable {
+    @Serial
     private static final long serialVersionUID = -1185059056712960784L;
 
     private String appid;
@@ -15,4 +18,7 @@ public class OpenConfigData implements Serializable {
     private String token;
     private String aesKey;
     private String cloudEnv;
+
+    // --------微信开放平台 下绑定的小程序/公众号
+    private List<OpenItem> items;
 }

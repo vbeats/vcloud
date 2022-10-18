@@ -4,9 +4,14 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.codestepfish.common.serializer.LocalDateTimeDeserializer;
+import com.codestepfish.common.serializer.LocalDateTimeSerializer;
+import com.codestepfish.common.serializer.LongToStringSerializer;
 import com.codestepfish.datasource.config.mybatis.Fastjson2TypeHandler;
 import com.codestepfish.datasource.model.OpenConfigData;
 import com.codestepfish.datasource.type.OpenTypeEnum;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
 import java.io.Serial;
@@ -27,12 +32,14 @@ public class OpenConfig implements Serializable {
     private static final long serialVersionUID = -1985083744027019776L;
 
     @TableId(value = "id", type = IdType.ASSIGN_ID)
+    @JsonSerialize(using = LongToStringSerializer.class)
     private Long id;
 
     /**
      * 所属租户id 默认0 未分配
      */
     @TableField(value = "tenant_id")
+    @JsonSerialize(using = LongToStringSerializer.class)
     private Long tenantId;
 
     /**
@@ -54,11 +61,17 @@ public class OpenConfig implements Serializable {
     private OpenConfigData config;
 
     @TableField(value = "create_time")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createTime;
 
     @TableField(value = "update_time")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime updateTime;
 
     @TableField(value = "delete_time")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime deleteTime;
 }

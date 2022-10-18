@@ -1,13 +1,13 @@
 package com.codestepfish.admin.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.stp.StpUtil;
 import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.open.OpenConfigQueryIn;
 import com.codestepfish.common.constant.redis.CacheEnum;
-import com.codestepfish.common.model.AppUser;
 import com.codestepfish.common.result.PageOut;
-import com.codestepfish.core.annotation.PreAuth;
 import com.codestepfish.datasource.entity.OpenConfig;
 import com.codestepfish.datasource.model.OpenConfigData;
 import com.codestepfish.datasource.model.OpenConfigVo;
@@ -31,14 +31,14 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/open")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@PreAuth
+@SaCheckRole(value = {"super_admin"})
 public class OpenConfigController {
 
     private final OpenConfigService openConfigService;
 
     @PostMapping("/list")
-    public PageOut<List<OpenConfigVo>> list(@RequestBody OpenConfigQueryIn param, AppUser user) {
-        Long tenantId = ObjectUtils.isEmpty(param.getTenantId()) ? user.getTenantId() : param.getTenantId();
+    public PageOut<List<OpenConfigVo>> list(@RequestBody OpenConfigQueryIn param) {
+        Long tenantId = ObjectUtils.isEmpty(param.getTenantId()) ? Long.valueOf(String.valueOf(StpUtil.getExtra("tenantId"))) : param.getTenantId();
         Page<OpenConfigVo> page = openConfigService.listConfigs(new Page<>(param.getCurrent(), param.getPageSize()), tenantId, param.getName());
         PageOut<List<OpenConfigVo>> out = new PageOut<>();
         out.setTotal(page.getTotal());

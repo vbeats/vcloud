@@ -11,6 +11,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -22,7 +24,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "`role`")
-public class Role {
+public class Role implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 2322177871253247114L;
+
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     @JsonSerialize(using = LongToStringSerializer.class)
     private Long id;
@@ -34,10 +39,10 @@ public class Role {
     private String roleName;
 
     /**
-     * 角色编号
+     * 权限字段
      */
-    @TableField(value = "`code`")
-    private String code;
+    @TableField(value = "`action`")
+    private String action;
 
     /**
      * 备注

@@ -1,5 +1,8 @@
 package com.codestepfish.auth.endpoint;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.dev33.satoken.stp.StpUtil;
 import com.codestepfish.auth.dto.AuthParam;
 import com.codestepfish.auth.dto.AuthResponse;
 import com.codestepfish.auth.dto.Captcha;
@@ -25,6 +28,12 @@ public class AuthEndpoint {
     public AuthResponse token(@Valid @RequestBody AuthParam param, BindingResult result) {
         R.handleErr(result);
         return authService.token(param);
+    }
+
+    @GetMapping("/tokenInfo")
+    @SaCheckLogin
+    public SaTokenInfo tokenInfo() {
+        return StpUtil.getTokenInfo();
     }
 
     @GetMapping("/captcha")

@@ -1,19 +1,19 @@
 package com.codestepfish.admin.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.codestepfish.admin.dto.menu.MenuIn;
-import com.codestepfish.admin.dto.menu.MenuOut;
-import com.codestepfish.admin.service.MenuService;
-import com.codestepfish.admin.service.RoleMenuService;
-import com.codestepfish.core.annotation.PreAuth;
+import com.codestepfish.common.constant.redis.CacheEnum;
 import com.codestepfish.datasource.entity.Menu;
 import com.codestepfish.datasource.entity.RoleMenu;
+import com.codestepfish.datasource.service.MenuService;
+import com.codestepfish.datasource.service.RoleMenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,39 +26,36 @@ import java.util.stream.Collectors;
 @RequestMapping("/menu")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-@PreAuth
+@SaCheckRole(value = {"super_admin"})
 public class MenuController {
 
     private final MenuService menuService;
     private final RoleMenuService roleMenuService;
 
     @PostMapping("/list")
-    public List<MenuOut> list() {
+    public List<Menu> list() {
         return menuService.listMenu();
     }
 
     @PostMapping("/sub")
-    public List<MenuOut> list(@RequestBody MenuIn param) {
+    public List<Menu> list(@RequestBody MenuIn param) {
         return menuService.subMenu(param.getPid());
     }
 
     @PostMapping("/add")
     public String add(@RequestBody Menu menu) {
-        Menu exist = menuService.getOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getKey, menu.getKey()));
-        Assert.isNull(exist, "key已存在");
-        menuService.add(menu);
+        menuService.save(menu);
         return String.valueOf(menu.getId());
     }
 
     @PostMapping("/update")
+    @CacheEvict(cacheNames = {CacheEnum.PERMISSION_CACHE}, allEntries = true)
     public void update(@RequestBody Menu menu) {
-        Menu exist = menuService.getOne(Wrappers.<Menu>lambdaQuery().eq(Menu::getKey, menu.getKey()));
-        Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(menu.getId()), "key已存在");
-
         menuService.updateById(menu);
     }
 
     @PostMapping("/delete")
+    @CacheEvict(cacheNames = {CacheEnum.PERMISSION_CACHE}, allEntries = true)
     public void delete(@RequestBody Menu menu) {
         Menu m = menuService.getById(menu.getId());
 
