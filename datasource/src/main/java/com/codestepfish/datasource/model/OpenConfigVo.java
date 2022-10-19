@@ -24,6 +24,8 @@ public class OpenConfigVo {
 
     private String tenantName;
 
+    private Long openConfigId;
+
     private String name;
 
     private Integer type;

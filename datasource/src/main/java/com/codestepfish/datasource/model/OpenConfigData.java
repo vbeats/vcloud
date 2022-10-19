@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
 
 @Getter
 @Setter
@@ -18,7 +17,4 @@ public class OpenConfigData implements Serializable {
     private String token;
     private String aesKey;
     private String cloudEnv;
-
-    // --------微信开放平台 下绑定的小程序/公众号
-    private List<OpenItem> items;
 }

@@ -33,6 +33,7 @@ public class GlobalExceptionHandle {
     @ExceptionHandler(value = SaTokenException.class)
     @ResponseBody
     public <T> R<T> handleException(SaTokenException e) {
+        log.error("拦截到认证/权限异常: ", e);
         if (e instanceof NotRoleException || e instanceof NotPermissionException) {
             return R.error(new AppException(RCode.ACCESS_DENY));
         } else {

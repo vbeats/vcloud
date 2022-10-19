@@ -137,6 +137,14 @@ INSERT INTO `menu`
 VALUES (31, 6, '编辑', '', '', '', 'open.edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
 VALUES (32, 6, '删除', '', '', '', 'open.del', 1, 0, '', now(3), NULL, NULL);
+INSERT INTO `menu`
+VALUES (33, 6, '关联应用-查看', '', '', '', 'open_item.list', 1, 0, '', now(3), NULL, NULL);
+INSERT INTO `menu`
+VALUES (34, 6, '关联应用-新增', '', '', '', 'open_item.add', 1, 0, '', now(3), NULL, NULL);
+INSERT INTO `menu`
+VALUES (35, 6, '关联应用-编辑', '', '', '', 'open_item.edit', 1, 0, '', now(3), NULL, NULL);
+INSERT INTO `menu`
+VALUES (36, 6, '关联应用-删除', '', '', '', 'open_item.del', 1, 0, '', now(3), NULL, NULL);
 
 -- ----------------------------
 -- Table structure for role
@@ -240,6 +248,14 @@ INSERT INTO `role_menu`
 VALUES (31, 1, 31);
 INSERT INTO `role_menu`
 VALUES (32, 1, 32);
+INSERT INTO `role_menu`
+VALUES (33, 1, 33);
+INSERT INTO `role_menu`
+VALUES (34, 1, 34);
+INSERT INTO `role_menu`
+VALUES (35, 1, 35);
+INSERT INTO `role_menu`
+VALUES (36, 1, 36);
 
 -- ----------------------------
 -- Table structure for tenant
@@ -286,6 +302,26 @@ CREATE TABLE `open_config`
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT = '第三方开放平台'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for open_config_item
+-- ----------------------------
+DROP TABLE IF EXISTS `open_config_item`;
+CREATE TABLE `open_config_item`
+(
+    `id`             bigint UNSIGNED                                               NOT NULL,
+    `open_config_id` bigint UNSIGNED                                               NOT NULL COMMENT '开放平台id',
+    `name`           varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '名称',
+    `type`           tinyint UNSIGNED                                              NOT NULL COMMENT '开放平台类型',
+    `config`         json                                                          NOT NULL COMMENT '参数配置',
+    `create_time`    datetime(3)                                                   NOT NULL DEFAULT NOW(3),
+    `update_time`    datetime(3)                                                   NULL     DEFAULT NULL,
+    `delete_time`    datetime(3)                                                   NULL     DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '开放平台--小程序/公众号'
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
