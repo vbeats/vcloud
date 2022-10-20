@@ -332,7 +332,7 @@ CREATE TABLE `user`
 (
     `id`          bigint UNSIGNED NOT NULL,
     `tenant_id`   bigint UNSIGNED NOT NULL COMMENT '所属租户id',
-    `open_info`   json            NOT NULL COMMENT '第三方开放平台-用户信息(openid: unionid openid phone...)',
+    `open_info`   json            NOT NULL COMMENT '第三方开放平台-用户信息(openConfigId: unionid openid phone...)',
     `create_time` datetime(3)     NOT NULL DEFAULT NOW(3),
     `update_time` datetime(3)     NULL     DEFAULT NULL,
     `delete_time` datetime(3)     NULL     DEFAULT NULL,

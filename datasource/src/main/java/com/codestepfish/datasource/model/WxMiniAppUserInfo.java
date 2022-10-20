@@ -18,5 +18,5 @@ public class WxMiniAppUserInfo implements Serializable {
 
     private String openid;
     private String unionid;
-    private String phone;
+    private String phone;  // 同一个微信 用户可能公众号/小程序使用不同手机号登陆
 }
