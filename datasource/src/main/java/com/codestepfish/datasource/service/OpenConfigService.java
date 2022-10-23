@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.codestepfish.common.constant.redis.CacheEnum;
 import com.codestepfish.datasource.entity.OpenConfig;
-import com.codestepfish.datasource.entity.OpenConfigItem;
 import com.codestepfish.datasource.mapper.OpenConfigMapper;
 import com.codestepfish.datasource.model.OpenConfigData;
 import com.codestepfish.datasource.model.OpenConfigVo;
@@ -58,22 +57,15 @@ public class OpenConfigService extends ServiceImpl<OpenConfigMapper, OpenConfig>
      * @return
      */
     @Cacheable(cacheNames = CacheEnum.OPEN_CACHE, key = "#appid.concat('_0')", unless = "#result==null")
-    public OpenConfig findWByWxMiniAppid(String appid) {
+    public OpenConfig findByWxMiniAppid(String appid) {
         return this.getOne(Wrappers.<OpenConfig>lambdaQuery().apply("config->'$.appid'={0}", appid)
                 .eq(OpenConfig::getType, OpenTypeEnum.WX_MINIAPP.getValue()).isNull(OpenConfig::getDeleteTime));
     }
 
     @Cacheable(cacheNames = CacheEnum.OPEN_CACHE, key = "#appid.concat('_3')", unless = "#result==null")
-    public OpenConfig findWByWxOpenAppid(String appid) {
+    public OpenConfig findByWxOpenAppid(String appid) {
         return this.getOne(Wrappers.<OpenConfig>lambdaQuery().apply("config->'$.appid'={0}", appid)
                 .eq(OpenConfig::getType, OpenTypeEnum.WX_MINIAPP.getValue()).isNull(OpenConfig::getDeleteTime));
-    }
-
-    @Cacheable(cacheNames = CacheEnum.OPEN_CACHE, key = "#appid.concat('_3_').concat(#openConfigId)", unless = "#result==null")
-    public OpenConfigItem findByOpenConfigIdAndAppid(Long openConfigId, String appid) {
-        return openConfigItemService.getOne(Wrappers.<OpenConfigItem>lambdaQuery().apply("config->'$.appid'={0}", appid)
-                .eq(OpenConfigItem::getOpenConfigId, openConfigId).isNull(OpenConfigItem::getDeleteTime)
-        );
     }
 
     /**

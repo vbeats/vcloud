@@ -41,7 +41,7 @@ public class User implements Serializable {
     private Long tenantId;
 
     /**
-     * 第三方开放平台用户信息(open_id, unionid openid...)
+     * 开放平台用户信息
      */
     @TableField(value = "open_info", typeHandler = Fastjson2TypeHandler.class)
     private UserOpenInfo openInfo;

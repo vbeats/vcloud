@@ -21,7 +21,8 @@ ext {
             jjwt             : '0.11.5',
             caffeine         : '3.1.1',
             wxJava           : '4.4.0',
-            saToken          : '1.31.0'
+            saToken          : '1.31.0',
+            ttl              : '2.14.1'
     ]
 
     libs = [
@@ -59,5 +60,6 @@ ext {
             'sa-token-gateway'  : "cn.dev33:sa-token-reactor-spring-boot-starter:${versions.saToken}",
             'sa-token-jwt'      : "cn.dev33:sa-token-jwt:${versions.saToken}",
             'sa-token-redis'    : "cn.dev33:sa-token-dao-redis:${versions.saToken}",
+            'ttl'               : "com.alibaba:transmittable-thread-local:${versions.ttl}"
     ]
 }

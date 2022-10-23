@@ -15,8 +15,6 @@ public class ProviderContextHolder {
                 return SpringUtil.getBean(UserNamePasswordProvider.class);
             case WX_MINIAPP: // c端用户 小程序认证
                 return SpringUtil.getBean(WxMiniAppAuthProvider.class);
-            case WX_OPEN:  // 微信开放平台
-                return SpringUtil.getBean(WxOpenAuthProvider.class);
             default:
                 log.error("未支持的 grantType: {}", grantType);
                 throw new AppException(RCode.PARAM_ERROR);

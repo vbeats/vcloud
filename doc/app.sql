@@ -138,13 +138,7 @@ VALUES (31, 6, '编辑', '', '', '', 'open.edit', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
 VALUES (32, 6, '删除', '', '', '', 'open.del', 1, 0, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (33, 6, '关联应用-查看', '', '', '', 'open_item.list', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (34, 6, '关联应用-新增', '', '', '', 'open_item.add', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (35, 6, '关联应用-编辑', '', '', '', 'open_item.edit', 1, 0, '', now(3), NULL, NULL);
-INSERT INTO `menu`
-VALUES (36, 6, '关联应用-删除', '', '', '', 'open_item.del', 1, 0, '', now(3), NULL, NULL);
+VALUES (33, 6, '授权应用-查看', '', '', '', 'open_item.list', 1, 0, '', now(3), NULL, NULL);
 
 -- ----------------------------
 -- Table structure for role
@@ -250,12 +244,6 @@ INSERT INTO `role_menu`
 VALUES (32, 1, 32);
 INSERT INTO `role_menu`
 VALUES (33, 1, 33);
-INSERT INTO `role_menu`
-VALUES (34, 1, 34);
-INSERT INTO `role_menu`
-VALUES (35, 1, 35);
-INSERT INTO `role_menu`
-VALUES (36, 1, 36);
 
 -- ----------------------------
 -- Table structure for tenant
@@ -291,10 +279,12 @@ DROP TABLE IF EXISTS `open_config`;
 CREATE TABLE `open_config`
 (
     `id`          bigint UNSIGNED                                               NOT NULL,
+    `pid`         bigint UNSIGNED                                               NOT NULL DEFAULT 0 COMMENT '上级id 默认0',
     `tenant_id`   bigint UNSIGNED                                               NOT NULL DEFAULT 0 COMMENT '所属租户  默认0 未分配',
     `name`        varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '名称',
     `type`        tinyint UNSIGNED                                              NOT NULL COMMENT '开放平台类型',
     `config`      json                                                          NOT NULL COMMENT '参数配置',
+    `status`      tinyint UNSIGNED                                              NOT NULL DEFAULT 0 COMMENT '是否授权给pid第三方平台 0未授权 1已授权',
     `create_time` datetime(3)                                                   NOT NULL DEFAULT NOW(3),
     `update_time` datetime(3)                                                   NULL     DEFAULT NULL,
     `delete_time` datetime(3)                                                   NULL     DEFAULT NULL,
@@ -305,26 +295,6 @@ CREATE TABLE `open_config`
   ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for open_config_item
--- ----------------------------
-DROP TABLE IF EXISTS `open_config_item`;
-CREATE TABLE `open_config_item`
-(
-    `id`             bigint UNSIGNED                                               NOT NULL,
-    `open_config_id` bigint UNSIGNED                                               NOT NULL COMMENT '开放平台id',
-    `name`           varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '名称',
-    `type`           tinyint UNSIGNED                                              NOT NULL COMMENT '开放平台类型',
-    `config`         json                                                          NOT NULL COMMENT '参数配置',
-    `create_time`    datetime(3)                                                   NOT NULL DEFAULT NOW(3),
-    `update_time`    datetime(3)                                                   NULL     DEFAULT NULL,
-    `delete_time`    datetime(3)                                                   NULL     DEFAULT NULL,
-    PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '开放平台--小程序/公众号'
-  ROW_FORMAT = Dynamic;
-
--- ----------------------------
 -- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
@@ -332,7 +302,7 @@ CREATE TABLE `user`
 (
     `id`          bigint UNSIGNED NOT NULL,
     `tenant_id`   bigint UNSIGNED NOT NULL COMMENT '所属租户id',
-    `open_info`   json            NOT NULL COMMENT '第三方开放平台-用户信息(openConfigId: unionid openid phone...)',
+    `open_info`   json            NOT NULL COMMENT '开放平台-用户信息',
     `create_time` datetime(3)     NOT NULL DEFAULT NOW(3),
     `update_time` datetime(3)     NULL     DEFAULT NULL,
     `delete_time` datetime(3)     NULL     DEFAULT NULL,

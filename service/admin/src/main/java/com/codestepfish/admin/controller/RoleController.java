@@ -67,7 +67,7 @@ public class RoleController {
     public void add(@RequestBody Role role) {
         Assert.isTrue("admin".equalsIgnoreCase(role.getAction()), "保留字段");
         Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getAction, role.getAction()));
-        Assert.isNull(exist, "角色编号已存在");
+        Assert.isNull(exist, "权限字段已存在");
 
         roleService.save(role);
     }
@@ -78,7 +78,7 @@ public class RoleController {
         Assert.isTrue(!"super_admin".equalsIgnoreCase(role.getAction()), "超级管理员不可修改");
         Assert.isTrue("admin".equalsIgnoreCase(role.getAction()), "保留字段");
         Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getAction, role.getAction()));
-        Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(role.getId()), "权限编号已存在");
+        Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(role.getId()), "权限字段已存在");
 
         role.setUpdateTime(LocalDateTime.now());
         roleService.updateById(role);

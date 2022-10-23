@@ -9,6 +9,7 @@ import lombok.Setter;
 public class OpenConfigQueryIn extends PageIn {
     private Long tenantId;
     private String name;
+    private String appid;
 
     private Long openConfigId;
 }

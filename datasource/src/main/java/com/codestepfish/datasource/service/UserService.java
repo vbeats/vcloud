@@ -21,9 +21,9 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IServi
      * @param openid       微信用户openid
      * @return
      */
-    public User findByTenantIdAndWxOpenId(Long tenantId, Long openConfigId, String openid) {
+    public User findByTenantIdAndWxMiniOpenConfigIdAndWxOpenId(Long tenantId, Long openConfigId, String openid) {
         return this.getOne(Wrappers.<User>lambdaQuery().eq(User::getTenantId, tenantId)
-                .apply("open_info->'$.openConfigId'={0}", openConfigId)
+                .apply("open_info->'$.wxMiniApp.authorizerOpenConfigId'={0}", openConfigId)
                 .apply("open_info->'$.wxMiniApp.openid'={0}", openid)
         );
     }

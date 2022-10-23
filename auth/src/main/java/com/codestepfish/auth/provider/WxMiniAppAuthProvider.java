@@ -1,6 +1,5 @@
 package com.codestepfish.auth.provider;
 
-import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.dev33.satoken.stp.SaLoginConfig;
 import cn.dev33.satoken.stp.SaLoginModel;
@@ -18,6 +17,8 @@ import com.codestepfish.datasource.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.open.api.WxOpenComponentService;
+import me.chanjar.weixin.open.api.WxOpenMaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -37,30 +38,37 @@ public class WxMiniAppAuthProvider implements AuthProvider {   // 微信小程�
     public AuthResponse handleAuth(AuthParam param) {
         String code = param.getWxParam().getCode();
         String appid = param.getWxParam().getAppid();
+        String openAppid = param.getWxParam().getOpenAppId();
 
         // 开放平台配置
-        OpenConfig openConfig = openConfigService.findWByWxMiniAppid(appid);
-        Assert.notNull(openConfig, "开放平台配置错误");
-        Long tenantId = openConfig.getTenantId();
+        OpenConfig openConfig = openConfigService.findByWxOpenAppid(openAppid);
 
-        WxMaService wxMaService = openConfigService.findWxServiceByAppid(openConfig, WxMaService.class);
+        Assert.notNull(openConfig, "开放平台配置错误");
+        OpenConfig wxMiniOpenConfig = openConfigService.findByWxMiniAppid(appid);
+        Assert.notNull(wxMiniOpenConfig, "未找到此appid小程序");
+
+        Long tenantId = wxMiniOpenConfig.getTenantId();
+
         try {
-            WxMaJscode2SessionResult sessionInfo = wxMaService.getUserService().getSessionInfo(code);
+            WxOpenComponentService wxOpenComponentService = openConfigService.findWxServiceByAppid(openConfig, WxOpenComponentService.class);
+            WxOpenMaService wxOpenMaService = wxOpenComponentService.getWxMaServiceByAppid(appid);
+
+            WxMaJscode2SessionResult sessionInfo = wxOpenMaService.getUserService().getSessionInfo(code);
             String openid = sessionInfo.getOpenid();
             String unionid = sessionInfo.getUnionid();
 
             // 当前 租户 --> open_id ---> openid 是否已存在这个用户
-            User user = userService.findByTenantIdAndWxOpenId(tenantId, openConfig.getId(), openid);
+            User user = userService.findByTenantIdAndWxMiniOpenConfigIdAndWxOpenId(tenantId, wxMiniOpenConfig.getId(), openid);
             if (!ObjectUtils.isEmpty(user)) {
                 log.info("微信小程序: {} 租户: {} 已存在此用户openid: {} 更新用户信息...", appid, tenantId, openid);
-                user.getOpenInfo().setWxMiniApp(new WxMiniAppUserInfo(openid, unionid, ""));
+                user.getOpenInfo().setWxMiniApp(new WxMiniAppUserInfo(wxMiniOpenConfig.getId(), openid, ""));
                 user.setUpdateTime(LocalDateTime.now());
             } else {
                 log.info("微信小程序: {} 租户: {} 不存在此用户openid: {}  新增用户...", appid, tenantId, openid);
                 user = new User();
                 UserOpenInfo openInfo = new UserOpenInfo();
-                openInfo.setOpenConfigId(openConfig.getId());
-                openInfo.setWxMiniApp(new WxMiniAppUserInfo(openid, unionid, ""));
+                openInfo.setUnionid(unionid);
+                openInfo.setWxMiniApp(new WxMiniAppUserInfo(wxMiniOpenConfig.getId(), openid, ""));
                 user.setOpenInfo(openInfo);
             }
 
