@@ -17,4 +17,7 @@ public class OpenConfigData implements Serializable {
     private String token;
     private String aesKey;
     private String cloudEnv;
+
+    // 公众号 h5域名前缀
+    private String prefix;
 }

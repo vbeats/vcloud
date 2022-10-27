@@ -4,7 +4,9 @@
 gradle xxx:build -Dprofile=prod/dev
 ```
 
-`token` 有效期 `30d` 活跃超时: `7200s`
+`token` 有效期默认 `30d` 活跃超时: `7200s`
+
+`web` 端 有效期`24h` 活跃超时: `7200s`
 
 ## todo
 

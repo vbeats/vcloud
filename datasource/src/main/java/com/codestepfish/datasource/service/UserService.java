@@ -17,13 +17,13 @@ public class UserService extends ServiceImpl<UserMapper, User> implements IServi
 
     /**
      * @param tenantId     租户id
-     * @param openConfigId 第三方开发平台id
+     * @param openConfigId open config id
      * @param openid       微信用户openid
      * @return
      */
-    public User findByTenantIdAndWxMiniOpenConfigIdAndWxOpenId(Long tenantId, Long openConfigId, String openid) {
+    public User findByTenantIdAndWxOpenId(Long tenantId, Long openConfigId, String openid) {
         return this.getOne(Wrappers.<User>lambdaQuery().eq(User::getTenantId, tenantId)
-                .apply("open_info->'$.wxMiniApp.authorizerOpenConfigId'={0}", openConfigId)
+                .apply("open_info->'$.wxMiniApp.openConfigId'={0}", openConfigId)
                 .apply("open_info->'$.wxMiniApp.openid'={0}", openid)
         );
     }

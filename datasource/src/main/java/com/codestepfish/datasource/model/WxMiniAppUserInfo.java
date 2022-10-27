@@ -19,7 +19,7 @@ public class WxMiniAppUserInfo implements Serializable {
     private static final long serialVersionUID = -5250508666047963062L;
 
     @JsonSerialize(using = LongToStringSerializer.class)
-    private Long authorizerOpenConfigId; // 授权者的公众号/小程序 open config id
+    private Long openConfigId;
 
     private String openid;
 

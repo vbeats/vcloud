@@ -43,7 +43,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class OpenConfigService extends ServiceImpl<OpenConfigMapper, OpenConfig> implements IService<OpenConfig> {
     private static final Map<String, Map<Class, Object>> WX_SERVICES = new ConcurrentHashMap<>();  // Map<appid , Map<WxService.class , WxService instance>>
     private final OpenConfigMapper openConfigMapper;
-    private final OpenConfigItemService openConfigItemService;
     private final RedissonClient redissonClient;
 
     public Page<OpenConfigVo> listConfigs(Page<OpenConfigVo> page, Long tenantId, String name) {
@@ -58,12 +57,6 @@ public class OpenConfigService extends ServiceImpl<OpenConfigMapper, OpenConfig>
      */
     @Cacheable(cacheNames = CacheEnum.OPEN_CACHE, key = "#appid.concat('_0')", unless = "#result==null")
     public OpenConfig findByWxMiniAppid(String appid) {
-        return this.getOne(Wrappers.<OpenConfig>lambdaQuery().apply("config->'$.appid'={0}", appid)
-                .eq(OpenConfig::getType, OpenTypeEnum.WX_MINIAPP.getValue()).isNull(OpenConfig::getDeleteTime));
-    }
-
-    @Cacheable(cacheNames = CacheEnum.OPEN_CACHE, key = "#appid.concat('_3')", unless = "#result==null")
-    public OpenConfig findByWxOpenAppid(String appid) {
         return this.getOne(Wrappers.<OpenConfig>lambdaQuery().apply("config->'$.appid'={0}", appid)
                 .eq(OpenConfig::getType, OpenTypeEnum.WX_MINIAPP.getValue()).isNull(OpenConfig::getDeleteTime));
     }
