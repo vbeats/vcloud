@@ -13,7 +13,7 @@ import java.util.Map;
 @AllArgsConstructor
 @JsonFormat(shape = JsonFormat.Shape.NUMBER)
 public enum OpenTypeEnum {  // 第三方开放平台类型
-    WX_MINIAPP(0, "微信小程序"),
+    WX_MA(0, "微信小程序"),
     WX_MP(1, "微信公众平台"),
     WX_CP(2, "企业微信"),
     WX_OPEN(3, "微信开放平台"),

@@ -302,7 +302,6 @@ CREATE TABLE `user`
 (
     `id`          bigint UNSIGNED NOT NULL,
     `tenant_id`   bigint UNSIGNED NOT NULL COMMENT '所属租户id',
-    `open_info`   json            NOT NULL COMMENT '开放平台-用户信息',
     `create_time` datetime(3)     NOT NULL DEFAULT NOW(3),
     `update_time` datetime(3)     NULL     DEFAULT NULL,
     `delete_time` datetime(3)     NULL     DEFAULT NULL,
@@ -310,6 +309,48 @@ CREATE TABLE `user`
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户会员'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for user_wx_ma
+-- ----------------------------
+DROP TABLE IF EXISTS `user_wx_ma`;
+CREATE TABLE `user_wx_ma`
+(
+    `id`             bigint UNSIGNED                                              NOT NULL,
+    `user_id`        bigint UNSIGNED                                              NOT NULL,
+    `open_config_id` bigint UNSIGNED                                              NOT NULL,
+    `openid`         varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+    `unionid`        varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+    `phone`          varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+    `create_time`    datetime(3)                                                  NOT NULL DEFAULT NOW(3),
+    `update_time`    datetime(3)                                                  NULL     DEFAULT NULL,
+    `delete_time`    datetime(3)                                                  NULL     DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = 'user-微信小程序'
+  ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for user_wx_MP
+-- ----------------------------
+DROP TABLE IF EXISTS `user_wx_mp`;
+CREATE TABLE `user_wx_mp`
+(
+    `id`             bigint UNSIGNED                                              NOT NULL,
+    `user_id`        bigint UNSIGNED                                              NOT NULL,
+    `open_config_id` bigint UNSIGNED                                              NOT NULL,
+    `openid`         varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+    `unionid`        varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+    `phone`          varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '',
+    `create_time`    datetime(3)                                                  NOT NULL DEFAULT NOW(3),
+    `update_time`    datetime(3)                                                  NULL     DEFAULT NULL,
+    `delete_time`    datetime(3)                                                  NULL     DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = 'user-微信公众号'
   ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

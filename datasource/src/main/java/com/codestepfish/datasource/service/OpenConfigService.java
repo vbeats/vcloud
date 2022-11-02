@@ -56,9 +56,9 @@ public class OpenConfigService extends ServiceImpl<OpenConfigMapper, OpenConfig>
      * @return
      */
     @Cacheable(cacheNames = CacheEnum.OPEN_CACHE, key = "#appid.concat('_0')", unless = "#result==null")
-    public OpenConfig findByWxMiniAppid(String appid) {
+    public OpenConfig findByWxMaAppid(String appid) {
         return this.getOne(Wrappers.<OpenConfig>lambdaQuery().apply("config->'$.appid'={0}", appid)
-                .eq(OpenConfig::getType, OpenTypeEnum.WX_MINIAPP.getValue()).isNull(OpenConfig::getDeleteTime));
+                .eq(OpenConfig::getType, OpenTypeEnum.WX_MA.getValue()).isNull(OpenConfig::getDeleteTime));
     }
 
     /**
