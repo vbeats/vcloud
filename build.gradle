@@ -8,7 +8,7 @@ plugins {
 
 apply from: 'version.gradle'
 
-allprojects {
+configure(allprojects) {
     group 'com.codestepfish'
     version '2023.0.1'
 
@@ -23,11 +23,7 @@ allprojects {
     }
 }
 
-def profile = System.getProperty('profile') ? System.getProperty('profile') : 'dev'
-
-println("Current Profile: " + profile)
-
-subprojects {
+configure(subprojects) {
     def folders = ['service']
     if (folders.contains(project.name)) {
         return

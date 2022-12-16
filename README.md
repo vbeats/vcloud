@@ -1,7 +1,7 @@
 # vcloud
 
 ```bash
-gradle xxx:build -Dprofile=prod/dev
+gradle xxx:build
 ```
 
 `token` 有效期默认 `30d` 活跃超时: `7200s`
