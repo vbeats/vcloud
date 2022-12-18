@@ -77,15 +77,15 @@ CREATE TABLE `menu`
 INSERT INTO `menu`
 VALUES (1, 0, '系统管理', '/system', 'Setting', 'setting', '', 0, 99999, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (2, 1, '租户管理', '/tenant', 'Operation', 'operation', '', 0, 1, '', now(3), NULL, NULL);
+VALUES (2, 1, '租户管理', '/tenant', 'Operation', 'tenant', '', 0, 1, '', now(3), NULL, NULL);
 INSERT INTO `menu`
 VALUES (3, 1, '菜单管理', '/menu', 'Menu', 'menu', '', 0, 2, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (4, 1, '角色管理', '/role', 'Avatar', 'avatar', '', 0, 3, '', now(3), NULL, NULL);
+VALUES (4, 1, '角色管理', '/role', 'Avatar', 'role', '', 0, 3, '', now(3), NULL, NULL);
 INSERT INTO `menu`
 VALUES (5, 1, '用户管理', '/user', 'User', 'user', '', 0, 5, '', now(3), NULL, NULL);
 INSERT INTO `menu`
-VALUES (6, 1, '开放平台', '/open', 'Magnet', 'magnet', '', 0, 6, '', now(3), NULL, NULL);
+VALUES (6, 1, '开放平台', '/open', 'Magnet', 'open', '', 0, 6, '', now(3), NULL, NULL);
 
 INSERT INTO `menu`
 VALUES (10, 2, '新增', '', '', '', 'tenant.add', 1, 0, '', now(3), NULL, NULL);
