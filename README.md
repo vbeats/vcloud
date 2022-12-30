@@ -12,3 +12,5 @@ gradle xxx:build
 
 - [ ] [doc](https://doc.bootvue.com) 在搞
 - [ ] 接口文档: 等knife4j 4.x or 用 apipost
+
+- [ ] important : 下一版本规划 ( 微服务中台   高大上 )
