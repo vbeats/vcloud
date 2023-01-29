@@ -21,7 +21,7 @@ ext {
             jjwt             : '0.11.5',
             caffeine         : '3.1.2',
             wxJava           : '4.4.0',
-            saToken          : '1.33.0',
+            saToken          : '1.34.0',
             ttl              : '2.14.2'
     ]
 
@@ -55,9 +55,9 @@ ext {
             'wx-mp'             : "com.github.binarywang:weixin-java-mp:${versions.wxJava}",
             'wx-cp'             : "com.github.binarywang:weixin-java-cp:${versions.wxJava}",
             'wx-open'           : "com.github.binarywang:weixin-java-open:${versions.wxJava}",
-            'sa-token'          : "cn.dev33:sa-token-spring-boot-starter:${versions.saToken}",
+            'sa-token'          : "cn.dev33:sa-token-spring-boot3-starter:${versions.saToken}",
             'sa-token-aop'      : "cn.dev33:sa-token-spring-aop:${versions.saToken}",
-            'sa-token-gateway'  : "cn.dev33:sa-token-reactor-spring-boot-starter:${versions.saToken}",
+            'sa-token-gateway'  : "cn.dev33:sa-token-reactor-spring-boot3-starter:${versions.saToken}",
             'sa-token-jwt'      : "cn.dev33:sa-token-jwt:${versions.saToken}",
             'sa-token-redis'    : "cn.dev33:sa-token-dao-redis:${versions.saToken}",
             'ttl'               : "com.alibaba:transmittable-thread-local:${versions.ttl}"

@@ -4,6 +4,7 @@ plugins {
     id 'java-library'
     id 'org.springframework.boot' version "${SpringBootVersion}"
     id 'io.spring.dependency-management' version "${DependencyManagement}"
+    id 'org.graalvm.buildtools.native' version "${GraalVersion}"
 }
 
 apply from: 'version.gradle'
@@ -31,6 +32,7 @@ configure(subprojects) {
 
     apply plugin: 'java-library'
     apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'org.graalvm.buildtools.native'
 
     dependencyManagement {
         imports {
@@ -132,5 +134,10 @@ configure(subprojects) {
     afterEvaluate {
         tasks.matching { t -> t.name.startsWith('process')
         }.each { it.dependsOn(copyResources) }
+    }
+
+    tasks.named('bootBuildImage') {
+        builder = 'paketobuildpacks/builder:tiny'
+        environment = ['BP_NATIVE_IMAGE': 'true']
     }
 }
