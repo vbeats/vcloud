@@ -1,31 +1,31 @@
 package com.codestepfish.admin.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.admin.AdminQueryIn;
-import com.codestepfish.common.constant.redis.CacheEnum;
-import com.codestepfish.common.result.PageOut;
-import com.codestepfish.datasource.entity.Admin;
-import com.codestepfish.datasource.entity.Tenant;
-import com.codestepfish.datasource.service.AdminService;
-import com.codestepfish.datasource.service.TenantService;
+import com.codestepfish.admin.entity.Admin;
+import com.codestepfish.admin.entity.Tenant;
+import com.codestepfish.admin.service.AdminService;
+import com.codestepfish.admin.service.PermissionService;
+import com.codestepfish.admin.service.TenantService;
+import com.codestepfish.core.model.AppUser;
+import com.codestepfish.core.result.PageOut;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -37,6 +37,7 @@ public class AdminController {
 
     private final AdminService adminService;
     private final TenantService tenantService;
+    private final PermissionService permissionService;
 
     @PostMapping("/list")
     public PageOut<List<Admin>> list(@RequestBody AdminQueryIn param) {
@@ -60,7 +61,6 @@ public class AdminController {
         Admin admin = new Admin();
         admin.setTenantCode(tenant.getCode());
         admin.setAccount(param.getAccount().trim());
-        admin.setUsername(param.getUsername().trim());
         if (StringUtils.hasText(param.getPhone())) {
             Admin existPhone = adminService.getOne(Wrappers.<Admin>lambdaQuery().eq(Admin::getTenantCode, tenant.getCode()).eq(Admin::getPhone, param.getPhone()));
             Assert.isNull(existPhone, "手机号已存在");
@@ -70,26 +70,20 @@ public class AdminController {
         }
         admin.setPassword(DigestUtils.md5Hex(param.getPassword()));
         admin.setStatus(true);
-        if (!ObjectUtils.isEmpty(param.getRoleId())) {
-            admin.setRoleId(param.getRoleId());
-        }
         admin.setCreateTime(LocalDateTime.now());
         adminService.save(admin);
     }
 
     @PostMapping("/update")
-    @CacheEvict(cacheNames = {CacheEnum.ADMIN_CACHE, CacheEnum.ROLE_CACHE, CacheEnum.PERMISSION_CACHE}, key = "#param.id")
     public void update(@RequestBody Admin param) {
         Admin admin = adminService.getById(param.getId());
 
-        admin.setUsername(StringUtils.hasText(param.getUsername()) ? param.getUsername().trim() : "");
         if (StringUtils.hasText(param.getPhone())) {
             Admin exist = adminService.getOne(Wrappers.<Admin>lambdaQuery().eq(Admin::getTenantCode, admin.getTenantCode()).eq(Admin::getPhone, param.getPhone().trim()));
             Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(admin.getId()), "手机号已存在");
         } else {
             admin.setPhone("");
         }
-        admin.setRoleId(param.getRoleId());
         if (StringUtils.hasText(param.getPassword())) {
             admin.setPassword(DigestUtils.md5Hex(param.getPassword()));
         }
@@ -98,21 +92,17 @@ public class AdminController {
     }
 
     @PostMapping("/delete")
-    @CacheEvict(cacheNames = {CacheEnum.ADMIN_CACHE, CacheEnum.ROLE_CACHE, CacheEnum.PERMISSION_CACHE}, key = "#param.id")
     public void delete(@RequestBody Admin param) {
         Admin admin = adminService.getById(param.getId());
-        admin.setDeleteTime(LocalDateTime.now());
         adminService.updateById(admin);
     }
 
     @PostMapping("/block")
-    @CacheEvict(cacheNames = {CacheEnum.ADMIN_CACHE, CacheEnum.ROLE_CACHE, CacheEnum.PERMISSION_CACHE}, allEntries = true)
     public void block(@RequestBody List<Admin> params) {
         toggleAdminStatus(params, false);
     }
 
     @PostMapping("/unblock")
-    @CacheEvict(cacheNames = {CacheEnum.ADMIN_CACHE, CacheEnum.ROLE_CACHE, CacheEnum.PERMISSION_CACHE}, allEntries = true)
     public void unBlock(@RequestBody List<Admin> params) {
         toggleAdminStatus(params, true);
     }
@@ -135,6 +125,38 @@ public class AdminController {
         }).collect(Collectors.toList());
 
         adminService.updateBatchById(admins);
+    }
+
+    @SaIgnore
+    @GetMapping("/info")
+    public AppUser getAdminInfo(@RequestParam("account") String account, @RequestParam("password") String password, @RequestParam("tenant_code") String tenantCode) {
+        Admin admin = adminService.getAdminByAccount(account, password, tenantCode);
+        Assert.notNull(admin, "账号/密码错误");
+        Assert.isTrue(admin.getStatus(), "账号已被禁用");
+        Assert.isTrue(!admin.getDelFlag(), "账号已被删除");
+
+        AppUser appUser = new AppUser();
+        appUser.setId(admin.getId());
+        appUser.setTenantId(admin.getTenantId());
+        appUser.setAccount(admin.getAccount());
+        appUser.setNickName(admin.getNickName());
+        appUser.setPhone(admin.getPhone());
+
+        // 账号角色 & 菜单权限
+        if (admin.isSuperAdmin()) {
+            appUser.setRoles(Collections.singleton("*"));
+            appUser.setPermissions(Collections.singleton("*"));
+        } else {
+            Set<String> roles = permissionService.getRoles(admin.getId());
+            Set<String> permission = permissionService.getPermissions(admin.getId());
+
+            roles.add("admin");  // 管理员默认都有admin权限
+
+            appUser.setRoles(roles);
+            appUser.setPermissions(permission);
+        }
+
+        return appUser;
     }
 
 }

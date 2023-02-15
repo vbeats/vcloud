@@ -1,0 +1,9 @@
+dependencies {
+    api project(':common:core')
+    api libs.get('sa-token')
+    api libs.get('sa-token-aop')
+    api libs.get('feign')
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter-undertow'
+    api 'org.springframework.cloud:spring-cloud-starter-openfeign'
+}

@@ -1,0 +1,26 @@
+dependencies {
+    api libs.get('guava')
+    api libs.get('hutool')
+    api libs.get('httpmime')
+    api libs.get('okhttp')
+    api libs.get('fastjson')
+    api libs.get('caffeine')
+    api libs.get('fastjson-ext')
+    api libs.get('jackson')
+    api libs.get('validator')
+    api libs.get('java-jwt')
+    api libs.get('jjwt')
+    api libs.get('jjwt-impl')
+    api libs.get('jjwt-jackson')
+    api libs.get('commons-text')
+    api libs.get('commons-io')
+    api libs.get('commons-pool2')
+    api libs.get('commons-fileupload')
+    api libs.get('cosid')
+    api libs.get('ttl')
+    api libs.get('sa-token-jwt')
+
+    api 'org.springframework.boot:spring-boot-starter-cache'
+    api 'org.springframework.boot:spring-boot-starter-validation'
+    api 'com.alibaba.cloud:spring-cloud-starter-alibaba-sentinel'
+}

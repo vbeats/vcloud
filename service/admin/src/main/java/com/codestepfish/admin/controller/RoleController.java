@@ -1,3 +1,4 @@
+/*
 package com.codestepfish.admin.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
@@ -6,8 +7,8 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.role.AssignRoleMenuIn;
 import com.codestepfish.admin.dto.role.RoleParamIn;
-import com.codestepfish.common.constant.redis.CacheEnum;
-import com.codestepfish.common.result.PageOut;
+import com.codestepfish.common.core.constant.redis.CacheEnum;
+import com.codestepfish.core.result.PageOut;
 import com.codestepfish.datasource.entity.Role;
 import com.codestepfish.datasource.entity.RoleMenu;
 import com.codestepfish.datasource.service.RoleMenuService;
@@ -128,3 +129,4 @@ public class RoleController {
         }
     }
 }
+*/

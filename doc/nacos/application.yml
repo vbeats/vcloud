@@ -1,0 +1,31 @@
+spring:
+  sentinel:
+    enabled: true
+    transport:
+      dashboard: 127.0.0.1:9898
+      port: 8719
+
+logging:
+  config: classpath:logback.xml
+
+sa-token:
+  token-prefix: Bearer
+  token-name: Authorization
+  timeout: 2592000
+  activity-timeout: 7200
+  token-style: uuid
+  auto-renew: true
+  jwt-secret-key: 'tSG~1&OoP%PVo%8BLp(S8DA0QG!r#Q(0I#FeWlRVTwhkgm3m+DpVg6xlTyf!)VIm'
+
+# 自定义配置
+vcloud:
+  skip-urls:
+    - /favicon.ico
+    - /auth/**
+  caches:
+    - cache-name: admin
+      ttl: 1800000
+      max-idle-time: 1200000
+    - cache-name: user
+      ttl: 1800000
+      max-idle-time: 1200000

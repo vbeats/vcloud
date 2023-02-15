@@ -1,0 +1,10 @@
+dependencies {
+    api project(":common:core")
+    api libs.get('mysql')
+    api libs.get('mybatis')
+    api libs.get('mybatis-plus')
+    api libs.get('cosid-mybatis')
+    api libs.get('sa-token-redis')
+
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+}

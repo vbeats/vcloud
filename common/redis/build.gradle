@@ -1,0 +1,10 @@
+dependencies {
+    api project(":common:core")
+    api libs.get('cosid-redis')
+    api libs.get('sa-token-redis')
+
+    api 'org.springframework.boot:spring-boot-starter-data-redis'
+    api("org.redisson:redisson-spring-boot-starter:${rootProject.RedissonVersion}") {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
+    }
+}

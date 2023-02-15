@@ -1,17 +1,16 @@
 package com.codestepfish.admin.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.codestepfish.admin.dto.menu.MenuIn;
-import com.codestepfish.common.constant.redis.CacheEnum;
-import com.codestepfish.datasource.entity.Menu;
-import com.codestepfish.datasource.entity.RoleMenu;
-import com.codestepfish.datasource.service.MenuService;
-import com.codestepfish.datasource.service.RoleMenuService;
+import com.codestepfish.admin.entity.Menu;
+import com.codestepfish.admin.entity.RoleMenu;
+import com.codestepfish.admin.service.MenuService;
+import com.codestepfish.admin.service.RoleMenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,14 +31,14 @@ public class MenuController {
     private final MenuService menuService;
     private final RoleMenuService roleMenuService;
 
-    @PostMapping("/list")
-    public List<Menu> list() {
-        return menuService.listMenu();
+    @PostMapping("/menus")
+    public List<Tree<String>> menus() {
+        return menuService.menus();
     }
 
-    @PostMapping("/sub")
-    public List<Menu> list(@RequestBody MenuIn param) {
-        return menuService.subMenu(param.getPid());
+   /* @PostMapping("/list")
+    public List<Menu> list() {
+        return menuService.listMenu();
     }
 
     @PostMapping("/add")
@@ -49,13 +48,11 @@ public class MenuController {
     }
 
     @PostMapping("/update")
-    @CacheEvict(cacheNames = {CacheEnum.PERMISSION_CACHE}, allEntries = true)
     public void update(@RequestBody Menu menu) {
         menuService.updateById(menu);
     }
 
     @PostMapping("/delete")
-    @CacheEvict(cacheNames = {CacheEnum.PERMISSION_CACHE}, allEntries = true)
     public void delete(@RequestBody Menu menu) {
         Menu m = menuService.getById(menu.getId());
 
@@ -74,5 +71,5 @@ public class MenuController {
         List<RoleMenu> roleMenus = roleMenuService.list(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, param.getRoleId()));
 
         return roleMenus.stream().map(e -> String.valueOf(e.getMenuId())).collect(Collectors.toList());
-    }
+    }*/
 }

@@ -1,8 +1,9 @@
 package com.codestepfish.gateway.config;
 
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson2.JSON;
-import com.codestepfish.common.result.AppException;
-import com.codestepfish.common.result.RCode;
+import com.codestepfish.core.result.AppException;
+import com.codestepfish.core.result.RCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.reactive.error.ErrorWebExceptionHandler;
 import org.springframework.context.annotation.Configuration;
@@ -48,6 +49,9 @@ public class GatewayExceptionHandler implements ErrorWebExceptionHandler {
         } else if (ex instanceof ResponseStatusException) {
             res.put("code", RCode.NOT_FOUND.getCode());
             res.put("msg", "Service Not Found");
+        } else if (BlockException.isBlockException(ex)) {
+            res.put("code", RCode.GATEWAY_ERROR.getCode());
+            res.put("msg", "当前请求受限");
         } else {
             res.put("code", RCode.DEFAULT.getCode());
             res.put("msg", RCode.DEFAULT.getMsg());

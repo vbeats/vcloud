@@ -7,14 +7,14 @@ import com.codestepfish.auth.dto.AuthParam;
 import com.codestepfish.auth.dto.AuthResponse;
 import com.codestepfish.auth.dto.Captcha;
 import com.codestepfish.auth.service.AuthService;
-import com.codestepfish.common.result.R;
+import com.codestepfish.core.result.R;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -30,8 +30,8 @@ public class AuthEndpoint {
         return authService.token(param);
     }
 
-    @GetMapping("/tokenInfo")
     @SaCheckLogin
+    @GetMapping("/refresh")
     public SaTokenInfo tokenInfo() {
         return StpUtil.getTokenInfo();
     }
@@ -41,4 +41,9 @@ public class AuthEndpoint {
         return authService.getCaptcha();
     }
 
+    @SaCheckLogin
+    @GetMapping("/logout")
+    public void logout() {
+        StpUtil.logout();
+    }
 }

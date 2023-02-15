@@ -1,3 +1,4 @@
+/*
 package com.codestepfish.admin.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
@@ -5,8 +6,8 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.tenant.TenantQueryIn;
-import com.codestepfish.common.constant.redis.CacheEnum;
-import com.codestepfish.common.result.PageOut;
+import com.codestepfish.common.core.constant.redis.CacheEnum;
+import com.codestepfish.core.result.PageOut;
 import com.codestepfish.datasource.entity.Tenant;
 import com.codestepfish.datasource.service.TenantService;
 import lombok.RequiredArgsConstructor;
@@ -126,3 +127,4 @@ public class TenantController {
         tenantService.updateBatchById(ts);
     }
 }
+*/

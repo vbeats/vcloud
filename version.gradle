@@ -1,28 +1,29 @@
 ext {
     versions = [
-            fastjson         : '2.0.20',
-            jackson          : '2.14.1',
+            fastjson         : '2.0.23',
+            jackson          : '2.14.2',
             commonsText      : '1.10.0',
-            mysql            : '8.0.31',
+            mysql            : '8.0.32',
             xxlJob           : '2.3.1',
-            mybatis          : '3.0.0',
-            mybatisPlus      : '3.5.2',
-            cosid            : '1.16.8',
+            mybatis          : '3.0.1',
+            mybatisPlus      : '3.5.3.1',
+            cosid            : '2.0.5',
             httpmime         : '4.5.14',
-            hutool           : '5.8.10',
+            hutool           : '5.8.12',
             commonsFileupload: '1.4',
             commonsPool      : '2.11.1',
             commonsIo        : '2.11.0',
             okhttp           : '4.10.0',
             guava            : '31.1-jre',
             validator        : '8.0.0.Final',
-            easyexcel        : '3.1.3',
-            javaJwt          : '4.2.1',
+            easyexcel        : '3.2.1',
+            javaJwt          : '4.2.2',
             jjwt             : '0.11.5',
-            caffeine         : '3.1.2',
+            caffeine         : '3.1.3',
             wxJava           : '4.4.0',
             saToken          : '1.34.0',
-            ttl              : '2.14.2'
+            ttl              : '2.14.2',
+            feign            : '12.1'
     ]
 
     libs = [
@@ -60,6 +61,7 @@ ext {
             'sa-token-gateway'  : "cn.dev33:sa-token-reactor-spring-boot3-starter:${versions.saToken}",
             'sa-token-jwt'      : "cn.dev33:sa-token-jwt:${versions.saToken}",
             'sa-token-redis'    : "cn.dev33:sa-token-dao-redis:${versions.saToken}",
-            'ttl'               : "com.alibaba:transmittable-thread-local:${versions.ttl}"
+            'ttl'               : "com.alibaba:transmittable-thread-local:${versions.ttl}",
+            'feign'             : "io.github.openfeign:feign-okhttp:${versions.feign}"
     ]
 }

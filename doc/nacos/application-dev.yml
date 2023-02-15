@@ -1,0 +1,35 @@
+server:
+  undertow:
+    threads:
+      worker: 512
+      io: 16
+    buffer-size: 128B
+    direct-buffers: true
+
+spring:
+  jackson:
+    default-property-inclusion: non_empty
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 100MB
+  cloud:
+    openfeign:
+      okhttp:
+        enabled: true
+      httpclient:
+        enabled: false
+      client:
+        config:
+          default:
+            logger-level: none
+            connect-timeout: 3000
+            read-timeout: 10000
+      compression:
+        request:
+          enabled: true
+        response:
+          enabled: true

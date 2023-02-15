@@ -1,10 +1,10 @@
 package com.codestepfish.auth.dto;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
@@ -28,6 +28,4 @@ public class AuthParam {
 
     private String code;
 
-    // ******************** 微信相关参数 ************************
-    private WxParam wxParam;
 }

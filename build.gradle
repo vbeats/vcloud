@@ -11,7 +11,7 @@ apply from: 'version.gradle'
 
 configure(allprojects) {
     group 'com.codestepfish'
-    version '2023.0.1'
+    version '2023.1.0'
 
     repositories {
         maven {
@@ -25,7 +25,7 @@ configure(allprojects) {
 }
 
 configure(subprojects) {
-    def folders = ['service']
+    def folders = ['common', 'service']
     if (folders.contains(project.name)) {
         return
     }
@@ -37,8 +37,8 @@ configure(subprojects) {
     dependencyManagement {
         imports {
             mavenBom SpringBootPlugin.BOM_COORDINATES
-            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${SpringCloudVersion}"
+            mavenBom "com.alibaba.cloud:spring-cloud-alibaba-dependencies:${SpringCloudAlibabaVersion}"
         }
     }
 
@@ -61,6 +61,11 @@ configure(subprojects) {
         compileOnly {
             extendsFrom annotationProcessor
         }
+
+        all*.exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+        all*.exclude group: 'org.apache.tomcat.embed', module: 'tomcat-embed-core'
+        all*.exclude group: 'org.apache.tomcat.embed', module: 'tomcat-embed-websocket'
+        all*.exclude group: 'org.apache.tomcat.embed', module: 'tomcat-embed-el'
     }
 
     dependencies {
@@ -80,8 +85,8 @@ configure(subprojects) {
     }
 
     // **************************** 模块自定义配置****************************
-    def baseModules = ['core', 'datasource', 'common']
-    if (baseModules.contains(project.name)) {
+    def commonModules = ['core', 'datasource', 'redis', 'web', 'swagger']
+    if (commonModules.contains(project.name)) {
         return
     }
 
@@ -96,6 +101,7 @@ configure(subprojects) {
     }
 
     dependencies {
+        implementation project(":common:core")
         implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
         implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
         implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
@@ -106,24 +112,23 @@ configure(subprojects) {
         case 'gateway':
             // 排除spring web相关依赖
             dependencies {
-                implementation(libs.get('sa-token-gateway'))
                 implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
-                implementation project(":datasource")
+                implementation 'com.alibaba.cloud:spring-cloud-alibaba-sentinel-gateway'
+                implementation project(":common:redis")
+                implementation(libs.get('sa-token-gateway'))
             }
             break
         default:
             dependencies {
-                implementation project(":core")
+                implementation project(":common:web")
             }
     }
 
     task copyResources(type: Copy) {
-        from "${project(':common').projectDir}/src/main/resources"
-
-        from "${project(':datasource').projectDir}/src/main/resources"
+        from "${project(':common:core').projectDir}/src/main/resources"
 
         if (project.name != 'gateway') {
-            from "${project(':core').projectDir}/src/main/resources"
+            from "${project(':common:web').projectDir}/src/main/resources"
         }
 
         into "${project.buildDir}/resources/main"

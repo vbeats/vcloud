@@ -8,11 +8,20 @@ pluginManagement {
 
 rootProject.name = 'vcloud'
 
-include 'datasource'
-include 'core'
-include 'common'
+// ------------common模块
+include 'common:core'
+include 'common:datasource'
+include 'common:redis'
+include 'common:web'
+include 'common:swagger'
+
+// ------------gateway服务
 include 'gateway'
+
+// ------------认证服务
 include 'auth'
+
+// -----------service业务服务
 include 'service:admin'
 include 'service:scheduler'
 include 'service:mq'

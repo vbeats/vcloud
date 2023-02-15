@@ -1,6 +1,6 @@
 package com.codestepfish.admin.dto.tenant;
 
-import com.codestepfish.common.model.PageIn;
+import com.codestepfish.core.model.PageIn;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

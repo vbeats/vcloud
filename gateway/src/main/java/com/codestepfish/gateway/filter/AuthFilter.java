@@ -7,18 +7,14 @@ import cn.dev33.satoken.reactor.filter.SaReactorFilter;
 import cn.dev33.satoken.router.SaHttpMethod;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
-import com.codestepfish.common.config.app.AppConfig;
-import com.codestepfish.common.result.AppException;
-import com.codestepfish.common.result.RCode;
-import com.codestepfish.datasource.entity.Admin;
-import com.codestepfish.datasource.service.AdminService;
-import com.codestepfish.datasource.service.UserService;
+import com.codestepfish.core.config.app.AppConfig;
+import com.codestepfish.core.result.AppException;
+import com.codestepfish.core.result.RCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.util.Assert;
 
 @Slf4j
 @Configuration
@@ -26,8 +22,6 @@ import org.springframework.util.Assert;
 public class AuthFilter {
 
     private final AppConfig appConfig;
-    private final AdminService adminService;
-    private final UserService userService;
 
     @Bean
     public SaReactorFilter getSaReactorFilter() {
@@ -36,19 +30,6 @@ public class AuthFilter {
                 .setExcludeList(appConfig.getSkipUrls())
                 .setAuth(obj -> {
                     SaRouter.match("/**", r -> StpUtil.checkLogin());
-
-                    // *************再次校验 用户状态********************
-                    switch (String.valueOf(StpUtil.getExtra("type"))) {
-                        case "admin":
-                            Admin admin = adminService.findById(StpUtil.getLoginIdAsLong());
-                            Assert.notNull(admin, "用户状态过期");
-                            break;
-                        case "user":
-                            // 暂不处理
-                            break;
-                        default:
-                            throw new AppException(RCode.ACCESS_DENY);
-                    }
 
                     SaRouter.match("/admin/**", r -> StpUtil.checkRole("admin"));
                 })
