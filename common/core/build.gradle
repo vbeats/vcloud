@@ -16,7 +16,6 @@ dependencies {
     api libs.get('commons-io')
     api libs.get('commons-pool2')
     api libs.get('commons-fileupload')
-    api libs.get('cosid')
     api libs.get('ttl')
     api libs.get('sa-token-jwt')
 

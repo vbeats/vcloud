@@ -27,6 +27,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> implements IServi
 
     private final RoleMenuService roleMenuService;
     private final AdminRoleService adminRoleService;
+    private final MenuMapper menuMapper;
 
     public List<Tree<String>> menus() {
         LambdaQueryWrapper<Menu> wrapper = Wrappers.lambdaQuery();
@@ -68,5 +69,13 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> implements IServi
             treeNode.putExtra("type", node.getType().getValue());
             treeNode.putExtra("sort", node.getSort());
         });
+    }
+
+    public List<Menu> listMenu() {
+        return menuMapper.listMenu();
+    }
+
+    public List<Menu> subMenu(Long pid) {
+        return menuMapper.subMenu(pid);
     }
 }

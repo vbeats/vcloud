@@ -2,10 +2,10 @@ package com.codestepfish.auth.endpoint;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.SaTokenInfo;
-import cn.dev33.satoken.stp.StpUtil;
 import com.codestepfish.auth.dto.AuthParam;
 import com.codestepfish.auth.dto.AuthResponse;
 import com.codestepfish.auth.dto.Captcha;
+import com.codestepfish.auth.provider.ProviderContextHolder;
 import com.codestepfish.auth.service.AuthService;
 import com.codestepfish.core.result.R;
 import jakarta.validation.Valid;
@@ -32,18 +32,12 @@ public class AuthEndpoint {
 
     @SaCheckLogin
     @GetMapping("/refresh")
-    public SaTokenInfo tokenInfo() {
-        return StpUtil.getTokenInfo();
+    public SaTokenInfo tokenInfo(AuthParam param) {  // 延长token timeout有效期
+        return ProviderContextHolder.getAuthProvider(param.getGrantType()).refreshToken(param);
     }
 
     @GetMapping("/captcha")
     public Captcha getCaptcha() {
         return authService.getCaptcha();
-    }
-
-    @SaCheckLogin
-    @GetMapping("/logout")
-    public void logout() {
-        StpUtil.logout();
     }
 }

@@ -1,5 +1,6 @@
 dependencies {
     api project(":common:core")
+    api libs.get('cosid')
     api libs.get('cosid-redis')
     api libs.get('sa-token-redis')
 

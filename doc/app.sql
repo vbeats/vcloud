@@ -60,7 +60,7 @@ VALUES (1, 0, '0', '系统管理', '/system', 'Setting', 'setting', '', 0, 99999
 INSERT INTO `menu`
 VALUES (2, 1, '1', '租户管理', '/tenant', 'Operation', 'tenant', '', 0, 1, '');
 INSERT INTO `menu`
-VALUES (3, 1, '1', '菜单管理', '/menu', 'Menu', 'menu', '', 0, 2, '');
+VALUES (3, 1, '1', '菜单管理', '/menu', 'Menu', 'menus', '', 0, 2, '');
 INSERT INTO `menu`
 VALUES (4, 1, '1', '角色管理', '/role', 'Avatar', 'role', '', 0, 3, '');
 INSERT INTO `menu`
@@ -100,9 +100,11 @@ VALUES (23, 5, '1,5', '删除', '', '', '', 'admin.user.del', 1, 0, '');
 INSERT INTO `menu`
 VALUES (24, 5, '1,5', '禁用', '', '', '', 'admin.user.block', 1, 0, '');
 INSERT INTO `menu`
-VALUES (25, 5, '1,5', '密码重置', '', '', '', 'admin.user.resetpwd', 1, 0, '');
+VALUES (25, 5, '1,5', '角色配置', '', '', '', 'admin.user.role', 1, 0, '');
 INSERT INTO `menu`
-VALUES (26, 5, '1,5', '账号解封', '', '', '', 'admin.user.unblock', 1, 0, '');
+VALUES (26, 5, '1,5', '密码重置', '', '', '', 'admin.user.resetpwd', 1, 0, '');
+INSERT INTO `menu`
+VALUES (27, 5, '1,5', '账号解封', '', '', '', 'admin.user.unblock', 1, 0, '');
 
 -- ----------------------------
 -- Table structure for role

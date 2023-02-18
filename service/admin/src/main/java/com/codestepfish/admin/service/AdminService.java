@@ -22,6 +22,6 @@ public class AdminService extends ServiceImpl<AdminMapper, Admin> implements ISe
     }
 
     public Page<Admin> listAdmins(Page<Admin> page, String tenantCode, String account, String phone) {
-        return null;
+        return adminMapper.listAdmins(page, tenantCode, account, phone);
     }
 }

@@ -26,16 +26,20 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * request 请求 log
+ * <p>
+ * !! 所有log信息未脱敏  注意安全
+ */
 @Aspect
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-// request 请求 log
 public class LogAspect {
 
     private final Environment env;
 
-   // @Around("execution(* com.codestepfish.*.controller..*Controller.*(..)) || @within(org.springframework.web.bind.annotation.RestController))")
+    @Around("execution(* com.codestepfish.*.controller..*Controller.*(..)) || @within(org.springframework.web.bind.annotation.RestController))")
     public Object logParam(ProceedingJoinPoint point) throws Throwable {
         MethodSignature ms = (MethodSignature) point.getSignature();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();

@@ -2,6 +2,7 @@ package com.codestepfish.auth.provider;
 
 import cn.dev33.satoken.stp.SaLoginConfig;
 import cn.dev33.satoken.stp.SaLoginModel;
+import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.codestepfish.auth.dto.AuthParam;
 import com.codestepfish.auth.dto.AuthResponse;
@@ -46,10 +47,11 @@ public class UserNamePasswordProvider implements AuthProvider {
 
         response.setUser(admin);
 
-        // token 24小时过期
+        // token 4小时过期
         SaLoginModel extra = SaLoginConfig.setDevice("web")
-                .setTimeout(24 * 3600)
+                .setTimeout(4 * 3600L)
                 .setExtra("identity", "admin")
+                .setExtra("tenantId", admin.getTenantId())
                 .setExtra("roles", admin.getRoles())
                 .setExtra("permissions", admin.getPermissions());
 
@@ -58,5 +60,11 @@ public class UserNamePasswordProvider implements AuthProvider {
         response.setToken(StpUtil.getTokenInfo());
 
         return response;
+    }
+
+    @Override
+    public SaTokenInfo refreshToken(AuthParam param) {
+        StpUtil.renewTimeout(4 * 3600L);
+        return StpUtil.getTokenInfo();
     }
 }

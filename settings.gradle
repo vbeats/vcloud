@@ -13,7 +13,6 @@ include 'common:core'
 include 'common:datasource'
 include 'common:redis'
 include 'common:web'
-include 'common:swagger'
 
 // ------------gateway服务
 include 'gateway'

@@ -46,7 +46,6 @@ public class AuthFilter {
                             .back();
                 })
                 .setError(e -> {
-                    log.warn("认证处理异常: ", e);
                     if (e instanceof NotRoleException || e instanceof NotPermissionException) {
                         throw new AppException(RCode.ACCESS_DENY);
                     } else {

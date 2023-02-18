@@ -3,6 +3,9 @@ dependencies {
     api libs.get('sa-token')
     api libs.get('sa-token-aop')
     api libs.get('feign')
+    api libs.get('el')
+    api libs.get('el-api')
+
     api 'org.springframework.boot:spring-boot-starter-web'
     api 'org.springframework.boot:spring-boot-starter-undertow'
     api 'org.springframework.cloud:spring-cloud-starter-openfeign'

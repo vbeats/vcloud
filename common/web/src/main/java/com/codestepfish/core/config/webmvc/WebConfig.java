@@ -1,15 +1,21 @@
 package com.codestepfish.core.config.webmvc;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JacksonException;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.TimeZone;
@@ -32,8 +38,16 @@ public class WebConfig implements WebMvcConfigurer {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         mapper.setTimeZone(TimeZone.getTimeZone("GMT+8"));
         mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-        mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addDeserializer(String.class, new StdDeserializer<>(String.class) {
+            @Override
+            public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+                return StringUtils.hasText(p.getText()) ? p.getText().trim() : null;
+            }
+        });
+        mapper.registerModule(simpleModule);
+
         converter.setObjectMapper(mapper);
         converters.add(converter);
     }

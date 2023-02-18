@@ -1,4 +1,3 @@
-/*
 package com.codestepfish.admin.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
@@ -7,26 +6,23 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.role.AssignRoleMenuIn;
 import com.codestepfish.admin.dto.role.RoleParamIn;
-import com.codestepfish.common.core.constant.redis.CacheEnum;
+import com.codestepfish.admin.entity.AdminRole;
+import com.codestepfish.admin.entity.Role;
+import com.codestepfish.admin.entity.RoleMenu;
+import com.codestepfish.admin.service.AdminRoleService;
+import com.codestepfish.admin.service.RoleMenuService;
+import com.codestepfish.admin.service.RoleService;
 import com.codestepfish.core.result.PageOut;
-import com.codestepfish.datasource.entity.Role;
-import com.codestepfish.datasource.entity.RoleMenu;
-import com.codestepfish.datasource.service.RoleMenuService;
-import com.codestepfish.datasource.service.RoleService;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,11 +34,12 @@ import java.util.stream.Collectors;
 public class RoleController {
 
     private final RoleService roleService;
+    private final AdminRoleService adminRoleService;
     private final RoleMenuService roleMenuService;
 
-    @PostMapping("/list")
-    public PageOut<List<Role>> list(@RequestBody RoleParamIn param) {
-        LambdaQueryWrapper<Role> wrapper = Wrappers.<Role>lambdaQuery().isNull(Role::getDeleteTime).orderByAsc(Role::getCreateTime);
+    @GetMapping("/list")
+    public PageOut<List<Role>> list(RoleParamIn param) {
+        LambdaQueryWrapper<Role> wrapper = Wrappers.lambdaQuery();
         if (StringUtils.hasText(param.getRoleName())) {
             wrapper.eq(Role::getRoleName, param.getRoleName());
         }
@@ -59,51 +56,49 @@ public class RoleController {
         return out;
     }
 
-    @PostMapping("/listV2")
-    public List<Role> listV2() {
-        return roleService.list(Wrappers.<Role>lambdaQuery().isNull(Role::getDeleteTime).orderByAsc(Role::getCreateTime));
+    @GetMapping("/listAdminRoles")
+    public List<Role> listAdminRoles(RoleParamIn param) {
+        Set<Long> roleIds = adminRoleService.list(Wrappers.<AdminRole>lambdaQuery().in(AdminRole::getAdminId, param.getAdminId())).stream().map(AdminRole::getRoleId).collect(Collectors.toSet());
+        return CollectionUtils.isEmpty(roleIds) ? null : roleService.list(Wrappers.<Role>lambdaQuery().in(Role::getId, roleIds));
     }
 
     @PostMapping("/add")
     public void add(@RequestBody Role role) {
-        Assert.isTrue("admin".equalsIgnoreCase(role.getAction()), "保留字段");
-        Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getAction, role.getAction()));
-        Assert.isNull(exist, "权限字段已存在");
+        Assert.isTrue(!Arrays.asList("super_admin", "admin", "*").contains(role.getAction().toLowerCase()), "保留字段 禁止使用");
+        Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getAction, role.getAction()).eq(Role::getRoleName, role.getRoleName()));
+        Assert.isNull(exist, "此角色已存在");
+        role.setAction(role.getAction().toLowerCase());
 
         roleService.save(role);
     }
 
     @PostMapping("/update")
-    @CacheEvict(cacheNames = {CacheEnum.ROLE_CACHE, CacheEnum.PERMISSION_CACHE}, allEntries = true)
     public void update(@RequestBody Role role) {
-        Assert.isTrue(!"super_admin".equalsIgnoreCase(role.getAction()), "超级管理员不可修改");
-        Assert.isTrue("admin".equalsIgnoreCase(role.getAction()), "保留字段");
-        Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getAction, role.getAction()));
-        Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(role.getId()), "权限字段已存在");
+        Assert.isTrue(!role.getId().equals(1L), "此角色不可修改");
+        Assert.isTrue(!"admin".equalsIgnoreCase(role.getAction()), "保留字段");
+        Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getAction, role.getAction()).eq(Role::getRoleName, role.getRoleName()));
+        Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(role.getId()), "此角色已存在");
 
-        role.setUpdateTime(LocalDateTime.now());
         roleService.updateById(role);
     }
 
+
     @PostMapping("/delete")
-    @CacheEvict(cacheNames = {CacheEnum.ROLE_CACHE, CacheEnum.PERMISSION_CACHE}, allEntries = true)
     public void delete(@RequestBody Role role) {
         Role r = roleService.getById(role.getId());
-        Assert.isTrue(!"super_admin".equalsIgnoreCase(role.getAction()), "超级管理员不可删除");
+        Assert.isTrue(!r.getId().equals(1L), "此角色不可删除");
 
-        r.setDeleteTime(LocalDateTime.now());
-        roleService.updateById(r);
+        roleService.removeById(r);
 
         // role_menu 删除
         roleMenuService.remove(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, role.getId()));
     }
 
     @PostMapping("/assignMenu")
-    @CacheEvict(cacheNames = {CacheEnum.ROLE_CACHE, CacheEnum.PERMISSION_CACHE}, allEntries = true)
     public void assignMenu(@RequestBody AssignRoleMenuIn param) {
 
         Role role = roleService.getById(param.getRoleId());
-        Assert.isTrue(!"super_admin".equalsIgnoreCase(role.getAction()), "超级管理员不可操作");
+        Assert.isTrue(!role.getId().equals(1L), "此角色禁止修改");
 
         if (CollectionUtils.isEmpty(param.getMenuIds())) {
             roleMenuService.remove(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, param.getRoleId()));
@@ -129,4 +124,3 @@ public class RoleController {
         }
     }
 }
-*/

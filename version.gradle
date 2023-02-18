@@ -23,7 +23,9 @@ ext {
             wxJava           : '4.4.0',
             saToken          : '1.34.0',
             ttl              : '2.14.2',
-            feign            : '12.1'
+            feign            : '12.1',
+            el               : '4.0.2',
+            elApi            : '3.0.0'
     ]
 
     libs = [
@@ -62,6 +64,8 @@ ext {
             'sa-token-jwt'      : "cn.dev33:sa-token-jwt:${versions.saToken}",
             'sa-token-redis'    : "cn.dev33:sa-token-dao-redis:${versions.saToken}",
             'ttl'               : "com.alibaba:transmittable-thread-local:${versions.ttl}",
-            'feign'             : "io.github.openfeign:feign-okhttp:${versions.feign}"
+            'feign'             : "io.github.openfeign:feign-okhttp:${versions.feign}",
+            'el'                : "org.glassfish:jakarta.el:${versions.el}",
+            'el-api'            : "javax.el:javax.el-api:${versions.elApi}"
     ]
 }

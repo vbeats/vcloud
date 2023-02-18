@@ -20,25 +20,3 @@ mybatis-plus:
     cache-enabled: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath*:mybatis/**/*.xml
-
-#cosid:
-#  namespace: ${spring.application.name}
-#  segment:
-#    enabled: true
-#    mode: chain
-#    chain:
-#      safe-distance: 5
-#      prefetch-worker:
-#        core-pool-size: 2
-#        prefetch-period: 1s
-#    distributor:
-#      type: redis
-#    share:
-#      offset: 100
-#      step: 10
-#      converter:
-#        type: to_string
-#    provider:
-#      admin:
-#        offset: 500
-#        step: 10

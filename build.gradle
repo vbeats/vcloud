@@ -15,9 +15,6 @@ configure(allprojects) {
 
     repositories {
         maven {
-            url 'https://maven.aliyun.com/repository/public/'
-        }
-        maven {
             url 'https://repo.spring.io/release'
         }
         mavenCentral()
@@ -85,7 +82,7 @@ configure(subprojects) {
     }
 
     // **************************** 模块自定义配置****************************
-    def commonModules = ['core', 'datasource', 'redis', 'web', 'swagger']
+    def commonModules = ['core', 'datasource', 'redis', 'web']
     if (commonModules.contains(project.name)) {
         return
     }
@@ -120,7 +117,7 @@ configure(subprojects) {
             break
         default:
             dependencies {
-                implementation project(":common:web")
+                implementation project(":common:core")
             }
     }
 

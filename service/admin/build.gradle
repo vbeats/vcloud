@@ -1,5 +1,5 @@
 dependencies {
-    api project(':common:datasource')
-    api project(':common:redis')
-    api project(':common:web')
+    implementation project(':common:datasource')
+    implementation project(':common:redis')
+    implementation project(':common:web')
 }

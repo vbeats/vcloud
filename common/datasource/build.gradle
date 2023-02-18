@@ -3,6 +3,7 @@ dependencies {
     api libs.get('mysql')
     api libs.get('mybatis')
     api libs.get('mybatis-plus')
+    api libs.get('cosid')
     api libs.get('cosid-mybatis')
     api libs.get('sa-token-redis')
 

@@ -18,7 +18,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
     public String getParameter(String name) {
         String value = request.getParameter(name);
         if (StringUtils.hasText(value)) {
-            value = StringEscapeUtils.escapeHtml4(value);
+            value = StringEscapeUtils.escapeHtml4(value.trim());
         }
         return value;
     }
@@ -30,7 +30,7 @@ public class XssHttpServletRequestWrapper extends HttpServletRequestWrapper {
             return null;
         }
         for (int i = 0; i < parameterValues.length; i++) {
-            String value = parameterValues[i];
+            String value = parameterValues[i].trim();
             parameterValues[i] = StringEscapeUtils.escapeHtml4(value);
         }
         return parameterValues;

@@ -4,11 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.codestepfish.core.serializer.LocalDateTimeDeserializer;
+import com.codestepfish.core.serializer.LocalDateTimeSerializer;
 import com.codestepfish.core.serializer.LongToStringSerializer;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.ObjectUtils;
 
 import java.io.Serial;
@@ -35,7 +36,6 @@ public class Admin implements Serializable {
     /**
      * 租户id
      */
-    @TableField(value = "tenant_id", exist = false)
     @JsonSerialize(using = LongToStringSerializer.class)
     private Long tenantId;
 
@@ -73,13 +73,13 @@ public class Admin implements Serializable {
     private Boolean delFlag = false;
 
     @TableField(value = "create_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime createTime;
 
     @TableField(value = "update_time")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime updateTime;
 
     // -------------------------------------
