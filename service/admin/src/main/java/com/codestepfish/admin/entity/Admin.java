@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "`admin`")
 public class Admin implements Serializable {

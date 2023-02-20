@@ -46,7 +46,8 @@ CREATE TABLE `menu`
     `type`       tinyint(1)                                                     NOT NULL COMMENT '类型 0 菜单 1 按钮',
     `sort`       int                                                            NOT NULL DEFAULT 0 COMMENT '顺序 ',
     `remark`     varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    KEY `idx_pid` (`pid`)
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单'
@@ -65,6 +66,8 @@ INSERT INTO `menu`
 VALUES (4, 1, '1', '角色管理', '/role', 'Avatar', 'role', '', 0, 3, '');
 INSERT INTO `menu`
 VALUES (5, 1, '1', '用户管理', '/user', 'User', 'user', '', 0, 5, '');
+INSERT INTO `menu`
+VALUES (6, 1, '1', '值集配置', '/lov', 'Grape', 'lov', '', 0, 5, '');
 
 INSERT INTO `menu`
 VALUES (10, 2, '1,2', '新增', '', '', '', 'admin.tenant.add', 1, 0, '');
@@ -105,6 +108,13 @@ INSERT INTO `menu`
 VALUES (26, 5, '1,5', '密码重置', '', '', '', 'admin.user.resetpwd', 1, 0, '');
 INSERT INTO `menu`
 VALUES (27, 5, '1,5', '账号解封', '', '', '', 'admin.user.unblock', 1, 0, '');
+
+INSERT INTO `menu`
+VALUES (28, 6, '1,6', '新增', '', '', '', 'admin.lov.add', 1, 0, '');
+INSERT INTO `menu`
+VALUES (29, 6, '1,6', '编辑', '', '', '', 'admin.lov.edit', 1, 0, '');
+INSERT INTO `menu`
+VALUES (30, 6, '1,6', '删除', '', '', '', 'admin.lov.del', 1, 0, '');
 
 -- ----------------------------
 -- Table structure for role
@@ -189,5 +199,41 @@ CREATE TABLE `tenant`
 -- ----------------------------
 INSERT INTO `tenant`
 VALUES (1, 0, '0', 'V00000001', '运营平台', '运营平台', now(3), NULL);
+
+-- ----------------------------
+-- Table structure for lov_category
+-- ----------------------------
+DROP TABLE IF EXISTS `lov_category`;
+CREATE TABLE `lov_category`
+(
+    `id`        bigint UNSIGNED                                                NOT NULL auto_increment,
+    `tenant_id` bigint unsigned                                                NOT NULL COMMENT '租户id',
+    `category`  varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '分组',
+    `remark`    varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
+    PRIMARY KEY (`id`) USING BTREE,
+    KEY `idx_tenant_id` (`tenant_id`),
+    KEY `idx_category` (`category`)
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '值集分组'
+  ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for lov
+-- ----------------------------
+DROP TABLE IF EXISTS `lov`;
+CREATE TABLE `lov`
+(
+    `id`              bigint UNSIGNED                                                NOT NULL auto_increment,
+    `lov_category_id` bigint unsigned                                                NOT NULL COMMENT '值集分组id',
+    `key`             varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '键',
+    `value`           text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          NOT NULL COMMENT '值',
+    `remark`          varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
+    PRIMARY KEY (`id`) USING BTREE,
+    KEY `idx_key` (`key`)
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '值集配置'
+  ROW_FORMAT = DYNAMIC;
 
 SET FOREIGN_KEY_CHECKS = 1;

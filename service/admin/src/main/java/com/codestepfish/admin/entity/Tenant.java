@@ -23,7 +23,6 @@ import java.util.List;
 @Getter
 @Setter
 @ToString
-@AllArgsConstructor
 @NoArgsConstructor
 @TableName(value = "tenant")
 public class Tenant implements Serializable {

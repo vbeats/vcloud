@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.admin.AdminQueryIn;
 import com.codestepfish.admin.dto.admin.AssignAdminRolesIn;
+import com.codestepfish.admin.dto.admin.PasswordIn;
 import com.codestepfish.admin.entity.Admin;
 import com.codestepfish.admin.entity.AdminRole;
 import com.codestepfish.admin.entity.Role;
@@ -15,6 +16,7 @@ import com.codestepfish.admin.service.AdminRoleService;
 import com.codestepfish.admin.service.AdminService;
 import com.codestepfish.admin.service.PermissionService;
 import com.codestepfish.admin.service.TenantService;
+import com.codestepfish.core.constant.auth.AuthConstant;
 import com.codestepfish.core.model.AppUser;
 import com.codestepfish.core.result.PageOut;
 import com.google.common.collect.Sets;
@@ -77,7 +79,7 @@ public class AdminController {
         } else {
             admin.setPhone("");
         }
-        admin.setPassword(DigestUtils.md5Hex(param.getAccount() + "*" + param.getPassword()));
+        admin.setPassword(DigestUtils.md5Hex(String.format(AuthConstant.PASSWORD_RULE, param.getAccount(), param.getPassword())));
         admin.setStatus(true);
         admin.setDelFlag(false);
         admin.setCreateTime(LocalDateTime.now());
@@ -86,6 +88,7 @@ public class AdminController {
 
     @PostMapping("/update")
     public void update(@RequestBody Admin param) {
+        Assert.isTrue(!param.getId().equals(1L), "此用户禁止操作");
         Admin admin = adminService.getById(param.getId());
 
         if (StringUtils.hasText(param.getPhone())) {
@@ -96,7 +99,7 @@ public class AdminController {
             admin.setPhone("");
         }
         if (StringUtils.hasText(param.getPassword())) {
-            admin.setPassword(DigestUtils.md5Hex(admin.getAccount() + "*" + param.getPassword()));
+            admin.setPassword(DigestUtils.md5Hex(String.format(AuthConstant.PASSWORD_RULE, admin.getAccount(), param.getPassword())));
         }
         admin.setUpdateTime(LocalDateTime.now());
         adminService.updateById(admin);
@@ -124,7 +127,8 @@ public class AdminController {
     @PostMapping("/resetPwd")
     public void resetPwd(@RequestBody Admin param) {
         Admin admin = adminService.getById(param.getId());
-        admin.setPassword(DigestUtils.md5Hex(admin.getAccount() + "*123456"));
+        Assert.isTrue(!admin.getId().equals(1L), "此用户禁止操作");
+        admin.setPassword(DigestUtils.md5Hex(String.format(AuthConstant.PASSWORD_RULE, admin.getAccount(), AuthConstant.DEFAULT_PASSWORD)));
         admin.setUpdateTime(LocalDateTime.now());
         adminService.updateById(admin);
     }
@@ -170,6 +174,19 @@ public class AdminController {
             List<AdminRole> ars = needAddIds.stream().map(e -> new AdminRole(null, param.getAdminId(), e)).collect(Collectors.toList());
             adminRoleService.saveBatch(ars);
         }
+    }
+
+    @PostMapping("/updateProfile")
+    public void updateProfile(@RequestBody PasswordIn param) {
+        Admin admin = adminService.getById(StpUtil.getLoginIdAsLong());
+
+        Assert.isTrue(admin.getPassword().equals(DigestUtils.md5Hex(String.format(AuthConstant.PASSWORD_RULE, admin.getAccount(), param.getPassword()))), "原始密码不正确");
+        Assert.hasText(param.getNewPassword(), "新密码不符合安全要求");
+
+        admin.setPassword(DigestUtils.md5Hex(String.format(AuthConstant.PASSWORD_RULE, admin.getAccount(), param.getNewPassword())));
+        admin.setUpdateTime(LocalDateTime.now());
+
+        adminService.updateById(admin);
     }
 
     @SaIgnore
