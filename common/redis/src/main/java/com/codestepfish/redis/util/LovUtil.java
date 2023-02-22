@@ -2,6 +2,7 @@ package com.codestepfish.redis.util;
 
 import cn.hutool.extra.spring.SpringUtil;
 import org.redisson.api.LocalCachedMapOptions;
+import org.redisson.api.RLocalCachedMap;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.util.StringUtils;
@@ -10,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 值集util
+ * 值集util    namespace:   lov:tenantId:category
  * <p>
  * 分组:
  * <p>
@@ -155,8 +156,27 @@ public class LovUtil {
         rmap.delete();
     }
 
+    /**
+     * 根据value 找key
+     *
+     * @param tenantId
+     * @param category
+     * @param value
+     * @return
+     */
+    public static String getKeyByValue(Long tenantId, String category, String value) {
+        RMap<String, String> rmap = getRmap(tenantId, category);
+        for (String key : rmap.keySet()) {
+            if (value.equals(rmap.get(key))) {
+                return key;
+            }
+        }
+
+        return null;
+    }
+
     private static RMap<String, String> getRmap(Long tenantId, String category) {
-        RMap<String, String> rmap = redissonClient.getMap(String.format("lov:%s:%s", tenantId, category), options);
+        RLocalCachedMap<String, String> rmap = redissonClient.getLocalCachedMap(String.format("lov:%s:%s", tenantId, category), options);
         return rmap;
     }
 }

@@ -17,7 +17,11 @@ CREATE TABLE `admin`
     `del_flag`    tinyint(1)                                                   NOT NULL DEFAULT 1 COMMENT '是否删除 0否 1是',
     `create_time` datetime(3)                                                  NOT NULL DEFAULT current_timestamp(3),
     `update_time` datetime(3)                                                  NULL     DEFAULT NULL,
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    index `idx_tenant_id` (`tenant_id` asc) using btree,
+    index `idx_phone` (`phone` asc) using btree,
+    index `idx_status` (`status` asc) using btree,
+    index `idx_del_flag` (`del_flag` asc) using btree
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT = '管理员'
@@ -47,7 +51,9 @@ CREATE TABLE `menu`
     `sort`       int                                                            NOT NULL DEFAULT 0 COMMENT '顺序 ',
     `remark`     varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
     PRIMARY KEY (`id`) USING BTREE,
-    KEY `idx_pid` (`pid`)
+    index `idx_pid` (`pid` asc) using btree,
+    index `idx_type` (`type` asc) using btree,
+    index `idx_sort` (`sort` asc) using btree
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT = '菜单'
@@ -147,7 +153,9 @@ CREATE TABLE `admin_role`
     `id`       bigint UNSIGNED NOT NULL auto_increment,
     `admin_id` bigint UNSIGNED NOT NULL COMMENT '用户id',
     `role_id`  bigint UNSIGNED NOT NULL COMMENT '角色id',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    index `idx_admin_id` (`admin_id` asc) using btree,
+    index `idx_role_id` (`role_id` asc) using btree
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户-角色'
@@ -168,7 +176,9 @@ CREATE TABLE `role_menu`
     `id`      bigint UNSIGNED NOT NULL auto_increment,
     `role_id` bigint UNSIGNED NOT NULL COMMENT '角色id',
     `menu_id` bigint UNSIGNED NOT NULL COMMENT '菜单id',
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `idx_role_id` (`role_id` ASC) using btree,
+    index `idx_menu_id` (`menu_id` asc) using btree
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT = '角色-菜单'
@@ -188,7 +198,9 @@ CREATE TABLE `tenant`
     `remark`      varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
     `create_time` datetime(3)                                                    NOT NULL DEFAULT current_timestamp(3),
     `update_time` datetime(3)                                                    NULL     DEFAULT NULL,
-    PRIMARY KEY (`id`) USING BTREE
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `idx_pid` (`pid` ASC) USING BTREE,
+    INDEX `idx_code` (`code` asc) using btree
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT = '租户'
@@ -211,8 +223,8 @@ CREATE TABLE `lov_category`
     `category`  varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '分组',
     `remark`    varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
     PRIMARY KEY (`id`) USING BTREE,
-    KEY `idx_tenant_id` (`tenant_id`),
-    KEY `idx_category` (`category`)
+    INDEX `idx_tenant_id` (`tenant_id` ASC) USING BTREE,
+    INDEX `idx_category` (`category` ASC) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT = '值集分组'
@@ -230,10 +242,41 @@ CREATE TABLE `lov`
     `value`           text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          NOT NULL COMMENT '值',
     `remark`          varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
     PRIMARY KEY (`id`) USING BTREE,
-    KEY `idx_key` (`key`)
+    INDEX `idx_key` (`key` ASC) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT = '值集配置'
   ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for user
+-- ----------------------------
+DROP TABLE IF EXISTS `user`;
+CREATE TABLE `user`
+(
+    `id`           bigint UNSIGNED                                                NOT NULL,
+    `tenant_id`    bigint                                                         NOT NULL COMMENT '租户id',
+    `wx_union_id`  varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '微信开放平台union id',
+    `wx_ma_openid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '微信小程序openid',
+    `wx_mp_openid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '微信公众平台openid',
+    `phone`        varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '手机号',
+    `status`       tinyint(1)                                                     NOT NULL DEFAULT 1 COMMENT '用户状态  0禁用  1正常',
+    `del_flag`     tinyint(1)                                                     NOT NULL DEFAULT 0 COMMENT '是否删除  0否   1是',
+    `remark`       varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
+    `create_time`  datetime(3)                                                    NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `update_time`  datetime(3)                                                    NULL     DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `idx_tenant_id` (`tenant_id` ASC) USING BTREE,
+    INDEX `idx_union_id` (`wx_union_id` ASC) USING BTREE,
+    INDEX `idx_wx_ma_openid` (`wx_ma_openid` ASC) USING BTREE,
+    INDEX `idx_wx_mp_openid` (`wx_mp_openid` ASC) USING BTREE,
+    INDEX `idx_phone` (`phone` ASC) USING BTREE,
+    INDEX `idx_status` (`status` ASC) USING BTREE,
+    INDEX `idx_del_flag` (`del_flag` ASC) USING BTREE,
+    INDEX `idx_create_time` (`create_time` ASC) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表'
+  ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

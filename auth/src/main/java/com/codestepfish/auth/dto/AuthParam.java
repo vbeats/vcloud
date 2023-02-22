@@ -28,4 +28,6 @@ public class AuthParam {
 
     private String code;
 
+    // ******************** 微信小程序认证参数 *****************
+    private WxMaParam wxMaParam;
 }

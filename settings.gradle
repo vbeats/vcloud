@@ -13,6 +13,7 @@ include 'common:core'
 include 'common:datasource'
 include 'common:redis'
 include 'common:web'
+include 'common:wechat'
 
 // ------------gateway服务
 include 'gateway'
@@ -22,5 +23,6 @@ include 'auth'
 
 // -----------service业务服务
 include 'service:admin'
+include 'service:user'
 include 'service:scheduler'
 include 'service:mq'

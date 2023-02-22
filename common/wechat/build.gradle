@@ -1,0 +1,9 @@
+dependencies {
+    api project(":common:core")
+    api project(':common:redis')
+    api project(':common:web')
+    api libs.get('wx-miniapp')
+    api libs.get('wx-mp')
+    api libs.get('wx-cp')
+    api libs.get('wx-open')
+}

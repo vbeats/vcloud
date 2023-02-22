@@ -10,7 +10,10 @@ import com.codestepfish.admin.entity.LovCategory;
 import com.codestepfish.admin.service.LovCategoryService;
 import com.codestepfish.admin.service.LovService;
 import com.codestepfish.core.result.PageOut;
+import com.codestepfish.redis.constant.LovConstants;
+import com.codestepfish.redis.constant.RedisConstants;
 import com.codestepfish.redis.util.LovUtil;
+import com.codestepfish.redis.util.RedisService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -31,6 +35,7 @@ public class LovController {
 
     private final LovCategoryService lovCategoryService;
     private final LovService lovService;
+    private final RedisService redisService;
 
     @GetMapping("/listCategory")
     public PageOut<List<LovCategory>> listCategory(LovQueryIn param) {
@@ -68,6 +73,7 @@ public class LovController {
 
         lovService.save(param);
         LovUtil.set(lovCategory.getTenantId(), lovCategory.getCategory(), param.getKey(), param.getValue());
+        setWechatAppidAndTenantIdCache(param, lovCategory);
     }
 
     @PostMapping("/updateCategory")
@@ -75,13 +81,10 @@ public class LovController {
         LovCategory exist = lovCategoryService.getOne(Wrappers.<LovCategory>lambdaQuery().eq(LovCategory::getTenantId, param.getTenantId()).eq(LovCategory::getCategory, param.getCategory()));
         Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(param.getId()), "分组已存在");
 
-        lovCategoryService.updateById(param);
-        // cache 删除此分组 重新set cache
-        LovUtil.deleteCategory(param.getTenantId(), param.getCategory());
-        List<Lov> lovs = lovService.list(Wrappers.<Lov>lambdaQuery().eq(Lov::getLovCategoryId, param.getId()));
-        if (!CollectionUtils.isEmpty(lovs)) {
-            lovs.forEach(lov -> LovUtil.set(param.getTenantId(), param.getCategory(), lov.getKey(), lov.getValue()));
-        }
+        // 只允许更新备注信息
+        LovCategory lovCategory = lovCategoryService.getById(param.getId());
+        lovCategory.setRemark(param.getRemark());
+        lovCategoryService.updateById(lovCategory);
     }
 
     @PostMapping("/updateLov")
@@ -95,6 +98,20 @@ public class LovController {
 
         lovService.updateById(lov);
         LovUtil.set(lovCategory.getTenantId(), lovCategory.getCategory(), param.getKey(), param.getValue());
+        setWechatAppidAndTenantIdCache(param, lovCategory);
+    }
+
+    /**
+     * 设置 appid ---> tenantId 关联关系 cache
+     *
+     * @param lov
+     * @param lovCategory
+     */
+    private void setWechatAppidAndTenantIdCache(Lov lov, LovCategory lovCategory) {
+        // 微信 appid --> tenantId
+        if (LovConstants.WECHAT_CATEGORY.equals(lovCategory.getCategory()) && (Arrays.asList(LovConstants.WX_MA_APPID, LovConstants.WX_MP_APPID, LovConstants.WX_CP_APPID).contains(lov.getKey()))) {
+            redisService.set(String.format(RedisConstants.WX_APPID_BUCKET, lov.getValue()), lovCategory.getTenantId());
+        }
     }
 
     @PostMapping("/deleteLov")
@@ -103,14 +120,17 @@ public class LovController {
         LovCategory lovCategory = lovCategoryService.getById(lov.getLovCategoryId());
         lovService.removeById(lov);
         LovUtil.delete(lovCategory.getTenantId(), lovCategory.getCategory(), lov.getKey());
+        // 微信 appid --> tenantId
+        if (LovConstants.WECHAT_CATEGORY.equals(lovCategory.getCategory()) && (Arrays.asList(LovConstants.WX_MA_APPID, LovConstants.WX_MP_APPID, LovConstants.WX_CP_APPID).contains(lov.getKey()))) {
+            redisService.getAndDelete(String.format(RedisConstants.WX_APPID_BUCKET, lov.getValue()));
+        }
     }
 
     @PostMapping("/deleteCategory")
     public void deleteCategory(@RequestBody LovCategory param) {
-        lovCategoryService.removeById(param);
-        LovUtil.deleteCategory(param.getTenantId(), param.getCategory());
-        // cache 删除此分组下所有值集
-        lovService.remove(Wrappers.<Lov>lambdaQuery().eq(Lov::getLovCategoryId, param.getId()));
-        LovUtil.deleteCategory(param.getTenantId(), param.getCategory());
+        // 存在值集配置的不能删除
+        List<Lov> lovs = lovService.list(Wrappers.<Lov>lambdaQuery().eq(Lov::getLovCategoryId, param.getId()));
+        Assert.isTrue(CollectionUtils.isEmpty(lovs), "请先删除值集配置");
+        lovCategoryService.removeById(param.getId());
     }
 }

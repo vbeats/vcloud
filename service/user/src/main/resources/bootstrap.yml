@@ -1,0 +1,26 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: user
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+        namespace: 378d3662-8f28-4917-888a-7b9e011852c7
+        group: DEFAULT_GROUP
+      config:
+        server-addr: 127.0.0.1:8848
+        namespace: 378d3662-8f28-4917-888a-7b9e011852c7
+        file-extension: yml
+        shared-configs:
+          - data-id: application.${spring.cloud.nacos.config.file-extension}
+            group: DEFAULT_GROUP
+          - data-id: application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+            group: DEFAULT_GROUP
+            refresh: true
+          - data-id: redis-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+            group: DEFAULT_GROUP
+            refresh: true
+  profiles:
+    active: dev

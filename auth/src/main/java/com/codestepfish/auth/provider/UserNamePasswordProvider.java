@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.time.Duration;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -49,7 +51,7 @@ public class UserNamePasswordProvider implements AuthProvider {
 
         // token 4小时过期
         SaLoginModel extra = SaLoginConfig.setDevice("web")
-                .setTimeout(4 * 3600L)
+                .setTimeout(Duration.ofHours(4L).plus(Duration.ofMinutes(15L)).getSeconds())
                 .setExtra("identity", "admin")
                 .setExtra("tenantId", admin.getTenantId())
                 .setExtra("roles", admin.getRoles())
@@ -64,7 +66,7 @@ public class UserNamePasswordProvider implements AuthProvider {
 
     @Override
     public SaTokenInfo refreshToken(AuthParam param) {
-        StpUtil.renewTimeout(4 * 3600L);
+        StpUtil.renewTimeout(Duration.ofHours(4L).plus(Duration.ofMinutes(15L)).getSeconds());
         return StpUtil.getTokenInfo();
     }
 }

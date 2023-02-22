@@ -82,7 +82,7 @@ configure(subprojects) {
     }
 
     // **************************** 模块自定义配置****************************
-    def commonModules = ['core', 'datasource', 'redis', 'web']
+    def commonModules = ['core', 'datasource', 'redis', 'web', 'wechat']
     if (commonModules.contains(project.name)) {
         return
     }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "admin", fallbackFactory = DefaultFallbackFactory.class)
 public interface AdminClient {
 
+    // 管理员认证
     @GetMapping("/admin/info")
     AppUser getAdminInfo(@RequestParam("account") String account, @RequestParam("password") String password, @RequestParam("tenant_code") String tenantCode);
 }

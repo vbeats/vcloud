@@ -108,15 +108,10 @@ public class JwtUtil {
     }
 
     private static Verification verification() {
-        Algorithm algorithm = null;
-
-        switch (signatureAlgorithm) {
-            case HS256:
-                algorithm = Algorithm.HMAC256(Base64Utils.decodeFromString(key));
-                break;
-            default:
-                throw new RuntimeException("不支持该算法");
-        }
+        Algorithm algorithm = switch (signatureAlgorithm) {
+            case HS256 -> Algorithm.HMAC256(Base64Utils.decodeFromString(key));
+            default -> throw new RuntimeException("不支持该算法");
+        };
 
         return JWT.require(algorithm);
     }
