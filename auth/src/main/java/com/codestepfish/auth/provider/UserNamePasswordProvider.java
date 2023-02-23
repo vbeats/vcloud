@@ -6,6 +6,7 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.codestepfish.auth.dto.AuthParam;
 import com.codestepfish.auth.dto.AuthResponse;
+import com.codestepfish.core.constant.auth.AuthConstant;
 import com.codestepfish.core.constant.captcha.CaptchaEnum;
 import com.codestepfish.core.model.AppUser;
 import com.codestepfish.core.result.AppException;
@@ -43,7 +44,7 @@ public class UserNamePasswordProvider implements AuthProvider {
         // 2 校验账号 密码
         Assert.hasText(param.getPassword(), "密码不能为空");
 
-        AppUser admin = adminClient.getAdminInfo(param.getAccount(), DigestUtils.md5Hex(String.format("%s*%s", param.getAccount(), param.getPassword())), param.getTenantCode());
+        AppUser admin = adminClient.getAdminInfo(param.getAccount(), DigestUtils.md5Hex(String.format(AuthConstant.PASSWORD_RULE, param.getAccount(), param.getPassword())), param.getTenantCode());
 
         AuthResponse response = new AuthResponse();
 
