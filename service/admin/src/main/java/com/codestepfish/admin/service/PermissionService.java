@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -31,7 +33,7 @@ public class PermissionService {
     public Set<String> getPermissions(Long adminId) {
         Set<Long> roleIds = getRoleIds(adminId);
         Set<Long> menuIds = roleMenuService.list(Wrappers.<RoleMenu>lambdaQuery().in(RoleMenu::getRoleId, roleIds)).stream().map(RoleMenu::getMenuId).collect(Collectors.toSet());
-        return menuService.listByIds(menuIds).stream().map(Menu::getPermission).collect(Collectors.toSet());
+        return CollectionUtils.isEmpty(menuIds) ? Collections.emptySet() : menuService.listByIds(menuIds).stream().map(Menu::getPermission).collect(Collectors.toSet());
     }
 
     private Set<Long> getRoleIds(Long adminId) {

@@ -1,9 +1,10 @@
 spring:
-  sentinel:
-    enabled: true
-    transport:
-      dashboard: 127.0.0.1:9898
-      port: 8719
+  cloud:
+    sentinel:
+      enabled: true
+      transport:
+        dashboard: 127.0.0.1:9898
+        port: 8719
 
 logging:
   config: classpath:logback.xml

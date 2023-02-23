@@ -21,11 +21,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/tenant")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@SaCheckRole(value = {"super_admin"})
 public class TenantController {
 
     private final TenantService tenantService;
 
+    @SaCheckRole(value = {"super_admin"})
     @GetMapping("/list")  // 所有租户
     public PageOut<List<Tenant>> list(TenantQueryIn param) {
         if (StringUtils.hasText(param.getCode()) || StringUtils.hasText(param.getTenantName())) {
@@ -42,7 +42,6 @@ public class TenantController {
     }
 
     @GetMapping("/listTenantTree")
-    @SaCheckRole(value = {"admin"})
     public List<Tenant> listTenantTree() {
         Long id = StpUtil.getLoginIdAsLong();
         Long tenantId = Long.valueOf(String.valueOf(StpUtil.getExtra("tenantId")));
@@ -54,11 +53,11 @@ public class TenantController {
     }
 
     @GetMapping("/sub")
-    @SaCheckRole(value = {"admin"})
     public List<Tenant> subTenant(TenantQueryIn param) {
         return tenantService.subTenant(param.getPid());
     }
 
+    @SaCheckRole(value = {"super_admin"})
     @PostMapping("/add")
     public Tenant add(@RequestBody Tenant tenant) {
         String code = "M" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd")) + RandomUtil.randomNumbers(5);
@@ -74,6 +73,7 @@ public class TenantController {
         return tenant;
     }
 
+    @SaCheckRole(value = {"super_admin"})
     @PostMapping("/update")
     public void update(@RequestBody Tenant tenant) {
         Tenant t = tenantService.getById(tenant.getId());

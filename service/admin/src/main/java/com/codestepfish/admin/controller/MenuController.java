@@ -24,27 +24,31 @@ import java.util.stream.Collectors;
 @RequestMapping("/menu")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
-@SaCheckRole(value = {"super_admin"})
 public class MenuController {
 
     private final MenuService menuService;
     private final RoleMenuService roleMenuService;
 
+    // 用户菜单
     @GetMapping("/menus")
     public List<Tree<String>> menus() {
         return menuService.menus();
     }
 
+    // 菜单管理
+    @SaCheckRole(value = {"super_admin"})
     @GetMapping("/list")
     public List<Menu> list() {
         return menuService.listMenu();
     }
 
+    @SaCheckRole(value = {"super_admin"})
     @GetMapping("/sub")
     public List<Menu> list(MenuIn param) {
         return menuService.subMenu(param.getPid());
     }
 
+    @SaCheckRole(value = {"super_admin"})
     @PostMapping("/add")
     public String add(@RequestBody Menu menu) {
         if (!menu.getPid().equals(0L)) {
@@ -56,12 +60,13 @@ public class MenuController {
         return String.valueOf(menu.getId());
     }
 
+    @SaCheckRole(value = {"super_admin"})
     @PostMapping("/update")
     public void update(@RequestBody Menu menu) {
         menuService.updateById(menu);
     }
 
-
+    @SaCheckRole(value = {"super_admin"})
     @PostMapping("/delete")
     public void delete(@RequestBody Menu menu) {
         Menu m = menuService.getById(menu.getId());
@@ -79,6 +84,7 @@ public class MenuController {
         roleMenuService.remove(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getMenuId, menu.getId()));
     }
 
+    @SaCheckRole(value = {"super_admin"})
     @GetMapping("/listRoleMenu")
     public List<String> listRoleMenu(MenuIn param) {
         if (param.getRoleId().equals(1L)) {
