@@ -249,6 +249,23 @@ CREATE TABLE `lov`
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
+-- Table structure for lov_default
+-- ----------------------------
+DROP TABLE IF EXISTS `lov_default`;
+CREATE TABLE `lov_default`
+(
+    `id`     bigint UNSIGNED                                                NOT NULL auto_increment,
+    `key`    varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '键',
+    `value`  text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          NOT NULL COMMENT '值',
+    `remark` varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
+    PRIMARY KEY (`id`) USING BTREE,
+    INDEX `idx_key` (`key` ASC) USING BTREE
+) ENGINE = InnoDB
+  CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '默认值集配置'
+  ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
 -- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;

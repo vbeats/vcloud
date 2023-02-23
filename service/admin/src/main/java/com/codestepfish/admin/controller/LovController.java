@@ -7,7 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.lov.LovQueryIn;
 import com.codestepfish.admin.entity.Lov;
 import com.codestepfish.admin.entity.LovCategory;
+import com.codestepfish.admin.entity.LovDefault;
 import com.codestepfish.admin.service.LovCategoryService;
+import com.codestepfish.admin.service.LovDefaultService;
 import com.codestepfish.admin.service.LovService;
 import com.codestepfish.core.result.PageOut;
 import com.codestepfish.redis.constant.LovConstants;
@@ -35,6 +37,7 @@ public class LovController {
 
     private final LovCategoryService lovCategoryService;
     private final LovService lovService;
+    private final LovDefaultService lovDefaultService;
     private final RedisService redisService;
 
     @GetMapping("/listCategory")
@@ -132,5 +135,45 @@ public class LovController {
         List<Lov> lovs = lovService.list(Wrappers.<Lov>lambdaQuery().eq(Lov::getLovCategoryId, param.getId()));
         Assert.isTrue(CollectionUtils.isEmpty(lovs), "请先删除值集配置");
         lovCategoryService.removeById(param.getId());
+    }
+
+    //*************************值集默认配置*********************************
+    @GetMapping("/listLovDefault")
+    public PageOut<List<LovDefault>> listLovDefault(LovQueryIn param) {
+        LambdaQueryWrapper<LovDefault> queryWrapper = Wrappers.lambdaQuery();
+
+        if (StringUtils.hasText(param.getKey())) {
+            queryWrapper.eq(LovDefault::getKey, param.getKey());
+        }
+
+        Page<LovDefault> lovPage = lovDefaultService.page(new Page<>(param.getCurrent(), param.getPageSize()), queryWrapper);
+        return new PageOut<>(lovPage.getTotal(), lovPage.getRecords());
+    }
+
+    @PostMapping("/addLovDefault")
+    public void addLovDefault(@RequestBody LovDefault param) {
+        LovDefault exist = lovDefaultService.getOne(Wrappers.<LovDefault>lambdaQuery().eq(LovDefault::getKey, param.getKey()));
+        Assert.isNull(exist, "值集已存在");
+
+        lovDefaultService.save(param);
+        LovUtil.setDefault(param.getKey(), param.getValue());
+    }
+
+    @PostMapping("/updateLovDefault")
+    public void updateLovDefault(@RequestBody LovDefault param) {
+        LovDefault lovDefault = lovDefaultService.getById(param.getId());
+
+        lovDefault.setValue(param.getValue());
+        lovDefault.setRemark(param.getRemark());
+
+        lovDefaultService.updateById(lovDefault);
+        LovUtil.setDefault(lovDefault.getKey(), param.getValue());
+    }
+
+    @PostMapping("/deleteLovDefault")
+    public void deleteLovDefault(@RequestBody LovDefault param) {
+        LovDefault lovDefault = lovDefaultService.getById(param.getId());
+        lovDefaultService.removeById(lovDefault);
+        LovUtil.deleteDefault(lovDefault.getKey());
     }
 }

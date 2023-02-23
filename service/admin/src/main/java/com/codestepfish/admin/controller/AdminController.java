@@ -139,6 +139,12 @@ public class AdminController {
             Admin admin = adminService.getById(e.getId());
             admin.setStatus(status);
             admin.setUpdateTime(LocalDateTime.now());
+
+            // 踢掉用户
+            if (!status) {
+                StpUtil.logout(admin.getId());
+            }
+
             return admin;
         }).collect(Collectors.toList());
 

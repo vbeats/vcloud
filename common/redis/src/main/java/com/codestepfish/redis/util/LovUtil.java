@@ -1,6 +1,7 @@
 package com.codestepfish.redis.util;
 
 import cn.hutool.extra.spring.SpringUtil;
+import com.codestepfish.redis.constant.RedisConstants;
 import org.redisson.api.LocalCachedMapOptions;
 import org.redisson.api.RLocalCachedMap;
 import org.redisson.api.RMap;
@@ -12,6 +13,11 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 值集util    namespace:   lov:tenantId:category
+ * <p>
+ * 默认值集     namespace:   lov:default
+ * <p>
+ * 获取不存在的值集  应当确保有默认配置   否则会抛出异常
+ *
  * <p>
  * 分组:
  * <p>
@@ -66,7 +72,18 @@ public class LovUtil {
     }
 
     /**
-     * 获取String value   , 不存在默认返回空字符串
+     * set or update 默认值集
+     *
+     * @param key
+     * @param value
+     */
+    public static void setDefault(String key, String value) {
+        RMap<String, String> defaultRmap = getDefaultRmap();
+        defaultRmap.put(key, value);
+    }
+
+    /**
+     * 获取String value   , 不存在默认返回默认值集配置
      *
      * @param tenantId 租户id
      * @param category 分组
@@ -74,63 +91,48 @@ public class LovUtil {
      * @return
      */
     public static String get(Long tenantId, String category, String key) {
-        return get(tenantId, category, key, "");
-    }
-
-    /**
-     * 获取String value
-     *
-     * @param tenantId     租户id
-     * @param category     分组
-     * @param key          key
-     * @param defaultValue 值集不存在时默认返回值
-     * @return
-     */
-    public static String get(Long tenantId, String category, String key, String defaultValue) {
         RMap<String, String> rmap = getRmap(tenantId, category);
-        return StringUtils.hasText(rmap.get(key)) ? rmap.get(key) : defaultValue;
+        return StringUtils.hasText(rmap.get(key)) ? rmap.get(key) : getDefaultValue(key);
+    }
+
+
+    /**
+     * 获取int value   , 不存在默认返回默认值集配置
+     *
+     * @param tenantId 租户id
+     * @param category 分组
+     * @param key      key
+     * @return
+     */
+    public static Integer getInt(Long tenantId, String category, String key) {
+        String value = get(tenantId, category, key);
+        return StringUtils.hasText(value) ? Integer.valueOf(value) : Integer.valueOf(getDefaultValue(key));
     }
 
     /**
-     * 获取int value
+     * 获取 Long value   , 不存在默认返回默认值集配置
      *
-     * @param tenantId     租户id
-     * @param category     分组
-     * @param key          key
-     * @param defaultValue 值集不存在时默认返回值
+     * @param tenantId 租户id
+     * @param category 分组
+     * @param key      key
      * @return
      */
-    public static Integer getInt(Long tenantId, String category, String key, Integer defaultValue) {
+    public static Long getLong(Long tenantId, String category, String key) {
         String value = get(tenantId, category, key);
-        return StringUtils.hasText(value) ? Integer.valueOf(value) : defaultValue;
+        return StringUtils.hasText(value) ? Long.valueOf(value) : Long.valueOf(getDefaultValue(key));
     }
 
     /**
-     * 获取 Long value
+     * 获取 BigDecimal value   , 不存在默认返回默认值集配置
      *
-     * @param tenantId     租户id
-     * @param category     分组
-     * @param key          key
-     * @param defaultValue 值集不存在时默认返回值
+     * @param tenantId 租户id
+     * @param category 分组
+     * @param key      key
      * @return
      */
-    public static Long getLong(Long tenantId, String category, String key, Long defaultValue) {
+    public static BigDecimal getBigDecimal(Long tenantId, String category, String key) {
         String value = get(tenantId, category, key);
-        return StringUtils.hasText(value) ? Long.valueOf(value) : defaultValue;
-    }
-
-    /**
-     * 获取 BigDecimal value
-     *
-     * @param tenantId     租户id
-     * @param category     分组
-     * @param key          key
-     * @param defaultValue 值集不存在时默认返回值
-     * @return
-     */
-    public static BigDecimal getBigDecimal(Long tenantId, String category, String key, BigDecimal defaultValue) {
-        String value = get(tenantId, category, key);
-        return StringUtils.hasText(value) ? new BigDecimal(value) : defaultValue;
+        return StringUtils.hasText(value) ? new BigDecimal(value) : new BigDecimal(getDefaultValue(key));
     }
 
     /**
@@ -156,27 +158,33 @@ public class LovUtil {
         rmap.delete();
     }
 
-    /**
-     * 根据value 找key
-     *
-     * @param tenantId
-     * @param category
-     * @param value
-     * @return
-     */
-    public static String getKeyByValue(Long tenantId, String category, String value) {
-        RMap<String, String> rmap = getRmap(tenantId, category);
-        for (String key : rmap.keySet()) {
-            if (value.equals(rmap.get(key))) {
-                return key;
-            }
-        }
-
-        return null;
+    private static RMap<String, String> getRmap(Long tenantId, String category) {
+        RLocalCachedMap<String, String> rmap = redissonClient.getLocalCachedMap(String.format(RedisConstants.LOV_BUCKET, tenantId, category), options);
+        return rmap;
     }
 
-    private static RMap<String, String> getRmap(Long tenantId, String category) {
-        RLocalCachedMap<String, String> rmap = redissonClient.getLocalCachedMap(String.format("lov:%s:%s", tenantId, category), options);
+    // 默认值集 bucket
+    private static RMap<String, String> getDefaultRmap() {
+        RLocalCachedMap<String, String> rmap = redissonClient.getLocalCachedMap(RedisConstants.LOV_DEFAULT_BUCKET, options);
         return rmap;
+    }
+
+    /**
+     * 获取默认值集配置    不存在返回null
+     *
+     * @param key
+     * @return
+     */
+    private static String getDefaultValue(String key) {
+        return getDefaultRmap().get(key);
+    }
+
+    /**
+     * 删除默认值集配置
+     *
+     * @param key
+     */
+    public static void deleteDefault(String key) {
+        getDefaultRmap().remove(key);
     }
 }
