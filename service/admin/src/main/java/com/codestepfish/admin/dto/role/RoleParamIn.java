@@ -9,6 +9,4 @@ import lombok.Setter;
 public class RoleParamIn extends PageIn {
     private String roleName;
     private String action;
-
-    private Long adminId;
 }

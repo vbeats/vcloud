@@ -9,7 +9,10 @@ import com.codestepfish.core.serializer.LocalDateTimeSerializer;
 import com.codestepfish.core.serializer.LongToStringSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.util.ObjectUtils;
 
 import java.io.Serial;
@@ -63,6 +66,13 @@ public class Admin implements Serializable {
     private String phone;
 
     /**
+     * 角色id
+     */
+    @TableField(value = "role_id")
+    @JsonSerialize(using = LongToStringSerializer.class)
+    private Long roleId;
+
+    /**
      * 状态 0 禁用  1 正常
      */
     @TableField(value = "`status`")
@@ -87,6 +97,9 @@ public class Admin implements Serializable {
 
     @TableField(value = "tenant_name", exist = false)
     private String tenantName;
+
+    @TableField(value = "role_name", exist = false)
+    private String roleName;
 
     public boolean isSuperAdmin() {
         return !ObjectUtils.isEmpty(id) && id.equals(1L);

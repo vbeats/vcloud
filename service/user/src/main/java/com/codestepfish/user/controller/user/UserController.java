@@ -79,6 +79,7 @@ public class UserController {
 
             return AppUser.builder()
                     .id(user.getId())
+                    .roleId(null)
                     .tenantId(tenantId)
                     .account("")
                     .nickName("")

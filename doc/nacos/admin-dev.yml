@@ -1,11 +1,11 @@
 spring:
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/vc-app?characterEncoding=UTF-8&useSSL=false&autoReconnect=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://127.0.0.1:3306/vc_admin?characterEncoding=UTF-8&useSSL=false&autoReconnect=true&allowPublicKeyRetrieval=true&serverTimezone=Asia/Shanghai
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
-      pool-name: vc-admin
+      pool-name: vc_admin
       maximum-pool-size: 15
       max-lifetime: 850000
       validation-timeout: 1000

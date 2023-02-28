@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.tenant.TenantQueryIn;
 import com.codestepfish.admin.entity.Tenant;
 import com.codestepfish.admin.service.TenantService;
+import com.codestepfish.core.constant.auth.AuthConstant;
 import com.codestepfish.core.result.PageOut;
 import com.codestepfish.core.util.PidsUtil;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +26,7 @@ public class TenantController {
 
     private final TenantService tenantService;
 
-    @SaCheckRole(value = {"super_admin"})
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     @GetMapping("/list")  // 所有租户
     public PageOut<List<Tenant>> list(TenantQueryIn param) {
         if (StringUtils.hasText(param.getCode()) || StringUtils.hasText(param.getTenantName())) {
@@ -57,7 +58,7 @@ public class TenantController {
         return tenantService.subTenant(param.getPid());
     }
 
-    @SaCheckRole(value = {"super_admin"})
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     @PostMapping("/add")
     public Tenant add(@RequestBody Tenant tenant) {
         String code = "M" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd")) + RandomUtil.randomNumbers(5);
@@ -73,7 +74,7 @@ public class TenantController {
         return tenant;
     }
 
-    @SaCheckRole(value = {"super_admin"})
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     @PostMapping("/update")
     public void update(@RequestBody Tenant tenant) {
         Tenant t = tenantService.getById(tenant.getId());

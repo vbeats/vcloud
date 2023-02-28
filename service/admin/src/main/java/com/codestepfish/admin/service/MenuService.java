@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.codestepfish.admin.entity.AdminRole;
 import com.codestepfish.admin.entity.Menu;
 import com.codestepfish.admin.entity.RoleMenu;
 import com.codestepfish.admin.mapper.MenuMapper;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 public class MenuService extends ServiceImpl<MenuMapper, Menu> implements IService<Menu> {
 
     private final RoleMenuService roleMenuService;
-    private final AdminRoleService adminRoleService;
     private final MenuMapper menuMapper;
 
     public List<Tree<String>> menus() {
@@ -37,10 +35,9 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> implements IServi
 
         if (!adminId.equals(1L)) {
             // 当前用户角色能看到的菜单 按钮
+            Long roleId = Long.valueOf(String.valueOf(StpUtil.getExtra("roleId")));
 
-            Set<Long> roleIds = adminRoleService.list(Wrappers.<AdminRole>lambdaQuery().eq(AdminRole::getAdminId, adminId)).stream().map(AdminRole::getRoleId).collect(Collectors.toSet());
-
-            List<RoleMenu> roleMenus = roleMenuService.list(Wrappers.<RoleMenu>lambdaQuery().in(RoleMenu::getRoleId, roleIds));
+            List<RoleMenu> roleMenus = roleMenuService.list(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, roleId));
 
             if (CollectionUtils.isEmpty(roleMenus)) {
                 return null;

@@ -41,6 +41,7 @@ public class WxMaAuthProvider implements AuthProvider {
         SaLoginModel extra = SaLoginConfig.setDevice("wx_app")
                 .setTimeout(Duration.ofHours(4L).plus(Duration.ofMinutes(15L)).getSeconds())
                 .setExtra("identity", "user")
+                .setExtra("roleId", user.getRoleId())
                 .setExtra("tenantId", user.getTenantId())
                 .setExtra("roles", user.getRoles())
                 .setExtra("permissions", user.getPermissions());

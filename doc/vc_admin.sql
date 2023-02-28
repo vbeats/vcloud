@@ -13,6 +13,7 @@ CREATE TABLE `admin`
     `nick_name`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '昵称',
     `password`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '密码',
     `phone`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '手机号',
+    `role_id`     bigint unsigned                                              NOT NULL COMMENT '角色id',
     `status`      tinyint(1)                                                   NOT NULL DEFAULT 1 COMMENT '状态 0 禁用  1 正常',
     `del_flag`    tinyint(1)                                                   NOT NULL DEFAULT 1 COMMENT '是否删除 0否 1是',
     `create_time` datetime(3)                                                  NOT NULL DEFAULT current_timestamp(3),
@@ -20,6 +21,7 @@ CREATE TABLE `admin`
     PRIMARY KEY (`id`) USING BTREE,
     index `idx_tenant_id` (`tenant_id` asc) using btree,
     index `idx_phone` (`phone` asc) using btree,
+    index `idx_role_id` (`role_id` asc) using btree,
     index `idx_status` (`status` asc) using btree,
     index `idx_del_flag` (`del_flag` asc) using btree
 ) ENGINE = InnoDB
@@ -31,7 +33,7 @@ CREATE TABLE `admin`
 -- Records of admin
 -- ----------------------------
 INSERT INTO `admin`
-VALUES (1, 1, 'admin', '超级管理员', md5('admin*123456'), '18615262691', 1, 0, now(3), NULL);
+VALUES (1, 1, 'admin', '超级管理员', md5('admin*123456'), '18615262691', 1, 1, 0, now(3), NULL);
 
 -- ----------------------------
 -- Table structure for menu
@@ -109,18 +111,16 @@ VALUES (23, 5, '1,5', '删除', '', '', '', 'admin.user.del', 1, 0, '');
 INSERT INTO `menu`
 VALUES (24, 5, '1,5', '禁用', '', '', '', 'admin.user.block', 1, 0, '');
 INSERT INTO `menu`
-VALUES (25, 5, '1,5', '角色配置', '', '', '', 'admin.user.role', 1, 0, '');
+VALUES (25, 5, '1,5', '密码重置', '', '', '', 'admin.user.resetpwd', 1, 0, '');
 INSERT INTO `menu`
-VALUES (26, 5, '1,5', '密码重置', '', '', '', 'admin.user.resetpwd', 1, 0, '');
-INSERT INTO `menu`
-VALUES (27, 5, '1,5', '账号解封', '', '', '', 'admin.user.unblock', 1, 0, '');
+VALUES (26, 5, '1,5', '账号解封', '', '', '', 'admin.user.unblock', 1, 0, '');
 
 INSERT INTO `menu`
-VALUES (28, 6, '1,6', '新增', '', '', '', 'admin.lov.add', 1, 0, '');
+VALUES (27, 6, '1,6', '新增', '', '', '', 'admin.lov.add', 1, 0, '');
 INSERT INTO `menu`
-VALUES (29, 6, '1,6', '编辑', '', '', '', 'admin.lov.edit', 1, 0, '');
+VALUES (28, 6, '1,6', '编辑', '', '', '', 'admin.lov.edit', 1, 0, '');
 INSERT INTO `menu`
-VALUES (30, 6, '1,6', '删除', '', '', '', 'admin.lov.del', 1, 0, '');
+VALUES (29, 6, '1,6', '删除', '', '', '', 'admin.lov.del', 1, 0, '');
 
 -- ----------------------------
 -- Table structure for role
@@ -143,29 +143,6 @@ CREATE TABLE `role`
 -- ----------------------------
 INSERT INTO `role`
 VALUES (1, '超级管理员', 'super_admin', '超级管理员');
-
--- ----------------------------
--- Table structure for admin_role
--- ----------------------------
-DROP TABLE IF EXISTS `admin_role`;
-CREATE TABLE `admin_role`
-(
-    `id`       bigint UNSIGNED NOT NULL auto_increment,
-    `admin_id` bigint UNSIGNED NOT NULL COMMENT '用户id',
-    `role_id`  bigint UNSIGNED NOT NULL COMMENT '角色id',
-    PRIMARY KEY (`id`) USING BTREE,
-    index `idx_admin_id` (`admin_id` asc) using btree,
-    index `idx_role_id` (`role_id` asc) using btree
-) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户-角色'
-  ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of admin_role
--- ----------------------------
-INSERT INTO `admin_role`
-VALUES (1, 1, 1);
 
 -- ----------------------------
 -- Table structure for role_menu
@@ -264,36 +241,5 @@ CREATE TABLE `lov_default`
   CHARACTER SET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT = '默认值集配置'
   ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Table structure for user
--- ----------------------------
-DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user`
-(
-    `id`           bigint UNSIGNED                                                NOT NULL,
-    `tenant_id`    bigint                                                         NOT NULL COMMENT '租户id',
-    `wx_union_id`  varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '微信开放平台union id',
-    `wx_ma_openid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '微信小程序openid',
-    `wx_mp_openid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '微信公众平台openid',
-    `phone`        varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '手机号',
-    `status`       tinyint(1)                                                     NOT NULL DEFAULT 1 COMMENT '用户状态  0禁用  1正常',
-    `del_flag`     tinyint(1)                                                     NOT NULL DEFAULT 0 COMMENT '是否删除  0否   1是',
-    `remark`       varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
-    `create_time`  datetime(3)                                                    NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `update_time`  datetime(3)                                                    NULL     DEFAULT NULL,
-    PRIMARY KEY (`id`) USING BTREE,
-    INDEX `idx_tenant_id` (`tenant_id` ASC) USING BTREE,
-    INDEX `idx_union_id` (`wx_union_id` ASC) USING BTREE,
-    INDEX `idx_wx_ma_openid` (`wx_ma_openid` ASC) USING BTREE,
-    INDEX `idx_wx_mp_openid` (`wx_mp_openid` ASC) USING BTREE,
-    INDEX `idx_phone` (`phone` ASC) USING BTREE,
-    INDEX `idx_status` (`status` ASC) USING BTREE,
-    INDEX `idx_del_flag` (`del_flag` ASC) USING BTREE,
-    INDEX `idx_create_time` (`create_time` ASC) USING BTREE
-) ENGINE = InnoDB
-  CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户表'
-  ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

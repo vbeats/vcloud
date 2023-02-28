@@ -6,20 +6,12 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.admin.AdminQueryIn;
-import com.codestepfish.admin.dto.admin.AssignAdminRolesIn;
 import com.codestepfish.admin.dto.admin.PasswordIn;
-import com.codestepfish.admin.entity.Admin;
-import com.codestepfish.admin.entity.AdminRole;
-import com.codestepfish.admin.entity.Role;
-import com.codestepfish.admin.entity.Tenant;
-import com.codestepfish.admin.service.AdminRoleService;
-import com.codestepfish.admin.service.AdminService;
-import com.codestepfish.admin.service.PermissionService;
-import com.codestepfish.admin.service.TenantService;
+import com.codestepfish.admin.entity.*;
+import com.codestepfish.admin.service.*;
 import com.codestepfish.core.constant.auth.AuthConstant;
 import com.codestepfish.core.model.AppUser;
 import com.codestepfish.core.result.PageOut;
-import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -40,13 +32,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/admin")
-@SaCheckRole(value = {"super_admin"})
+@SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
 public class AdminController {
 
     private final AdminService adminService;
     private final TenantService tenantService;
-    private final AdminRoleService adminRoleService;
-    private final PermissionService permissionService;
+    private final RoleService roleService;
+    private final MenuService menuService;
+    private final RoleMenuService roleMenuService;
 
     @GetMapping("/list")
     public PageOut<List<Admin>> list(AdminQueryIn param) {
@@ -80,6 +73,7 @@ public class AdminController {
             admin.setPhone("");
         }
         admin.setPassword(DigestUtils.md5Hex(String.format(AuthConstant.PASSWORD_RULE, param.getAccount(), param.getPassword())));
+        admin.setRoleId(param.getRoleId());
         admin.setStatus(true);
         admin.setDelFlag(false);
         admin.setCreateTime(LocalDateTime.now());
@@ -101,6 +95,10 @@ public class AdminController {
         if (StringUtils.hasText(param.getPassword())) {
             admin.setPassword(DigestUtils.md5Hex(String.format(AuthConstant.PASSWORD_RULE, admin.getAccount(), param.getPassword())));
         }
+        if (StringUtils.hasText(param.getNickName())) {
+            admin.setNickName(param.getNickName());
+        }
+        admin.setRoleId(param.getRoleId());
         admin.setUpdateTime(LocalDateTime.now());
         adminService.updateById(admin);
     }
@@ -151,37 +149,6 @@ public class AdminController {
         adminService.updateBatchById(admins);
     }
 
-    @PostMapping("/assignAdminRoles")
-    public void assignAdminRoles(@RequestBody AssignAdminRolesIn param) {
-        Admin admin = adminService.getById(param.getAdminId());
-        Assert.isTrue(!admin.getId().equals(1L), "此用户禁止修改");
-
-        if (CollectionUtils.isEmpty(param.getRoles())) {
-            adminRoleService.remove(Wrappers.<AdminRole>lambdaQuery().eq(AdminRole::getAdminId, param.getAdminId()));
-            return;
-        }
-
-        Set<Long> rIds = param.getRoles().stream().map(Role::getId).collect(Collectors.toSet());
-
-        // 此用户已分配角色
-        List<AdminRole> adminRoles = adminRoleService.list(Wrappers.<AdminRole>lambdaQuery().eq(AdminRole::getAdminId, param.getAdminId()));
-        Set<Long> roleIds = adminRoles.stream().map(e -> e.getRoleId()).collect(Collectors.toSet());
-
-        // 需要删除的角色
-        Sets.SetView<Long> needRemoveIds = Sets.difference(roleIds, rIds);
-        // 需要新分配的角色
-        Sets.SetView<Long> needAddIds = Sets.difference(rIds, roleIds);
-
-        if (!CollectionUtils.isEmpty(needRemoveIds)) {
-            adminRoleService.remove(Wrappers.<AdminRole>lambdaQuery().eq(AdminRole::getAdminId, param.getAdminId()).in(AdminRole::getRoleId, needRemoveIds));
-        }
-
-        if (!CollectionUtils.isEmpty(needAddIds)) {
-            List<AdminRole> ars = needAddIds.stream().map(e -> new AdminRole(null, param.getAdminId(), e)).collect(Collectors.toList());
-            adminRoleService.saveBatch(ars);
-        }
-    }
-
     @PostMapping("/updateProfile")
     public void updateProfile(@RequestBody PasswordIn param) {
         Admin admin = adminService.getById(StpUtil.getLoginIdAsLong());
@@ -205,6 +172,7 @@ public class AdminController {
 
         AppUser appUser = new AppUser();
         appUser.setId(admin.getId());
+        appUser.setRoleId(admin.getRoleId());
         appUser.setTenantId(admin.getTenantId());
         appUser.setAccount(admin.getAccount());
         appUser.setNickName(admin.getNickName());
@@ -215,13 +183,14 @@ public class AdminController {
             appUser.setRoles(Collections.singleton("*"));
             appUser.setPermissions(Collections.singleton("*"));
         } else {
-            Set<String> roles = permissionService.getRoles(admin.getId());
-            Set<String> permission = permissionService.getPermissions(admin.getId());
+            Role role = roleService.getById(admin.getRoleId());
 
-            roles.add("admin");  // 管理员默认都有admin权限
+            appUser.setRoles(Set.of(AuthConstant.ADMIN, role.getAction()));  // role
 
-            appUser.setRoles(roles);
-            appUser.setPermissions(permission);
+            // permission
+            List<Long> menuIds = roleMenuService.list(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, admin.getRoleId()))
+                    .stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
+            appUser.setPermissions(CollectionUtils.isEmpty(menuIds) ? Collections.emptySet() : menuService.listByIds(menuIds).stream().map(Menu::getPermission).collect(Collectors.toSet()));
         }
 
         return appUser;

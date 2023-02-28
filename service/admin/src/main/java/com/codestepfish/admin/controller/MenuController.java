@@ -8,6 +8,7 @@ import com.codestepfish.admin.entity.Menu;
 import com.codestepfish.admin.entity.RoleMenu;
 import com.codestepfish.admin.service.MenuService;
 import com.codestepfish.admin.service.RoleMenuService;
+import com.codestepfish.core.constant.auth.AuthConstant;
 import com.codestepfish.core.util.PidsUtil;
 import com.google.common.base.Splitter;
 import lombok.RequiredArgsConstructor;
@@ -36,19 +37,19 @@ public class MenuController {
     }
 
     // 菜单管理
-    @SaCheckRole(value = {"super_admin"})
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     @GetMapping("/list")
     public List<Menu> list() {
         return menuService.listMenu();
     }
 
-    @SaCheckRole(value = {"super_admin"})
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     @GetMapping("/sub")
     public List<Menu> list(MenuIn param) {
         return menuService.subMenu(param.getPid());
     }
 
-    @SaCheckRole(value = {"super_admin"})
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     @PostMapping("/add")
     public String add(@RequestBody Menu menu) {
         if (!menu.getPid().equals(0L)) {
@@ -60,13 +61,13 @@ public class MenuController {
         return String.valueOf(menu.getId());
     }
 
-    @SaCheckRole(value = {"super_admin"})
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     @PostMapping("/update")
     public void update(@RequestBody Menu menu) {
         menuService.updateById(menu);
     }
 
-    @SaCheckRole(value = {"super_admin"})
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     @PostMapping("/delete")
     public void delete(@RequestBody Menu menu) {
         Menu m = menuService.getById(menu.getId());
@@ -84,7 +85,7 @@ public class MenuController {
         roleMenuService.remove(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getMenuId, menu.getId()));
     }
 
-    @SaCheckRole(value = {"super_admin"})
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     @GetMapping("/listRoleMenu")
     public List<String> listRoleMenu(MenuIn param) {
         if (param.getRoleId().equals(1L)) {

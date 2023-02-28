@@ -16,6 +16,8 @@ public class AppUser implements Serializable {
 
     private Long id;
 
+    private Long roleId;
+
     private Long tenantId;
 
     private String account;

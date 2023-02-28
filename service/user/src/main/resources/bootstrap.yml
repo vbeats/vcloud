@@ -7,11 +7,11 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
-        namespace: 378d3662-8f28-4917-888a-7b9e011852c7
+        namespace: ab0e1418-ab84-4a38-8e14-361a60ae467a
         group: DEFAULT_GROUP
       config:
         server-addr: 127.0.0.1:8848
-        namespace: 378d3662-8f28-4917-888a-7b9e011852c7
+        namespace: ab0e1418-ab84-4a38-8e14-361a60ae467a
         file-extension: yml
         shared-configs:
           - data-id: application.${spring.cloud.nacos.config.file-extension}

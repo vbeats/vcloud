@@ -11,6 +11,7 @@ import com.codestepfish.admin.entity.LovDefault;
 import com.codestepfish.admin.service.LovCategoryService;
 import com.codestepfish.admin.service.LovDefaultService;
 import com.codestepfish.admin.service.LovService;
+import com.codestepfish.core.constant.auth.AuthConstant;
 import com.codestepfish.core.result.PageOut;
 import com.codestepfish.redis.constant.LovConstants;
 import com.codestepfish.redis.constant.RedisConstants;
@@ -31,7 +32,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/lov")
-@SaCheckRole(value = {"super_admin"})
+@SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class LovController {
 

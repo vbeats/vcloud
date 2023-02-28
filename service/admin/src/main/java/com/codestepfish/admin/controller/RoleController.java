@@ -6,12 +6,13 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.role.AssignRoleMenuIn;
 import com.codestepfish.admin.dto.role.RoleParamIn;
-import com.codestepfish.admin.entity.AdminRole;
+import com.codestepfish.admin.entity.Admin;
 import com.codestepfish.admin.entity.Role;
 import com.codestepfish.admin.entity.RoleMenu;
-import com.codestepfish.admin.service.AdminRoleService;
+import com.codestepfish.admin.service.AdminService;
 import com.codestepfish.admin.service.RoleMenuService;
 import com.codestepfish.admin.service.RoleService;
+import com.codestepfish.core.constant.auth.AuthConstant;
 import com.codestepfish.core.result.PageOut;
 import com.google.common.collect.Sets;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +31,17 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/role")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@SaCheckRole(value = {"super_admin"})
+@SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
 public class RoleController {
 
     private final RoleService roleService;
-    private final AdminRoleService adminRoleService;
+    private final AdminService adminService;
     private final RoleMenuService roleMenuService;
+
+    @GetMapping("/listAll")
+    public List<Role> listAll() {
+        return roleService.list();
+    }
 
     @GetMapping("/list")
     public PageOut<List<Role>> list(RoleParamIn param) {
@@ -56,15 +62,9 @@ public class RoleController {
         return out;
     }
 
-    @GetMapping("/listAdminRoles")
-    public List<Role> listAdminRoles(RoleParamIn param) {
-        Set<Long> roleIds = adminRoleService.list(Wrappers.<AdminRole>lambdaQuery().in(AdminRole::getAdminId, param.getAdminId())).stream().map(AdminRole::getRoleId).collect(Collectors.toSet());
-        return CollectionUtils.isEmpty(roleIds) ? null : roleService.list(Wrappers.<Role>lambdaQuery().in(Role::getId, roleIds));
-    }
-
     @PostMapping("/add")
     public void add(@RequestBody Role role) {
-        Assert.isTrue(!Arrays.asList("super_admin", "admin", "*").contains(role.getAction().toLowerCase()), "保留字段 禁止使用");
+        Assert.isTrue(!Arrays.asList(AuthConstant.SUPER_ADMIN, AuthConstant.ADMIN, "*").contains(role.getAction().toLowerCase()), "保留字段 禁止使用");
         Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getAction, role.getAction()).eq(Role::getRoleName, role.getRoleName()));
         Assert.isNull(exist, "此角色已存在");
         role.setAction(role.getAction().toLowerCase());
@@ -75,7 +75,7 @@ public class RoleController {
     @PostMapping("/update")
     public void update(@RequestBody Role role) {
         Assert.isTrue(!role.getId().equals(1L), "此角色不可修改");
-        Assert.isTrue(!"admin".equalsIgnoreCase(role.getAction()), "保留字段");
+        Assert.isTrue(!AuthConstant.ADMIN.equalsIgnoreCase(role.getAction()), "保留字段");
         Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getAction, role.getAction()).eq(Role::getRoleName, role.getRoleName()));
         Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(role.getId()), "此角色已存在");
 
@@ -85,6 +85,8 @@ public class RoleController {
 
     @PostMapping("/delete")
     public void delete(@RequestBody Role role) {
+        List<Admin> admins = adminService.list(Wrappers.<Admin>lambdaQuery().eq(Admin::getRoleId, role.getId()));
+        Assert.isTrue(CollectionUtils.isEmpty(admins), "已分配用户 不可删除");
         Role r = roleService.getById(role.getId());
         Assert.isTrue(!r.getId().equals(1L), "此角色不可删除");
 

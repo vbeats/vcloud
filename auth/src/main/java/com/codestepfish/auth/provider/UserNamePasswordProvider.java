@@ -54,6 +54,7 @@ public class UserNamePasswordProvider implements AuthProvider {
         SaLoginModel extra = SaLoginConfig.setDevice("web")
                 .setTimeout(Duration.ofHours(4L).plus(Duration.ofMinutes(15L)).getSeconds())
                 .setExtra("identity", "admin")
+                .setExtra("roleId", admin.getRoleId())
                 .setExtra("tenantId", admin.getTenantId())
                 .setExtra("roles", admin.getRoles())
                 .setExtra("permissions", admin.getPermissions());
