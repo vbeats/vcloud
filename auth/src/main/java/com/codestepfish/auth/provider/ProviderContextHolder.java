@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProviderContextHolder {
 
-    public static AuthProvider getAuthProvider(String grantType) {
-        return switch (GrantTypeEnum.find(grantType)) {
+    public static AuthProvider getAuthProvider(GrantTypeEnum grantType) {
+        return switch (grantType) {
             case PASSWORD -> SpringUtil.getBean(UserNamePasswordProvider.class);
             case WX_MA -> SpringUtil.getBean(WxMaAuthProvider.class);
             default -> {
