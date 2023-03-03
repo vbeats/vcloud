@@ -1,7 +1,6 @@
 package com.codestepfish.auth.dto;
 
 import com.codestepfish.core.constant.auth.GrantTypeEnum;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,7 +15,6 @@ public class AuthParam {
     @NotNull(message = "认证类型不能为空")
     private GrantTypeEnum grantType;  // 认证类型
 
-    @NotEmpty(message = "编号不能为空")
     private String tenantCode; // 租户编号
 
     // ********************* 账号 密码登录 *********************

@@ -31,8 +31,9 @@ public class AuthEndpoint {
     }
 
     @SaCheckLogin
-    @GetMapping("/refresh")
-    public SaTokenInfo tokenInfo(AuthParam param) {  // 延长token timeout有效期
+    @PostMapping("/refresh")
+    public SaTokenInfo tokenInfo(@Valid @RequestBody AuthParam param, BindingResult result) {  // 延长token timeout有效期
+        R.handleErr(result);
         return ProviderContextHolder.getAuthProvider(param.getGrantType()).refreshToken(param);
     }
 
