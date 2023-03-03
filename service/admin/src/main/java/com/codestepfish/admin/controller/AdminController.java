@@ -1,7 +1,6 @@
 package com.codestepfish.admin.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
-import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -32,7 +31,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/admin")
-@SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
 public class AdminController {
 
     private final AdminService adminService;
@@ -42,6 +40,7 @@ public class AdminController {
     private final RoleMenuService roleMenuService;
 
     @GetMapping("/list")
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     public PageOut<List<Admin>> list(AdminQueryIn param) {
 
         Tenant t = tenantService.getById(ObjectUtils.isEmpty(param.getTenantId()) ? Long.valueOf(String.valueOf(StpUtil.getExtra("tenantId"))) : param.getTenantId());
@@ -55,6 +54,7 @@ public class AdminController {
     }
 
     @PostMapping("/add")
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     public void add(@RequestBody Admin param) {
         Tenant tenant = tenantService.getById(param.getTenantId());
         Admin existAccount = adminService.getOne(Wrappers.<Admin>lambdaQuery().eq(Admin::getTenantId, tenant.getId()).eq(Admin::getAccount, param.getAccount()));
@@ -81,6 +81,7 @@ public class AdminController {
     }
 
     @PostMapping("/update")
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     public void update(@RequestBody Admin param) {
         Assert.isTrue(!param.getId().equals(1L), "此用户禁止操作");
         Admin admin = adminService.getById(param.getId());
@@ -104,6 +105,7 @@ public class AdminController {
     }
 
     @PostMapping("/delete")
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     public void delete(@RequestBody Admin param) {
         Assert.isTrue(!param.getId().equals(1L), "此用户不可删除");
         Admin admin = adminService.getById(param.getId());
@@ -113,16 +115,19 @@ public class AdminController {
     }
 
     @PostMapping("/block")
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     public void block(@RequestBody List<Admin> params) {
         toggleAdminStatus(params, false);
     }
 
     @PostMapping("/unblock")
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     public void unBlock(@RequestBody List<Admin> params) {
         toggleAdminStatus(params, true);
     }
 
     @PostMapping("/resetPwd")
+    @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     public void resetPwd(@RequestBody Admin param) {
         Admin admin = adminService.getById(param.getId());
         Assert.isTrue(!admin.getId().equals(1L), "此用户禁止操作");
@@ -162,7 +167,6 @@ public class AdminController {
         adminService.updateById(admin);
     }
 
-    @SaIgnore
     @GetMapping("/info")
     public AppUser getAdminInfo(@RequestParam("account") String account, @RequestParam("password") String password, @RequestParam("tenant_code") String tenantCode) {
         Admin admin = adminService.getAdminByAccount(account, password, tenantCode);

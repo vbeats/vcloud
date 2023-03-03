@@ -1,5 +1,8 @@
 package com.codestepfish.core.config.webmvc;
 
+import cn.dev33.satoken.filter.SaServletFilter;
+import cn.dev33.satoken.same.SaSameUtil;
+import cn.dev33.satoken.util.SaResult;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -9,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -50,5 +54,18 @@ public class WebConfig implements WebMvcConfigurer {
 
         converter.setObjectMapper(mapper);
         converters.add(converter);
+    }
+
+    // 注册 Sa-Token 全局过滤器
+    @Bean
+    public SaServletFilter getSaServletFilter() {
+        return new SaServletFilter()
+                .addInclude("/**")
+                .addExclude("/favicon.ico")
+                .setAuth(obj -> {
+                    SaSameUtil.checkCurrentRequestToken();
+                })
+                .setError(e -> SaResult.error(e.getMessage()))
+                ;
     }
 }

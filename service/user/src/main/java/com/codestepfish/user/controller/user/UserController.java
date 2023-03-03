@@ -3,8 +3,6 @@ package com.codestepfish.user.controller.user;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
-import cn.dev33.satoken.annotation.SaCheckRole;
-import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -32,7 +30,6 @@ import java.util.Collections;
 @RestController
 @Slf4j
 @RequestMapping("/user")
-@SaCheckRole(value = {"user"})
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class UserController {
 
@@ -40,7 +37,6 @@ public class UserController {
     private final RedisService redisService;
 
     // 用户登录认证
-    @SaIgnore
     @GetMapping("/info")
     public AppUser getUserInfo(@RequestParam("code") String code, @RequestParam("appid") String appid) {
         // appid  ----> tenant_id

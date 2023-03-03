@@ -14,8 +14,6 @@ gradle xxx:build
 
 生产环境下 `Same-Token` 需要定时刷新 [desc](https://sa-token.cc/doc.html#/micro/same-token)
 
-暂时没用到`same-token` , 服务间`feign`请求依然携带外部`token`
-
 ## role & permission
 
 `super_admin` `admin` `*` `.` 保留字 , 不允许指定

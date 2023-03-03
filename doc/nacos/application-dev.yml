@@ -25,7 +25,7 @@ spring:
       client:
         config:
           default:
-            logger-level: none
+            logger-level: full
             connect-timeout: 3000
             read-timeout: 10000
       compression:

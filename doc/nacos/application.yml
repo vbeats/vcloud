@@ -7,6 +7,8 @@ spring:
         port: 8719
 
 logging:
+  level:
+    com.codestepfish.feign: debug
   config: classpath:logback.xml
 
 sa-token:
@@ -15,7 +17,13 @@ sa-token:
   timeout: 2592000
   activity-timeout: 7200
   token-style: uuid
+  is-read-body: false
+  is-read-header: true
+  is-concurrent: true
+  max-login-count: 12
+  is-read-cookie: false
   auto-renew: true
+  is-print: false
   jwt-secret-key: 'tSG~1&OoP%PVo%8BLp(S8DA0QG!r#Q(0I#FeWlRVTwhkgm3m+DpVg6xlTyf!)VIm'
 
 # 自定义配置

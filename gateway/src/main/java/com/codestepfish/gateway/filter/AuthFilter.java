@@ -32,8 +32,6 @@ public class AuthFilter {
                     SaRouter.match("/**", r -> StpUtil.checkLogin());
 
                     SaRouter.match("/admin/**", r -> StpUtil.checkRole("admin"));
-
-                    SaRouter.match("/user/**", r -> StpUtil.checkRole("user"));
                 })
                 .setBeforeAuth(r -> {
                     SaHolder.getResponse()
