@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
  * 开启需要注入到IOC容器中
  */
 @Slf4j
-public class AppRequestOrignParser implements RequestOriginParser {
+public class AppRequestOriginParser implements RequestOriginParser {
 
     @Override
     public String parseOrigin(HttpServletRequest request) {
