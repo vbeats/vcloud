@@ -25,7 +25,8 @@ ext {
             ttl              : '2.14.2',
             feign            : '12.1',
             el               : '4.0.2',
-            elApi            : '3.0.0'
+            elApi            : '3.0.0',
+            flyway           : '9.15.1'
     ]
 
     libs = [
@@ -66,6 +67,8 @@ ext {
             'ttl'               : "com.alibaba:transmittable-thread-local:${versions.ttl}",
             'feign'             : "io.github.openfeign:feign-okhttp:${versions.feign}",
             'el'                : "org.glassfish:jakarta.el:${versions.el}",
-            'el-api'            : "javax.el:javax.el-api:${versions.elApi}"
+            'el-api'            : "javax.el:javax.el-api:${versions.elApi}",
+            'flyway'            : "org.flywaydb:flyway-core:${versions.flyway}",
+            'flyway-mysql'      : "org.flywaydb:flyway-mysql:${versions.flyway}",
     ]
 }

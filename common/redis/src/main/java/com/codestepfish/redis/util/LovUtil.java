@@ -176,7 +176,7 @@ public class LovUtil {
      * @return
      */
     private static String getDefaultValue(String key) {
-        return getDefaultRmap().get(key);
+        return getDefaultRmap().getOrDefault(key, null);
     }
 
     /**

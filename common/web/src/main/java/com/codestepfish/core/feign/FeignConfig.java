@@ -12,6 +12,7 @@ import com.codestepfish.core.result.R;
 import com.codestepfish.core.result.RCode;
 import feign.RequestInterceptor;
 import feign.Response;
+import feign.codec.Decoder;
 import feign.codec.StringDecoder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -33,7 +34,7 @@ public class FeignConfig {
     }
 
     @Bean  // 响应拦截器  拦截code != 200的异常
-    public StringDecoder stringDecoder() {
+    public Decoder stringDecoder() {
         return new StringDecoder() {
             @Override
             public Object decode(Response response, Type type) throws IOException {

@@ -98,7 +98,6 @@ configure(subprojects) {
     }
 
     dependencies {
-        implementation project(":common:core")
         implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
         implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
         implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'

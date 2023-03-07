@@ -11,7 +11,7 @@ public enum RCode {
     UNAUTHORIZED_ERROR(401, "Unauthorized"),
     ACCESS_DENY(403, "Forbidden"),
     NOT_FOUND(404, "Not Found"),
-    GATEWAY_ERROR(503, "Gateway Blocked"),
+    GATEWAY_ERROR(503, "Gateway Exception"),
     DEFAULT(600, "System Error"),
     ;
 

@@ -53,8 +53,9 @@ public class GlobalExceptionHandle {
             return R.error(new AppException(RCode.GATEWAY_ERROR.getCode(), "服务不可用"));
         } else if (e instanceof DecodeException && e.getCause() instanceof AppException) {
             return R.error((AppException) e.getCause());
+        } else {
+            return R.error(new AppException(RCode.GATEWAY_ERROR));
         }
-        return R.error(new AppException(RCode.DEFAULT.getCode(), RCode.DEFAULT.getMsg()));
     }
 
     @ExceptionHandler(value = {MissingServletRequestParameterException.class})

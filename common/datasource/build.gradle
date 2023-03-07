@@ -1,3 +1,7 @@
+plugins {
+    id "org.flywaydb.flyway" version "${flyway}"
+}
+
 dependencies {
     api project(":common:core")
     api libs.get('mysql')
@@ -6,6 +10,8 @@ dependencies {
     api libs.get('cosid')
     api libs.get('cosid-mybatis')
     api libs.get('sa-token-redis')
+    api libs.get('flyway')
+    api libs.get('flyway-mysql')
 
     api 'org.springframework.boot:spring-boot-starter-data-jpa'
 }
