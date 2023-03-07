@@ -1,15 +1,12 @@
 package com.codestepfish.core.feign;
 
-import cn.dev33.satoken.SaManager;
-import cn.dev33.satoken.config.SaTokenConfig;
-import cn.dev33.satoken.same.SaSameUtil;
-import cn.dev33.satoken.stp.StpUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONReader;
 import com.codestepfish.core.result.AppException;
 import com.codestepfish.core.result.R;
 import com.codestepfish.core.result.RCode;
+import com.codestepfish.core.util.AppContextHolder;
 import feign.RequestInterceptor;
 import feign.Response;
 import feign.codec.Decoder;
@@ -17,20 +14,26 @@ import feign.codec.StringDecoder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.springframework.context.annotation.Bean;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 @Slf4j
 public class FeignConfig {
 
     @Bean   // 请求拦截器   请求头添加 token & same-token
     public RequestInterceptor requestInterceptor() {
-        SaTokenConfig saTokenConfig = SaManager.getConfig();
-        return requestTemplate -> requestTemplate.header(saTokenConfig.getTokenName(), StpUtil.getTokenValue())
-                .header(SaSameUtil.SAME_TOKEN, SaSameUtil.getToken());
+        return requestTemplate -> {
+            Map<String, String> tokenMap = AppContextHolder.get();
+
+            if (!CollectionUtils.isEmpty(tokenMap)) {
+                tokenMap.forEach(requestTemplate::header);
+            }
+        };
     }
 
     @Bean  // 响应拦截器  拦截code != 200的异常

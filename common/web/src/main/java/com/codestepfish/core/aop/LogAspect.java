@@ -2,6 +2,7 @@ package com.codestepfish.core.aop;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.alibaba.fastjson2.JSON;
+import com.codestepfish.core.util.AppContextHolder;
 import com.google.common.base.Splitter;
 import com.google.common.base.Stopwatch;
 import jakarta.servlet.http.HttpServletRequest;
@@ -77,6 +78,7 @@ public class LogAspect {
 
             return postArgs;
         } finally {
+            AppContextHolder.clear();
             sb.append("Cost: " + stopwatch.stop().elapsed(TimeUnit.MILLISECONDS) + " ms\n");
             sb.append("***************************** Request End *******************************\n");
             log.info("{}", sb);

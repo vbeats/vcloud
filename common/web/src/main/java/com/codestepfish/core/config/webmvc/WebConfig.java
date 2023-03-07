@@ -1,8 +1,12 @@
 package com.codestepfish.core.config.webmvc;
 
+import cn.dev33.satoken.SaManager;
+import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.filter.SaServletFilter;
 import cn.dev33.satoken.same.SaSameUtil;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
+import com.codestepfish.core.util.AppContextHolder;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
@@ -22,6 +26,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 @Configuration
@@ -64,6 +69,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .addExclude("/favicon.ico")
                 .setAuth(obj -> {
                     SaSameUtil.checkCurrentRequestToken();
+
+                    SaTokenConfig tokenConfig = SaManager.getConfig();
+                    AppContextHolder.set(Map.of(tokenConfig.getTokenName(), tokenConfig.getTokenPrefix() + " " + StpUtil.getTokenValue(), SaSameUtil.SAME_TOKEN, SaSameUtil.getToken()));
                 })
                 .setError(e -> SaResult.error(e.getMessage()))
                 ;
