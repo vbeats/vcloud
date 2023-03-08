@@ -2,10 +2,12 @@ package com.codestepfish.core.config.webmvc;
 
 import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.config.SaTokenConfig;
+import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.filter.SaServletFilter;
 import cn.dev33.satoken.same.SaSameUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
+import com.codestepfish.core.config.app.AppConfig;
 import com.codestepfish.core.util.AppContextHolder;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JacksonException;
@@ -15,23 +17,33 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
 @Configuration
 @Slf4j
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class WebConfig implements WebMvcConfigurer {
+
+    private final AppConfig appConfig;
 
     /**
      * 重写json消息转化器 response过滤掉空字段
@@ -51,7 +63,7 @@ public class WebConfig implements WebMvcConfigurer {
         SimpleModule simpleModule = new SimpleModule();
         simpleModule.addDeserializer(String.class, new StdDeserializer<>(String.class) {
             @Override
-            public String deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
+            public String deserialize(JsonParser p, DeserializationContext context) throws IOException, JacksonException {
                 return StringUtils.hasText(p.getText()) ? p.getText().trim() : null;
             }
         });
@@ -71,9 +83,30 @@ public class WebConfig implements WebMvcConfigurer {
                     SaSameUtil.checkCurrentRequestToken();
 
                     SaTokenConfig tokenConfig = SaManager.getConfig();
-                    AppContextHolder.set(Map.of(tokenConfig.getTokenName(), tokenConfig.getTokenPrefix() + " " + StpUtil.getTokenValue(), SaSameUtil.SAME_TOKEN, SaSameUtil.getToken()));
+                    Map<String, String> tokenMap = new HashMap<>(2);
+
+                    tokenMap.put(tokenConfig.getTokenName(), tokenConfig.getTokenPrefix() + " " + StpUtil.getTokenValue());
+                    tokenMap.put(SaSameUtil.SAME_TOKEN, SaSameUtil.getToken());
+
+                    AppContextHolder.set("token", tokenMap);
                 })
-                .setError(e -> SaResult.error(e.getMessage()))
+                .setError(e -> {
+                    SaHolder.getResponse().setHeader("Content-Type", "application/json;charset=UTF-8");
+                    return SaResult.error(e.getMessage());
+                })
                 ;
+    }
+
+    // 拦截器
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(
+                new AsyncHandlerInterceptor() {
+                    @Override
+                    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+                        AppContextHolder.clear();
+                    }
+                }
+        ).addPathPatterns("/**").excludePathPatterns(appConfig.getSkipUrls()).order(-10);
     }
 }
