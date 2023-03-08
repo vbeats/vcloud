@@ -54,7 +54,7 @@ public class RedisCacheManagerConfig {
             // NONE - 永不淘汰清除缓存元素。
             .evictionPolicy(LocalCachedMapOptions.EvictionPolicy.LRU)
             // 如果缓存容量值为0表示不限制本地缓存容量大小
-            .cacheSize(1000)
+            .cacheSize(1024)
             // 以下选项适用于断线原因造成了未收到本地缓存更新消息的情况。
             // 断线重连的策略有以下几种：
             // CLEAR - 如果断线一段时间以后则在重新建立连接以后清空本地缓存
