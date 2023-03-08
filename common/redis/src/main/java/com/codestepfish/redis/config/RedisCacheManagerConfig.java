@@ -43,7 +43,7 @@ public class RedisCacheManagerConfig {
         log.info("config: {}", config.toYAML());
     }
 
-    // 本地缓存策略     😂 pro版本才支持
+    // 本地缓存策略     😂 部分功能 pro 版本才支持
     private static final LocalCachedMapOptions options = LocalCachedMapOptions.defaults()
             // 用于淘汰清除本地缓存内的元素
             // 共有以下几种选择:
@@ -82,7 +82,12 @@ public class RedisCacheManagerConfig {
         // 过期时间   最长空闲时间
         List<Cache> cache = appConfig.getCaches();
         if (!CollectionUtils.isEmpty(cache)) {
-            cache.forEach(it -> config.put("cache:" + it.getCacheName(), new CacheConfig(it.getTtl(), it.getMaxIdleTime())));
+            cache.forEach(it -> {
+                CacheConfig cacheConfig = new CacheConfig(it.getTtl(), it.getMaxIdleTime());
+                cacheConfig.setMaxSize(it.getMaxSize());
+
+                config.put("cache:" + it.getCacheName(), cacheConfig);
+            });
         }
 
         RedissonSpringCacheManager cacheManager = new RedissonSpringCacheManager(redissonClient, config);

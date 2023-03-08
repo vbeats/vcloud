@@ -35,6 +35,8 @@ vcloud:
     - cache-name: admin
       ttl: 1800000
       max-idle-time: 1200000
+      max-size: 1024
     - cache-name: user
       ttl: 1800000
       max-idle-time: 1200000
+      max-size: 4096
