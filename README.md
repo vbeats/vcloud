@@ -18,6 +18,11 @@ gradle xxx:build
 
 `super_admin` `admin` `*` `.` 保留字 , 不允许指定
 
+## AppContextHolder
+
+- token 信息 用户feign request
+- dataScopes 数据权限 (租户&子级id集合)
+
 ## faq
 
 - `admin` `tenant` `role` 表`id`为 `1`的记录为系统超级管理员 禁止修改

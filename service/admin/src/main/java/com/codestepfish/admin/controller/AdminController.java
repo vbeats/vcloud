@@ -38,7 +38,7 @@ public class AdminController {
     @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     public PageOut<List<Admin>> list(AdminQueryIn param) {
 
-        Tenant t = tenantService.getById(ObjectUtils.isEmpty(param.getTenantId()) ? Long.valueOf(String.valueOf(StpUtil.getExtra("tenantId"))) : param.getTenantId());
+        Tenant t = tenantService.getById(ObjectUtils.isEmpty(param.getTenantId()) ? Long.valueOf(String.valueOf(StpUtil.getExtra(AuthConstant.Extra.TENANT_ID))) : param.getTenantId());
         Page<Admin> pages = adminService.listAdmins(new Page<>(param.getCurrent(), param.getPageSize()), t.getCode(), param.getAccount(), param.getPhone());
 
         PageOut<List<Admin>> out = new PageOut<>();

@@ -8,6 +8,7 @@ import cn.dev33.satoken.same.SaSameUtil;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
 import com.codestepfish.core.config.app.AppConfig;
+import com.codestepfish.core.interceptor.DataScopeInterceptor;
 import com.codestepfish.core.util.AppContextHolder;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JacksonException;
@@ -17,8 +18,6 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -100,13 +98,6 @@ public class WebConfig implements WebMvcConfigurer {
     // 拦截器
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(
-                new AsyncHandlerInterceptor() {
-                    @Override
-                    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-                        AppContextHolder.clear();
-                    }
-                }
-        ).addPathPatterns("/**").excludePathPatterns(appConfig.getSkipUrls()).order(-10);
+        registry.addInterceptor(new DataScopeInterceptor()).addPathPatterns("/**").excludePathPatterns(appConfig.getSkipUrls()).order(-10);
     }
 }

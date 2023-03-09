@@ -1,15 +1,8 @@
 package com.codestepfish.admin.feign;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.codestepfish.admin.entity.Admin;
-import com.codestepfish.admin.entity.Menu;
-import com.codestepfish.admin.entity.Role;
-import com.codestepfish.admin.entity.RoleMenu;
-import com.codestepfish.admin.service.AdminService;
-import com.codestepfish.admin.service.MenuService;
-import com.codestepfish.admin.service.RoleMenuService;
-import com.codestepfish.admin.service.RoleService;
-import com.codestepfish.core.constant.auth.AuthConstant;
+import com.codestepfish.admin.entity.*;
+import com.codestepfish.admin.service.*;
 import com.codestepfish.core.model.AppUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +26,7 @@ import java.util.stream.Collectors;
 public class AdminFeignController {
 
     private final AdminService adminService;
+    private final TenantService tenantService;
     private final RoleService roleService;
     private final RoleMenuService roleMenuService;
     private final MenuService menuService;
@@ -59,12 +53,16 @@ public class AdminFeignController {
         } else {
             Role role = roleService.getById(admin.getRoleId());
 
-            appUser.setRoles(Set.of(AuthConstant.ADMIN, role.getAction()));  // role
+            appUser.setRoles(Set.of("admin", role.getAction()));  // role
 
             // permission
             List<Long> menuIds = roleMenuService.list(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, admin.getRoleId()))
                     .stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
             appUser.setPermissions(CollectionUtils.isEmpty(menuIds) ? Collections.emptySet() : menuService.listByIds(menuIds).stream().map(Menu::getPermission).collect(Collectors.toSet()));
+
+            // dataScope
+            List<Tenant> tenants = tenantService.list(Wrappers.<Tenant>lambdaQuery().eq(Tenant::getId, admin.getTenantId()).or().apply("find_in_set({0},pids)", admin.getTenantId()));
+            appUser.setDataScopes(tenants.stream().map(Tenant::getId).collect(Collectors.toSet()));
         }
 
         return appUser;

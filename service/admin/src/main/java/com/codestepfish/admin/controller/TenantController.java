@@ -45,7 +45,7 @@ public class TenantController {
     @GetMapping("/listTenantTree")
     public List<Tenant> listTenantTree() {
         Long id = StpUtil.getLoginIdAsLong();
-        Long tenantId = Long.valueOf(String.valueOf(StpUtil.getExtra("tenantId")));
+        Long tenantId = Long.valueOf(String.valueOf(StpUtil.getExtra(AuthConstant.Extra.TENANT_ID)));
         if (id.equals(1L)) {
             tenantId = null;
         }

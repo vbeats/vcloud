@@ -7,6 +7,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.codestepfish.auth.dto.AuthParam;
 import com.codestepfish.auth.dto.AuthResponse;
 import com.codestepfish.core.constant.auth.AuthConstant;
+import com.codestepfish.core.constant.auth.DeviceTypeEnum;
 import com.codestepfish.core.constant.captcha.CaptchaEnum;
 import com.codestepfish.core.model.AppUser;
 import com.codestepfish.core.result.AppException;
@@ -51,13 +52,13 @@ public class UserNamePasswordProvider implements AuthProvider {
         response.setUser(admin);
 
         // token 4小时过期
-        SaLoginModel extra = SaLoginConfig.setDevice("web")
+        SaLoginModel extra = SaLoginConfig.setDevice(DeviceTypeEnum.WEB.getDevice())
                 .setTimeout(Duration.ofHours(4L).plus(Duration.ofMinutes(15L)).getSeconds())
-                .setExtra("identity", "admin")
-                .setExtra("roleId", admin.getRoleId())
-                .setExtra("tenantId", admin.getTenantId())
-                .setExtra("roles", admin.getRoles())
-                .setExtra("permissions", admin.getPermissions());
+                .setExtra(AuthConstant.Extra.IDENTITY, "admin")
+                .setExtra(AuthConstant.Extra.ROLE_ID, admin.getRoleId())
+                .setExtra(AuthConstant.Extra.TENANT_ID, admin.getTenantId())
+                .setExtra(AuthConstant.Extra.ROLES, admin.getRoles())
+                .setExtra(AuthConstant.Extra.PERMISSIONS, admin.getPermissions());
 
         StpUtil.login(admin.getId(), extra);
 

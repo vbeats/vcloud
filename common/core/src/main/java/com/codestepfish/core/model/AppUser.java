@@ -29,4 +29,6 @@ public class AppUser implements Serializable {
     private Set<String> roles;  // 角色
 
     private Set<String> permissions; // 菜单按钮 权限
+
+    private Set<Long> dataScopes;  // 数据权限
 }

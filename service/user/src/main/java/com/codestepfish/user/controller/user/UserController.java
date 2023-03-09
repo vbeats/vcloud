@@ -5,6 +5,7 @@ import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.codestepfish.core.constant.auth.AuthConstant;
 import com.codestepfish.core.result.AppException;
 import com.codestepfish.core.result.RCode;
 import com.codestepfish.user.controller.user.dto.CodeParam;
@@ -37,7 +38,7 @@ public class UserController {
     @PostMapping("/bindPhone")
     public String bindPhone(@RequestBody CodeParam param) {
         Long userId = StpUtil.getLoginIdAsLong();
-        Long tenantId = Long.valueOf(String.valueOf(StpUtil.getExtra("tenantId")));
+        Long tenantId = Long.valueOf(String.valueOf(StpUtil.getExtra(AuthConstant.Extra.TENANT_ID)));
 
         WxMaService wxMaService = WechatConfig.findWxServiceByAppid(tenantId, param.getAppid(), WxMaService.class);
         try {

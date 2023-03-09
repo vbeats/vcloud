@@ -6,6 +6,8 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.codestepfish.auth.dto.AuthParam;
 import com.codestepfish.auth.dto.AuthResponse;
+import com.codestepfish.core.constant.auth.AuthConstant;
+import com.codestepfish.core.constant.auth.DeviceTypeEnum;
 import com.codestepfish.core.model.AppUser;
 import com.codestepfish.feign.UserClient;
 import lombok.RequiredArgsConstructor;
@@ -38,13 +40,9 @@ public class WxMaAuthProvider implements AuthProvider {
         response.setUser(user);
 
         // token 4小时过期
-        SaLoginModel extra = SaLoginConfig.setDevice("wx_app")
+        SaLoginModel extra = SaLoginConfig.setDevice(DeviceTypeEnum.WX_APP.getDevice())
                 .setTimeout(Duration.ofHours(4L).plus(Duration.ofMinutes(15L)).getSeconds())
-                .setExtra("identity", "user")
-                .setExtra("roleId", user.getRoleId())
-                .setExtra("tenantId", user.getTenantId())
-                .setExtra("roles", user.getRoles())
-                .setExtra("permissions", user.getPermissions());
+                .setExtra(AuthConstant.Extra.TENANT_ID, user.getTenantId());
 
         StpUtil.login(user.getId(), extra);
 
