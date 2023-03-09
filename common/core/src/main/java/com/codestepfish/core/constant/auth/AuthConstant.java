@@ -11,7 +11,6 @@ public class AuthConstant {
     // ******************* token Extra 字段名************************
 
     public static final class Extra {
-        public static final String IDENTITY = "identity";  // 身份标识
         public static final String ROLE_ID = "roleId";   // 角色id
         public static final String IS_SUPER_ADMIN = "isSuperAdmin";   // 是否是超级管理员
         public static final String TENANT_ID = "tenantId";   // 租户id

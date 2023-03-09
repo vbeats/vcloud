@@ -26,6 +26,8 @@ public class AppUser implements Serializable {
 
     private String phone;
 
+    private Boolean isSuperAdmin = false;  // 是否是超级管理员
+
     private Set<String> roles;  // 角色
 
     private Set<String> permissions; // 菜单按钮 权限

@@ -54,9 +54,9 @@ public class UserNamePasswordProvider implements AuthProvider {
         // token 4小时过期
         SaLoginModel extra = SaLoginConfig.setDevice(DeviceTypeEnum.WEB.getDevice())
                 .setTimeout(Duration.ofHours(4L).plus(Duration.ofMinutes(15L)).getSeconds())
-                .setExtra(AuthConstant.Extra.IDENTITY, "admin")
                 .setExtra(AuthConstant.Extra.ROLE_ID, admin.getRoleId())
                 .setExtra(AuthConstant.Extra.TENANT_ID, admin.getTenantId())
+                .setExtra(AuthConstant.Extra.IS_SUPER_ADMIN, admin.getIsSuperAdmin())
                 .setExtra(AuthConstant.Extra.ROLES, admin.getRoles())
                 .setExtra(AuthConstant.Extra.PERMISSIONS, admin.getPermissions());
 

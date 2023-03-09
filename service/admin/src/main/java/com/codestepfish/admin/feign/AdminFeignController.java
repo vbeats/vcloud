@@ -45,6 +45,7 @@ public class AdminFeignController {
         appUser.setAccount(admin.getAccount());
         appUser.setNickName(admin.getNickName());
         appUser.setPhone(admin.getPhone());
+        appUser.setIsSuperAdmin(admin.isSuperAdmin());
 
         // 账号角色 & 菜单权限
         if (admin.isSuperAdmin()) {
