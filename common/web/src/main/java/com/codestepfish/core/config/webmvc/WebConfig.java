@@ -98,6 +98,6 @@ public class WebConfig implements WebMvcConfigurer {
     // 拦截器
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new DataScopeInterceptor()).addPathPatterns("/**").excludePathPatterns(appConfig.getSkipUrls()).order(-10);
+        registry.addInterceptor(new DataScopeInterceptor()).addPathPatterns("/**").order(-10);
     }
 }

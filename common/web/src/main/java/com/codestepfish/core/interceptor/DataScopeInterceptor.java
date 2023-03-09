@@ -20,9 +20,11 @@ public class DataScopeInterceptor implements AsyncHandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        List<Long> dataScopes = JSON.parseArray(String.valueOf(StpUtil.getExtra(AuthConstant.Extra.DATA_SCOPES)), Long.class);
-        if (!CollectionUtils.isEmpty(dataScopes)) {
-            AppContextHolder.set(AuthConstant.Extra.DATA_SCOPES, dataScopes);
+        if (StpUtil.isLogin()) {
+            List<Long> dataScopes = JSON.parseArray(String.valueOf(StpUtil.getExtra(AuthConstant.Extra.DATA_SCOPES)), Long.class);
+            if (!CollectionUtils.isEmpty(dataScopes)) {
+                AppContextHolder.set(AuthConstant.Extra.DATA_SCOPES, dataScopes);
+            }
         }
         return true;
     }
