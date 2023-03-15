@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS `admin`;
 CREATE TABLE `admin`
 (
     `id`          bigint unsigned                                              NOT NULL AUTO_INCREMENT,
-    `tenant_id`   bigint unsigned                                              NOT NULL COMMENT '租户id',
+    `merchant_id` bigint unsigned                                              NOT NULL COMMENT '商户id',
     `account`     varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '账号',
     `nick_name`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '昵称',
     `password`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '密码',
@@ -19,7 +19,7 @@ CREATE TABLE `admin`
     `create_time` datetime(3)                                                  NOT NULL DEFAULT current_timestamp(3),
     `update_time` datetime(3)                                                  NULL     DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE,
-    index `idx_tenant_id` (`tenant_id` asc) using btree,
+    index `idx_merchant_id` (`merchant_id` asc) using btree,
     index `idx_phone` (`phone` asc) using btree,
     index `idx_role_id` (`role_id` asc) using btree,
     index `idx_status` (`status` asc) using btree,
@@ -67,7 +67,7 @@ CREATE TABLE `menu`
 INSERT INTO `menu`
 VALUES (1, 0, '0', '系统管理', '/system', 'Setting', 'setting', '', 0, 99999, '');
 INSERT INTO `menu`
-VALUES (2, 1, '1', '租户管理', '/tenant', 'Operation', 'tenant', '', 0, 1, '');
+VALUES (2, 1, '1', '商户管理', '/merchant', 'Operation', 'merchant', '', 0, 1, '');
 INSERT INTO `menu`
 VALUES (3, 1, '1', '菜单管理', '/menu', 'Menu', 'menus', '', 0, 2, '');
 INSERT INTO `menu`
@@ -78,11 +78,11 @@ INSERT INTO `menu`
 VALUES (6, 1, '1', '值集配置', '/lov', 'Grape', 'lov', '', 0, 5, '');
 
 INSERT INTO `menu`
-VALUES (10, 2, '1,2', '新增', '', '', '', 'admin.tenant.add', 1, 0, '');
+VALUES (10, 2, '1,2', '新增', '', '', '', 'admin.merchant.add', 1, 0, '');
 INSERT INTO `menu`
-VALUES (11, 2, '1,2', '编辑', '', '', '', 'admin.tenant.edit', 1, 0, '');
+VALUES (11, 2, '1,2', '编辑', '', '', '', 'admin.merchant.edit', 1, 0, '');
 INSERT INTO `menu`
-VALUES (12, 2, '1,2', '新增子级', '', '', '', 'admin.tenant.addsub', 1, 0, '');
+VALUES (12, 2, '1,2', '新增子级', '', '', '', 'admin.merchant.addsub', 1, 0, '');
 
 INSERT INTO `menu`
 VALUES (13, 3, '1,3', '新增', '', '', '', 'admin.menu.add', 1, 0, '');
@@ -162,31 +162,31 @@ CREATE TABLE `role_menu`
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Table structure for tenant
+-- Table structure for merchant
 -- ----------------------------
-DROP TABLE IF EXISTS `tenant`;
-CREATE TABLE `tenant`
+DROP TABLE IF EXISTS `merchant`;
+CREATE TABLE `merchant`
 (
-    `id`          bigint UNSIGNED                                                NOT NULL auto_increment,
-    `pid`         bigint unsigned                                                not null default 0 comment '上级id 默认0',
-    `pids`        varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '0' COMMENT '所有上级id  默认0 ,分隔',
-    `code`        varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '租户编号',
-    `tenant_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '租户名称',
-    `remark`      varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
-    `create_time` datetime(3)                                                    NOT NULL DEFAULT current_timestamp(3),
-    `update_time` datetime(3)                                                    NULL     DEFAULT NULL,
+    `id`            bigint UNSIGNED                                                NOT NULL auto_increment,
+    `pid`           bigint unsigned                                                not null default 0 comment '上级id 默认0',
+    `pids`          varchar(4096) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '0' COMMENT '所有上级id  默认0 ,分隔',
+    `code`          varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '商户编号',
+    `merchant_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  NOT NULL COMMENT '商户名称',
+    `remark`        varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
+    `create_time`   datetime(3)                                                    NOT NULL DEFAULT current_timestamp(3),
+    `update_time`   datetime(3)                                                    NULL     DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE,
     INDEX `idx_pid` (`pid` ASC) USING BTREE,
     INDEX `idx_code` (`code` asc) using btree
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci COMMENT = '租户'
+  COLLATE = utf8mb4_0900_ai_ci COMMENT = '商户'
   ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Records of tenant
+-- Records of merchant
 -- ----------------------------
-INSERT INTO `tenant`
+INSERT INTO `merchant`
 VALUES (1, 0, '0', 'V00000001', '运营平台', '运营平台', now(3), NULL);
 
 -- ----------------------------
@@ -195,12 +195,12 @@ VALUES (1, 0, '0', 'V00000001', '运营平台', '运营平台', now(3), NULL);
 DROP TABLE IF EXISTS `lov_category`;
 CREATE TABLE `lov_category`
 (
-    `id`        bigint UNSIGNED                                                NOT NULL auto_increment,
-    `tenant_id` bigint unsigned                                                NOT NULL COMMENT '租户id',
-    `category`  varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '分组',
-    `remark`    varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
+    `id`          bigint UNSIGNED                                                NOT NULL auto_increment,
+    `merchant_id` bigint unsigned                                                NOT NULL COMMENT '商户id',
+    `category`    varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL COMMENT '分组',
+    `remark`      varchar(1024) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT '' COMMENT '备注',
     PRIMARY KEY (`id`) USING BTREE,
-    INDEX `idx_tenant_id` (`tenant_id` ASC) USING BTREE,
+    INDEX `idx_merchant_id` (`merchant_id` ASC) USING BTREE,
     INDEX `idx_category` (`category` ASC) USING BTREE
 ) ENGINE = InnoDB
   CHARACTER SET = utf8mb4

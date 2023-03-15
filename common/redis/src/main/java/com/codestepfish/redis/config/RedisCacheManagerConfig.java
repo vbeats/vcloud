@@ -29,20 +29,6 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RedisCacheManagerConfig {
-    private final AppConfig appConfig;
-
-    // 生成yaml配置
-    public static void main(String[] args) throws IOException {
-        Config config = new Config();
-        config.useSingleServer().setAddress("redis://127.0.0.1:6379")
-                .setDatabase(0).setKeepAlive(true)
-                .setConnectionMinimumIdleSize(10)
-                .setConnectionPoolSize(32)
-                .setTimeout(1000);
-        config.setCodec(new JsonJacksonCodec());
-        log.info("config: {}", config.toYAML());
-    }
-
     // 本地缓存策略     😂 部分功能 pro 版本才支持
     private static final LocalCachedMapOptions options = LocalCachedMapOptions.defaults()
             // 用于淘汰清除本地缓存内的元素
@@ -73,6 +59,19 @@ public class RedisCacheManagerConfig {
             .timeToLive(30, TimeUnit.MINUTES)
             // 每个Map本地缓存里元素的最长闲置时间
             .maxIdle(10, TimeUnit.MINUTES);
+    private final AppConfig appConfig;
+
+    // 生成yaml配置
+    public static void main(String[] args) throws IOException {
+        Config config = new Config();
+        config.useSingleServer().setAddress("redis://127.0.0.1:6379")
+                .setDatabase(0).setKeepAlive(true)
+                .setConnectionMinimumIdleSize(10)
+                .setConnectionPoolSize(32)
+                .setTimeout(1000);
+        config.setCodec(new JsonJacksonCodec());
+        log.info("config: {}", config.toYAML());
+    }
 
     @Bean
     @Primary

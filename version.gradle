@@ -1,6 +1,6 @@
 ext {
     versions = [
-            fastjson         : '2.0.23',
+            fastjson         : '2.0.25',
             jackson          : '2.14.2',
             commonsText      : '1.10.0',
             mysql            : '8.0.32',
@@ -9,24 +9,24 @@ ext {
             mybatisPlus      : '3.5.3.1',
             cosid            : '2.0.5',
             httpmime         : '4.5.14',
-            hutool           : '5.8.12',
-            commonsFileupload: '1.4',
+            hutool           : '5.8.15',
+            commonsFileupload: '1.5',
             commonsPool      : '2.11.1',
             commonsIo        : '2.11.0',
             okhttp           : '4.10.0',
             guava            : '31.1-jre',
             validator        : '8.0.0.Final',
             easyexcel        : '3.2.1',
-            javaJwt          : '4.2.2',
+            javaJwt          : '4.3.0',
             jjwt             : '0.11.5',
-            caffeine         : '3.1.3',
+            caffeine         : '3.1.5',
             wxJava           : '4.4.0',
             saToken          : '1.34.0',
             ttl              : '2.14.2',
-            feign            : '12.1',
+            feign            : '12.2',
             el               : '4.0.2',
-            elApi            : '3.0.0',
-            flyway           : '9.15.1'
+            elApi            : '5.0.1',
+            flyway           : '9.15.2'
     ]
 
     libs = [
@@ -67,7 +67,7 @@ ext {
             'ttl'               : "com.alibaba:transmittable-thread-local:${versions.ttl}",
             'feign'             : "io.github.openfeign:feign-okhttp:${versions.feign}",
             'el'                : "org.glassfish:jakarta.el:${versions.el}",
-            'el-api'            : "javax.el:javax.el-api:${versions.elApi}",
+            'el-api'            : "jakarta.el:jakarta.el-api:${versions.elApi}",
             'flyway'            : "org.flywaydb:flyway-core:${versions.flyway}",
             'flyway-mysql'      : "org.flywaydb:flyway-mysql:${versions.flyway}",
     ]

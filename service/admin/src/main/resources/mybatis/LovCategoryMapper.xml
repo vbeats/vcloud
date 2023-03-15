@@ -2,12 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.codestepfish.admin.mapper.LovCategoryMapper">
     <select id="listCategory" resultType="com.codestepfish.admin.entity.LovCategory">
-        select lc.*, t.tenant_name tenant_name
+        select lc.*, m.merchant_name merchant_name
         from lov_category lc
-                 left join tenant t on lc.tenant_id = t.id
+                 left join merchant m on lc.merchant_id = m.id
         <where>
-            <if test="tenant_id != null">
-                and lc.tenant_id = #{tenant_id}
+            <if test="merchant_id != null">
+                and lc.merchant_id = #{merchant_id}
             </if>
             <if test="category != null and category != ''">
                 and lc.category = #{category}

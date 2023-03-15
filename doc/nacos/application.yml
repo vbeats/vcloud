@@ -1,3 +1,10 @@
+server:
+  compression:
+    enabled: true
+  error:
+    whitelabel:
+      enabled: false
+
 spring:
   cloud:
     sentinel:
@@ -14,12 +21,14 @@ logging:
 sa-token:
   token-prefix: Bearer
   token-name: Authorization
-  timeout: 2592000
-  activity-timeout: 7200
+  timeout: 7200
+  same-token-timeout: 86400
+  activity-timeout: -1
   token-style: uuid
   is-read-body: false
   is-read-header: true
   is-concurrent: true
+  is-share: true
   max-login-count: 12
   is-read-cookie: false
   auto-renew: true

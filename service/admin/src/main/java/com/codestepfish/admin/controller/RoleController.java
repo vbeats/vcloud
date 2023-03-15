@@ -64,7 +64,7 @@ public class RoleController {
 
     @PostMapping("/add")
     public void add(@RequestBody Role role) {
-        Assert.isTrue(!Arrays.asList(AuthConstant.SUPER_ADMIN, AuthConstant.ADMIN, "*").contains(role.getAction().toLowerCase()), "保留字段 禁止使用");
+        Assert.isTrue(!Arrays.asList(AuthConstant.SUPER_ADMIN, "admin", "*", ".").contains(role.getAction().toLowerCase()), "保留字段 禁止使用");
         Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getAction, role.getAction()).eq(Role::getRoleName, role.getRoleName()));
         Assert.isNull(exist, "此角色已存在");
         role.setAction(role.getAction().toLowerCase());
@@ -75,7 +75,7 @@ public class RoleController {
     @PostMapping("/update")
     public void update(@RequestBody Role role) {
         Assert.isTrue(!role.getId().equals(1L), "此角色不可修改");
-        Assert.isTrue(!AuthConstant.ADMIN.equalsIgnoreCase(role.getAction()), "保留字段");
+        Assert.isTrue(!Arrays.asList(AuthConstant.SUPER_ADMIN, "admin", "*", ".").contains(role.getAction().toLowerCase()), "保留字段");
         Role exist = roleService.getOne(Wrappers.<Role>lambdaQuery().eq(Role::getAction, role.getAction()).eq(Role::getRoleName, role.getRoleName()));
         Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(role.getId()), "此角色已存在");
 

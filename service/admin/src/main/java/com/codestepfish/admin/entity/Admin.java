@@ -36,10 +36,10 @@ public class Admin implements Serializable {
     private Long id;
 
     /**
-     * 租户id
+     * 商户id
      */
     @JsonSerialize(using = LongToStringSerializer.class)
-    private Long tenantId;
+    private Long merchantId;
 
     /**
      * 账号
@@ -92,11 +92,11 @@ public class Admin implements Serializable {
     private LocalDateTime updateTime;
 
     // -------------------------------------
-    @TableField(value = "tenant_code", exist = false)
-    private String tenantCode;
+    @TableField(value = "merchant_code", exist = false)
+    private String merchantCode;
 
-    @TableField(value = "tenant_name", exist = false)
-    private String tenantName;
+    @TableField(value = "merchant_name", exist = false)
+    private String merchantName;
 
     @TableField(value = "role_name", exist = false)
     private String roleName;

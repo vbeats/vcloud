@@ -15,7 +15,7 @@ public class AuthParam {
     @NotNull(message = "认证类型不能为空")
     private GrantTypeEnum grantType;  // 认证类型
 
-    private String tenantCode; // 租户编号
+    private String merchantCode; // 商户编号
 
     // ********************* 账号 密码登录 *********************
 

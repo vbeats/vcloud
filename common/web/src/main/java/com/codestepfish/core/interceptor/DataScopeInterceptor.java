@@ -13,7 +13,7 @@ import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import java.util.List;
 
 /**
- * 租户数据权限
+ * 商户数据权限
  */
 @Slf4j
 public class DataScopeInterceptor implements AsyncHandlerInterceptor {

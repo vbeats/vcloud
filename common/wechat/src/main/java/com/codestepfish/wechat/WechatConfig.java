@@ -31,37 +31,37 @@ public class WechatConfig {
     /**
      * 根据appid 获取对应平台wxService
      *
-     * @param tenantId 租户id
-     * @param appid    微信平台appid
-     * @param t        对应平台WxService.class
-     * @param <T>      WxService instance
+     * @param merchantId 商户id
+     * @param appid      微信平台appid
+     * @param t          对应平台WxService.class
+     * @param <T>        WxService instance
      * @return
      */
-    public static <T> T findWxServiceByAppid(Long tenantId, String appid, Class<T> t) {
+    public static <T> T findWxServiceByAppid(Long merchantId, String appid, Class<T> t) {
         Map<Class, Object> wxService = WX_SERVICES.get(appid);
 
         if (ObjectUtils.isEmpty(wxService)) {
-            WX_SERVICES.put(appid, putWxService(tenantId, appid, t));
+            WX_SERVICES.put(appid, putWxService(merchantId, appid, t));
         }
         return (T) WX_SERVICES.get(appid).get(t);
     }
 
     /**
-     * @param tenantId
+     * @param merchantId
      * @param appid
      * @param t
      * @return
      */
-    private static <T> Map<Class, Object> putWxService(Long tenantId, String appid, Class<T> t) {
+    private static <T> Map<Class, Object> putWxService(Long merchantId, String appid, Class<T> t) {
         Map<Class, Object> wxService = new HashMap<>();
 
         RedissonClient redissonClient = SpringUtil.getBean(RedissonClient.class);
 
         if (WxMaService.class.equals(t)) {     // 微信小程序
-            String secret = LovUtil.get(tenantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MA_SECRET);
-            String token = LovUtil.get(tenantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MA_TOKEN);
-            String aesKey = LovUtil.get(tenantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MA_AES_KEY);
-            String cloudEnv = LovUtil.get(tenantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MA_CLOUD_ENV);
+            String secret = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MA_SECRET);
+            String token = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MA_TOKEN);
+            String aesKey = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MA_AES_KEY);
+            String cloudEnv = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MA_CLOUD_ENV);
 
             WxMaRedissonConfigImpl config = new WxMaRedissonConfigImpl(redissonClient, "open:wx_ma");
 
@@ -83,9 +83,9 @@ public class WechatConfig {
 
             wxService.put(WxMaService.class, wxMaService);
         } else if (WxMpService.class.equals(t)) {  // 微信公众平台
-            String secret = LovUtil.get(tenantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MP_SECRET);
-            String token = LovUtil.get(tenantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MP_TOKEN);
-            String aesKey = LovUtil.get(tenantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MP_AES_KEY);
+            String secret = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MP_SECRET);
+            String token = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MP_TOKEN);
+            String aesKey = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MP_AES_KEY);
 
             WxMpRedissonConfigImpl config = new WxMpRedissonConfigImpl(redissonClient, "open:wx_mp");
 
@@ -103,9 +103,9 @@ public class WechatConfig {
 
             wxService.put(WxMpService.class, wxMpService);
         } else if (WxCpService.class.equals(t)) {  //企业微信
-            String secret = LovUtil.get(tenantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_CP_SECRET);
-            String token = LovUtil.get(tenantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_CP_TOKEN);
-            String aesKey = LovUtil.get(tenantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_CP_AES_KEY);
+            String secret = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_CP_SECRET);
+            String token = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_CP_TOKEN);
+            String aesKey = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_CP_AES_KEY);
 
             WxCpRedissonConfigImpl config = new WxCpRedissonConfigImpl(redissonClient, "open:wx_cp");
 

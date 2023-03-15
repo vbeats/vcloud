@@ -38,10 +38,10 @@ public class UserFeignController {
     // 用户登录认证
     @GetMapping("/info")
     public AppUser getUserInfo(@RequestParam("code") String code, @RequestParam("appid") String appid) {
-        // appid  ----> tenant_id
-        Long tenantId = redisService.get(String.format(RedisConstants.WX_APPID_BUCKET, appid));
+        // appid  ----> merchant_id
+        Long merchantId = redisService.get(String.format(RedisConstants.WX_APPID_BUCKET, appid));
 
-        WxMaService wxMaService = WechatConfig.findWxServiceByAppid(tenantId, appid, WxMaService.class);
+        WxMaService wxMaService = WechatConfig.findWxServiceByAppid(merchantId, appid, WxMaService.class);
 
         // 获取小程序用户union id openid
         try {
@@ -53,11 +53,11 @@ public class UserFeignController {
             Assert.hasText(openid, "微信认证异常");
 
             // 是否已存在此用户
-            User user = userService.getOne(Wrappers.<User>lambdaQuery().eq(User::getTenantId, tenantId).eq(User::getWxUnionId, unionId));
+            User user = userService.getOne(Wrappers.<User>lambdaQuery().eq(User::getMerchantId, merchantId).eq(User::getWxUnionId, unionId));
             if (ObjectUtils.isEmpty(user)) {
                 // 新增
                 user = new User();
-                user.setTenantId(tenantId)
+                user.setMerchantId(merchantId)
                         .setWxUnionId(unionId)
                         .setWxMaOpenid(openid)
                         .setCreateTime(LocalDateTime.now());
@@ -75,7 +75,7 @@ public class UserFeignController {
             return AppUser.builder()
                     .id(user.getId())
                     .roleId(null)
-                    .tenantId(tenantId)
+                    .merchantId(merchantId)
                     .account("")
                     .nickName("")
                     .phone(DesensitizedUtil.mobilePhone(user.getPhone()))

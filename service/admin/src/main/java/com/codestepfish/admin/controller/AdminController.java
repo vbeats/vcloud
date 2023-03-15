@@ -7,9 +7,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.codestepfish.admin.dto.admin.AdminQueryIn;
 import com.codestepfish.admin.dto.admin.PasswordIn;
 import com.codestepfish.admin.entity.Admin;
-import com.codestepfish.admin.entity.Tenant;
+import com.codestepfish.admin.entity.Merchant;
 import com.codestepfish.admin.service.AdminService;
-import com.codestepfish.admin.service.TenantService;
+import com.codestepfish.admin.service.MerchantService;
 import com.codestepfish.core.constant.auth.AuthConstant;
 import com.codestepfish.core.result.PageOut;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +32,14 @@ import java.util.stream.Collectors;
 public class AdminController {
 
     private final AdminService adminService;
-    private final TenantService tenantService;
+    private final MerchantService merchantService;
 
     @GetMapping("/list")
     @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     public PageOut<List<Admin>> list(AdminQueryIn param) {
 
-        Tenant t = tenantService.getById(ObjectUtils.isEmpty(param.getTenantId()) ? Long.valueOf(String.valueOf(StpUtil.getExtra(AuthConstant.Extra.TENANT_ID))) : param.getTenantId());
-        Page<Admin> pages = adminService.listAdmins(new Page<>(param.getCurrent(), param.getPageSize()), t.getCode(), param.getAccount(), param.getPhone());
+        Merchant m = merchantService.getById(ObjectUtils.isEmpty(param.getMerchantId()) ? Long.valueOf(String.valueOf(StpUtil.getExtra(AuthConstant.Extra.MERCHANT_ID))) : param.getMerchantId());
+        Page<Admin> pages = adminService.listAdmins(new Page<>(param.getCurrent(), param.getPageSize()), m.getCode(), param.getAccount(), param.getPhone());
 
         PageOut<List<Admin>> out = new PageOut<>();
         out.setTotal(pages.getTotal());
@@ -51,17 +51,17 @@ public class AdminController {
     @PostMapping("/add")
     @SaCheckRole(value = {AuthConstant.SUPER_ADMIN})
     public void add(@RequestBody Admin param) {
-        Tenant tenant = tenantService.getById(param.getTenantId());
-        Admin existAccount = adminService.getOne(Wrappers.<Admin>lambdaQuery().eq(Admin::getTenantId, tenant.getId()).eq(Admin::getAccount, param.getAccount()));
+        Merchant m = merchantService.getById(param.getMerchantId());
+        Admin existAccount = adminService.getOne(Wrappers.<Admin>lambdaQuery().eq(Admin::getMerchantId, m.getId()).eq(Admin::getAccount, param.getAccount()));
         Assert.isNull(existAccount, "账号已存在");
         Assert.hasText(param.getPassword(), "密码错误");
 
         Admin admin = new Admin();
-        admin.setTenantId(tenant.getId());
+        admin.setMerchantId(m.getId());
         admin.setAccount(param.getAccount());
         admin.setNickName(param.getNickName());
         if (StringUtils.hasText(param.getPhone())) {
-            Admin existPhone = adminService.getOne(Wrappers.<Admin>lambdaQuery().eq(Admin::getTenantId, tenant.getId()).eq(Admin::getPhone, param.getPhone()));
+            Admin existPhone = adminService.getOne(Wrappers.<Admin>lambdaQuery().eq(Admin::getMerchantId, m.getId()).eq(Admin::getPhone, param.getPhone()));
             Assert.isNull(existPhone, "手机号已存在");
             admin.setPhone(param.getPhone());
         } else {
@@ -82,7 +82,7 @@ public class AdminController {
         Admin admin = adminService.getById(param.getId());
 
         if (StringUtils.hasText(param.getPhone())) {
-            Admin exist = adminService.getOne(Wrappers.<Admin>lambdaQuery().eq(Admin::getTenantId, admin.getTenantId()).eq(Admin::getPhone, param.getPhone().trim()));
+            Admin exist = adminService.getOne(Wrappers.<Admin>lambdaQuery().eq(Admin::getMerchantId, admin.getMerchantId()).eq(Admin::getPhone, param.getPhone().trim()));
             Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(admin.getId()), "手机号已存在");
             admin.setPhone(param.getPhone());
         } else {

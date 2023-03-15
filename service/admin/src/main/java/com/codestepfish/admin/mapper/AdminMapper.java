@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 public interface AdminMapper extends BaseMapper<Admin> {
 
-    Admin getAdminByAccount(@Param("account") String account, @Param("password") String password, @Param("tenant_code") String tenantCode);
+    Admin getAdminByAccount(@Param("account") String account, @Param("password") String password, @Param("merchant_code") String merchantCode);
 
-    Page<Admin> listAdmins(Page<Admin> page, @Param("tenant_code") String tenantCode, @Param("account") String account, @Param("phone") String phone);
+    Page<Admin> listAdmins(Page<Admin> page, @Param("merchant_code") String merchantCode, @Param("account") String account, @Param("phone") String phone);
 }

@@ -11,7 +11,7 @@ public enum GrantTypeEnum {
     WX_MA("wx_ma", "微信小程序"),
     WX_MP("wx_mp", "微信公众平台"),
     WX_CP("wx_cp", "企业微信"),
-    ALI_MINIAPP("ali_miniapp", "支付宝小程序"),
+    ALI_MINI_APP("ali_mini_app", "支付宝小程序"),
     PASSWORD("password", "密码登陆"),
     SMS("sms", "短信登陆"),
     ;

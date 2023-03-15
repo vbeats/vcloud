@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 值集util    namespace:   lov:tenantId:category
+ * 值集util    namespace:   lov:merchantId:category
  * <p>
  * 默认值集     namespace:   lov:default
  * <p>
@@ -61,13 +61,13 @@ public class LovUtil {
     /**
      * set or update 值集
      *
-     * @param tenantId 租户id
-     * @param category 分组
-     * @param key      key
-     * @param value    value
+     * @param merchantId 商户id
+     * @param category   分组
+     * @param key        key
+     * @param value      value
      */
-    public static void set(Long tenantId, String category, String key, String value) {
-        RMap<String, String> rmap = getRmap(tenantId, category);
+    public static void set(Long merchantId, String category, String key, String value) {
+        RMap<String, String> rmap = getRmap(merchantId, category);
         rmap.put(key, value);
     }
 
@@ -85,13 +85,13 @@ public class LovUtil {
     /**
      * 获取String value   , 不存在默认返回默认值集配置
      *
-     * @param tenantId 租户id
-     * @param category 分组
-     * @param key      key
+     * @param merchantId 商户id
+     * @param category   分组
+     * @param key        key
      * @return
      */
-    public static String get(Long tenantId, String category, String key) {
-        RMap<String, String> rmap = getRmap(tenantId, category);
+    public static String get(Long merchantId, String category, String key) {
+        RMap<String, String> rmap = getRmap(merchantId, category);
         return StringUtils.hasText(rmap.get(key)) ? rmap.get(key) : getDefaultValue(key);
     }
 
@@ -99,67 +99,67 @@ public class LovUtil {
     /**
      * 获取int value   , 不存在默认返回默认值集配置
      *
-     * @param tenantId 租户id
-     * @param category 分组
-     * @param key      key
+     * @param merchantId 商户id
+     * @param category   分组
+     * @param key        key
      * @return
      */
-    public static Integer getInt(Long tenantId, String category, String key) {
-        String value = get(tenantId, category, key);
+    public static Integer getInt(Long merchantId, String category, String key) {
+        String value = get(merchantId, category, key);
         return StringUtils.hasText(value) ? Integer.valueOf(value) : Integer.valueOf(getDefaultValue(key));
     }
 
     /**
      * 获取 Long value   , 不存在默认返回默认值集配置
      *
-     * @param tenantId 租户id
-     * @param category 分组
-     * @param key      key
+     * @param merchantId 商户id
+     * @param category   分组
+     * @param key        key
      * @return
      */
-    public static Long getLong(Long tenantId, String category, String key) {
-        String value = get(tenantId, category, key);
+    public static Long getLong(Long merchantId, String category, String key) {
+        String value = get(merchantId, category, key);
         return StringUtils.hasText(value) ? Long.valueOf(value) : Long.valueOf(getDefaultValue(key));
     }
 
     /**
      * 获取 BigDecimal value   , 不存在默认返回默认值集配置
      *
-     * @param tenantId 租户id
-     * @param category 分组
-     * @param key      key
+     * @param merchantId 商户id
+     * @param category   分组
+     * @param key        key
      * @return
      */
-    public static BigDecimal getBigDecimal(Long tenantId, String category, String key) {
-        String value = get(tenantId, category, key);
+    public static BigDecimal getBigDecimal(Long merchantId, String category, String key) {
+        String value = get(merchantId, category, key);
         return StringUtils.hasText(value) ? new BigDecimal(value) : new BigDecimal(getDefaultValue(key));
     }
 
     /**
      * 删除某个分组下 某个key
      *
-     * @param tenantId 租户id
-     * @param category 分组
-     * @param key      key
+     * @param merchantId 商户id
+     * @param category   分组
+     * @param key        key
      */
-    public static void delete(Long tenantId, String category, String key) {
-        RMap<String, String> rmap = getRmap(tenantId, category);
+    public static void delete(Long merchantId, String category, String key) {
+        RMap<String, String> rmap = getRmap(merchantId, category);
         rmap.remove(key);
     }
 
     /**
      * 删除某个分组
      *
-     * @param tenantId 租户id
-     * @param category 分组
+     * @param merchantId 商户id
+     * @param category   分组
      */
-    public static void deleteCategory(Long tenantId, String category) {
-        RMap<String, String> rmap = getRmap(tenantId, category);
+    public static void deleteCategory(Long merchantId, String category) {
+        RMap<String, String> rmap = getRmap(merchantId, category);
         rmap.delete();
     }
 
-    private static RMap<String, String> getRmap(Long tenantId, String category) {
-        RLocalCachedMap<String, String> rmap = redissonClient.getLocalCachedMap(String.format(RedisConstants.LOV_BUCKET, tenantId, category), options);
+    private static RMap<String, String> getRmap(Long merchantId, String category) {
+        RLocalCachedMap<String, String> rmap = redissonClient.getLocalCachedMap(String.format(RedisConstants.LOV_BUCKET, merchantId, category), options);
         return rmap;
     }
 

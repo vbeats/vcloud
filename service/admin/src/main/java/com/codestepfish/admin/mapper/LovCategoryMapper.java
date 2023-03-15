@@ -7,5 +7,5 @@ import com.codestepfish.admin.entity.LovCategory;
 import org.apache.ibatis.annotations.Param;
 
 public interface LovCategoryMapper extends BaseMapper<LovCategory> {
-    Page<LovCategory> listCategory(Page<LovCategory> page, @Param("tenant_id") Long tenantId, @Param("category") String category);
+    Page<LovCategory> listCategory(Page<LovCategory> page, @Param("merchant_id") Long merchantId, @Param("category") String category);
 }

@@ -17,7 +17,7 @@ public class LovCategoryService extends ServiceImpl<LovCategoryMapper, LovCatego
 
     private final LovCategoryMapper lovCategoryMapper;
 
-    public Page<LovCategory> listCategory(Page<LovCategory> page, Long tenantId, String category) {
-        return lovCategoryMapper.listCategory(page, tenantId, category);
+    public Page<LovCategory> listCategory(Page<LovCategory> page, Long merchantId, String category) {
+        return lovCategoryMapper.listCategory(page, merchantId, category);
     }
 }

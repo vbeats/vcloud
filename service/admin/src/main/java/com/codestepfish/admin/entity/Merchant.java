@@ -10,7 +10,10 @@ import com.codestepfish.core.serializer.LongToStringSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -18,14 +21,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 租户
+ * 商户
  */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
-@TableName(value = "tenant")
-public class Tenant implements Serializable {
+@TableName(value = "merchant")
+public class Merchant implements Serializable {
+
     @Serial
     private static final long serialVersionUID = 2779190417236513615L;
 
@@ -47,16 +51,16 @@ public class Tenant implements Serializable {
     private String pids = "0";
 
     /**
-     * 租户编号
+     * 商户编号
      */
     @TableField(value = "code")
     private String code;
 
     /**
-     * 租户名称
+     * 商户名称
      */
-    @TableField(value = "tenant_name")
-    private String tenantName;
+    @TableField(value = "merchant_name")
+    private String merchantName;
 
     /**
      * 备注
@@ -80,5 +84,5 @@ public class Tenant implements Serializable {
     private Boolean hasChildren = false;
 
     @TableField(value = "children", exist = false)
-    private List<Tenant> children;
+    private List<Merchant> children;
 }

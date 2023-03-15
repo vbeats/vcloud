@@ -21,11 +21,11 @@ public class LovCategory {
     private Long id;
 
     /**
-     * 租户id
+     * 商户id
      */
-    @TableField(value = "tenant_id")
+    @TableField(value = "merchant_id")
     @JsonSerialize(using = LongToStringSerializer.class)
-    private Long tenantId;
+    private Long merchantId;
 
     /**
      * 分组名称
@@ -40,8 +40,8 @@ public class LovCategory {
     private String remark;
 
     /**
-     * 租户名称
+     * 商户名称
      */
-    @TableField(value = "tenantName", exist = false)
-    private String tenantName;
+    @TableField(value = "merchantName", exist = false)
+    private String merchantName;
 }

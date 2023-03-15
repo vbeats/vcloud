@@ -45,7 +45,7 @@ public class UserNamePasswordProvider implements AuthProvider {
         // 2 校验账号 密码
         Assert.hasText(param.getPassword(), "密码不能为空");
 
-        AppUser admin = adminClient.getAdminInfo(param.getAccount(), DigestUtils.md5Hex(String.format(AuthConstant.PASSWORD_RULE, param.getAccount(), param.getPassword())), param.getTenantCode());
+        AppUser admin = adminClient.getAdminInfo(param.getAccount(), DigestUtils.md5Hex(String.format(AuthConstant.PASSWORD_RULE, param.getAccount(), param.getPassword())), param.getMerchantCode());
 
         AuthResponse response = new AuthResponse();
 
@@ -55,7 +55,9 @@ public class UserNamePasswordProvider implements AuthProvider {
         SaLoginModel extra = SaLoginConfig.setDevice(DeviceTypeEnum.WEB.getDevice())
                 .setTimeout(Duration.ofHours(4L).plus(Duration.ofMinutes(15L)).getSeconds())
                 .setExtra(AuthConstant.Extra.ROLE_ID, admin.getRoleId())
-                .setExtra(AuthConstant.Extra.TENANT_ID, admin.getTenantId())
+                .setExtra(AuthConstant.Extra.MERCHANT_ID, admin.getMerchantId())
+                .setExtra(AuthConstant.Extra.MERCHANT_CODE, admin.getMerchantCode())
+                .setExtra(AuthConstant.Extra.MERCHANT_NAME, admin.getMerchantName())
                 .setExtra(AuthConstant.Extra.IS_SUPER_ADMIN, admin.getIsSuperAdmin())
                 .setExtra(AuthConstant.Extra.ROLES, admin.getRoles())
                 .setExtra(AuthConstant.Extra.PERMISSIONS, admin.getPermissions());

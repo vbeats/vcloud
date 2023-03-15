@@ -2,6 +2,7 @@ package com.codestepfish.core.model;
 
 import lombok.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Set;
 
@@ -12,13 +13,19 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 public class AppUser implements Serializable {
+
+    @Serial
     private static final long serialVersionUID = -5836527549105263247L;
 
     private Long id;
 
     private Long roleId;
 
-    private Long tenantId;
+    private Long merchantId;
+
+    private String merchantCode;
+
+    private String merchantName;
 
     private String account;
 

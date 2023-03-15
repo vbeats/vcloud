@@ -32,11 +32,11 @@ public class User implements Serializable {
     private Long id;
 
     /**
-     * 租户id
+     * 商户id
      */
-    @TableField(value = "tenant_id")
+    @TableField(value = "merchant_id")
     @JsonSerialize(using = LongToStringSerializer.class)
-    private Long tenantId;
+    private Long merchantId;
 
     /**
      * 微信开放平台union id

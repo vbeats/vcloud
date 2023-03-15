@@ -3,24 +3,24 @@
 <mapper namespace="com.codestepfish.admin.mapper.AdminMapper">
     <select id="getAdminByAccount" resultType="com.codestepfish.admin.entity.Admin">
         select a.*,
-               t.id          tenant_id,
-               t.code        tenant_code,
-               t.tenant_name tenant_name
+        m.id merchant_id,
+        m.code merchant_code,
+        m.merchant_name merchant_name
         from admin a
-                 left join tenant t on a.tenant_id = t.id
+        left join merchant m on a.merchant_id = m.id
         where a.account = #{account}
-          and a.password = #{password}
-          and t.code = #{tenant_code}
+        and a.password = #{password}
+        and m.code = #{merchant_code}
     </select>
 
     <select id="listAdmins" resultType="com.codestepfish.admin.entity.Admin">
         select a.*,
-               t.id          tenant_id,
-               t.tenant_name tenant_name,
-               r.role_name   role_name
+        m.id merchant_id,
+        m.merchant_name merchant_name,
+        r.role_name role_name
         from admin a
-                 left join tenant t on a.tenant_id = t.id
-                 left join role r on a.role_id = r.id
+        left join merchant m on a.merchant_id = m.id
+        left join role r on a.role_id = r.id
         where a.del_flag = 0
         <if test="account != null and account != ''">
             and a.account = #{account}
@@ -28,8 +28,8 @@
         <if test="phone != null and phone != ''">
             and a.phone = #{phone}
         </if>
-        <if test="tenant_code != null and tenant_code != ''">
-            and t.code = #{tenant_code}
+        <if test="merchant_code != null and merchant_code != ''">
+            and m.code = #{merchant_code}
         </if>
         order by a.create_time asc
     </select>
