@@ -102,6 +102,8 @@ configure(subprojects) {
         implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
         implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config'
         implementation 'com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery'
+        // 动态线程池
+        implementation(libs.get('dynamic-tp'))
     }
 
     switch (project.name) {

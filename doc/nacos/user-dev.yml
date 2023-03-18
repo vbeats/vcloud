@@ -34,14 +34,14 @@ cosid:
     enabled: true
     mode: chain
     chain:
-      safe-distance: 5
+      safe-distance: 3
       prefetch-worker:
         core-pool-size: 2
         prefetch-period: 1s
     distributor:
       type: redis
     share:
-      offset: 100
+      offset: 0
       step: 10
       converter:
         type: to_string

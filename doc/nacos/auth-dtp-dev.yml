@@ -1,0 +1,49 @@
+spring:
+  dynamic:
+    tp:
+      enabled: true
+      enabled-collect: true
+      collector-types: micrometer,internal_logging
+      monitor-interval: 5
+      executors:
+        - thread-pool-name: testDtp
+          thread-pool-alias-name: 测试线程池
+          executor-type: common
+          core-pool-size: 5
+          maximum-pool-size: 10
+          queue-capacity: 20
+          queue-type: VariableLinkedBlockingQueue
+          rejected-handler-type: CallerRunsPolicy
+          keep-alive-time: 60
+          allow-core-thread-time-out: false
+          thread-name-prefix: dtp
+          wait-for-tasks-to-complete-on-shutdown: true
+          await-termination-seconds: 10
+          pre-start-all-core-threads: false
+          run-timeout: 10
+          queue-timeout: 10
+          notify-enabled: true
+          notify-items:
+            - type: capacity
+              enabled: true
+              threshold: 60
+              interval: 120
+            - type: change
+              enabled: true
+              threshold: 60
+              interval: 120
+            - type: liveness
+              enabled: true
+              threshold: 60
+            - type: reject
+              enabled: true
+              threshold: 1
+            - type: run_timeout
+              enabled: true
+              threshold: 1
+            - type: queue_timeout
+              enabled: true
+              threshold: 1
+      platforms:
+        - platform: email
+          receivers: bootvue@gmail.com

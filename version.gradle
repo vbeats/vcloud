@@ -26,7 +26,8 @@ ext {
             feign            : '12.2',
             el               : '4.0.2',
             elApi            : '5.0.1',
-            flyway           : '9.15.2'
+            flyway           : '9.15.2',
+            dynamicTp        : '1.1.0'
     ]
 
     libs = [
@@ -70,5 +71,6 @@ ext {
             'el-api'            : "jakarta.el:jakarta.el-api:${versions.elApi}",
             'flyway'            : "org.flywaydb:flyway-core:${versions.flyway}",
             'flyway-mysql'      : "org.flywaydb:flyway-mysql:${versions.flyway}",
+            'dynamic-tp'        : "cn.dynamictp:dynamic-tp-spring-cloud-starter-nacos:${versions.dynamicTp}"
     ]
 }
