@@ -60,7 +60,8 @@ public class UserNamePasswordProvider implements AuthProvider {
                 .setExtra(AuthConstant.Extra.MERCHANT_NAME, admin.getMerchantName())
                 .setExtra(AuthConstant.Extra.IS_SUPER_ADMIN, admin.getIsSuperAdmin())
                 .setExtra(AuthConstant.Extra.ROLES, admin.getRoles())
-                .setExtra(AuthConstant.Extra.PERMISSIONS, admin.getPermissions());
+                .setExtra(AuthConstant.Extra.PERMISSIONS, admin.getPermissions())
+                .setExtra(AuthConstant.Extra.DATA_SCOPES, admin.getDataScopes());
 
         StpUtil.login(admin.getId(), extra);
 

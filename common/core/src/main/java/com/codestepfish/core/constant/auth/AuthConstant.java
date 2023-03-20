@@ -21,6 +21,6 @@ public class AuthConstant {
         public static final String MERCHANT_NAME = "merchantName"; // 商户名称
         public static final String ROLES = "roles";   // 角色集合
         public static final String PERMISSIONS = "permissions";   // 权限集合
-        public static final String DATA_SCOPES = "dataScopes";   // 数据权限
+        public static final String DATA_SCOPES = "dataScopes";   // 数据权限 当前商户 & 所有子级
     }
 }
