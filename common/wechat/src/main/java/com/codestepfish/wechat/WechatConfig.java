@@ -7,6 +7,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.codestepfish.redis.constant.LovConstants;
 import com.codestepfish.redis.util.LovUtil;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.service.WxService;
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.api.impl.WxCpServiceImpl;
 import me.chanjar.weixin.cp.config.impl.WxCpRedissonConfigImpl;
@@ -14,10 +15,9 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
 import me.chanjar.weixin.mp.config.impl.WxMpRedissonConfigImpl;
 import org.redisson.api.RedissonClient;
-import org.springframework.util.ObjectUtils;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,7 +26,10 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 @Slf4j
 public class WechatConfig {
-    private static final Map<String, Map<Class, Object>> WX_SERVICES = new ConcurrentHashMap<>();  // Map<appid , Map<WxService.class , WxService instance>>
+    // 小程序&公众号
+    private static final Map<Class, WxService> WX_SERVICES = new ConcurrentHashMap<>(10);  // Map<WxService.class , WxService instance>
+    // 企业微信
+    private static final Map<String, WxCpService> WX_CP_SERVICES = new ConcurrentHashMap<>(10); // appid ==> WxCpService
 
     /**
      * 根据appid 获取对应平台wxService
@@ -34,16 +37,24 @@ public class WechatConfig {
      * @param merchantId 商户id
      * @param appid      微信平台appid
      * @param t          对应平台WxService.class
-     * @param <T>        WxService instance
      * @return
      */
-    public static <T> T findWxServiceByAppid(Long merchantId, String appid, Class<T> t) {
-        Map<Class, Object> wxService = WX_SERVICES.get(appid);
-
-        if (ObjectUtils.isEmpty(wxService)) {
-            WX_SERVICES.put(appid, putWxService(merchantId, appid, t));
+    public static <T> T findWxServiceByAppid(Long merchantId, String appid, Class<? extends WxService> t) {
+        WxService wxService = null;
+        try {
+            if (WxMaService.class.equals(t)) {
+                wxService = ((WxMaService) WX_SERVICES.get(t)).switchoverTo(appid);
+            } else if (WxMpService.class.equals(t)) {
+                wxService = ((WxMpService) WX_SERVICES.get(t)).switchoverTo(appid);
+            } else if (WxCpService.class.equals(t)) {
+                wxService = WX_CP_SERVICES.get(appid);
+            }
+        } catch (Exception e) {
+            wxService = putWxService(merchantId, appid, t);
         }
-        return (T) WX_SERVICES.get(appid).get(t);
+
+        Assert.notNull(wxService, "未初始化微信配置");
+        return (T) wxService;
     }
 
     /**
@@ -52,8 +63,7 @@ public class WechatConfig {
      * @param t
      * @return
      */
-    private static <T> Map<Class, Object> putWxService(Long merchantId, String appid, Class<T> t) {
-        Map<Class, Object> wxService = new HashMap<>();
+    public static WxService putWxService(Long merchantId, String appid, Class<? extends WxService> t) {
 
         RedissonClient redissonClient = SpringUtil.getBean(RedissonClient.class);
 
@@ -79,9 +89,11 @@ public class WechatConfig {
             }
 
             WxMaService wxMaService = new WxMaServiceImpl();
-            wxMaService.setWxMaConfig(config);
+            wxMaService.addConfig(appid, config);
 
-            wxService.put(WxMaService.class, wxMaService);
+            WX_SERVICES.put(WxMaService.class, wxMaService);
+
+            return wxMaService.switchoverTo(appid);
         } else if (WxMpService.class.equals(t)) {  // 微信公众平台
             String secret = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MP_SECRET);
             String token = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_MP_TOKEN);
@@ -99,9 +111,11 @@ public class WechatConfig {
             }
 
             WxMpService wxMpService = new WxMpServiceImpl();
-            wxMpService.setWxMpConfigStorage(config);
+            wxMpService.addConfigStorage(appid, config);
 
-            wxService.put(WxMpService.class, wxMpService);
+            WX_SERVICES.put(WxMpService.class, wxMpService);
+
+            return wxMpService.switchoverTo(appid);
         } else if (WxCpService.class.equals(t)) {  //企业微信
             String secret = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_CP_SECRET);
             String token = LovUtil.get(merchantId, LovConstants.WECHAT_CATEGORY, LovConstants.WX_CP_TOKEN);
@@ -121,8 +135,10 @@ public class WechatConfig {
             WxCpService wxCpService = new WxCpServiceImpl();
             wxCpService.setWxCpConfigStorage(config);
 
-            wxService.put(WxCpService.class, wxCpService);
+            WX_CP_SERVICES.put(appid, wxCpService);
+            return wxCpService;
         }
-        return wxService;
+
+        return null;
     }
 }
