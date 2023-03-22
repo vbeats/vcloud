@@ -16,11 +16,11 @@ public class AuthConstant {
     public static final class Extra {
         public static final String ROLE_ID = "roleId";   // 角色id
         public static final String IS_SUPER_ADMIN = "isSuperAdmin";   // 是否是超级管理员
-        public static final String MERCHANT_ID = "merchantId";   // 商户id
-        public static final String MERCHANT_CODE = "merchantCode"; // 商户编号
-        public static final String MERCHANT_NAME = "merchantName"; // 商户名称
+        public static final String TENANT_ID = "tenantId";   // 租户id
+        public static final String TENANT_CODE = "tenantCode"; // 租户编号
+        public static final String TENANT_NAME = "tenantName"; // 租户名称
         public static final String ROLES = "roles";   // 角色集合
         public static final String PERMISSIONS = "permissions";   // 权限集合
-        public static final String DATA_SCOPES = "dataScopes";   // 数据权限 当前商户 & 所有子级
+        public static final String DATA_SCOPES = "dataScopes";   // 数据权限 当前租户 & 所有子级
     }
 }

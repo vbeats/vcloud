@@ -21,14 +21,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 商户
+ * 租户
  */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
-@TableName(value = "merchant")
-public class Merchant implements Serializable {
+@TableName(value = "tenant")
+public class Tenant implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2779190417236513615L;
@@ -51,16 +51,16 @@ public class Merchant implements Serializable {
     private String pids = "0";
 
     /**
-     * 商户编号
+     * 租户编号
      */
     @TableField(value = "code")
     private String code;
 
     /**
-     * 商户名称
+     * 租户名称
      */
-    @TableField(value = "merchant_name")
-    private String merchantName;
+    @TableField(value = "tenant_name")
+    private String tenantName;
 
     /**
      * 备注
@@ -84,5 +84,5 @@ public class Merchant implements Serializable {
     private Boolean hasChildren = false;
 
     @TableField(value = "children", exist = false)
-    private List<Merchant> children;
+    private List<Tenant> children;
 }

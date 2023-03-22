@@ -26,14 +26,14 @@ import java.util.stream.Collectors;
 public class AdminFeignController {
 
     private final AdminService adminService;
-    private final MerchantService merchantService;
+    private final TenantService tenantService;
     private final RoleService roleService;
     private final RoleMenuService roleMenuService;
     private final MenuService menuService;
 
     @GetMapping("/info")
-    public AppUser getAdminInfo(@RequestParam("account") String account, @RequestParam("password") String password, @RequestParam("merchant_code") String merchantCode) {
-        Admin admin = adminService.getAdminByAccount(account, password, merchantCode);
+    public AppUser getAdminInfo(@RequestParam("account") String account, @RequestParam("password") String password, @RequestParam("tenant_code") String tenantCode) {
+        Admin admin = adminService.getAdminByAccount(account, password, tenantCode);
         Assert.notNull(admin, "账号/密码错误");
         Assert.isTrue(admin.getStatus(), "账号已被禁用");
         Assert.isTrue(!admin.getDelFlag(), "账号已被删除");
@@ -41,9 +41,9 @@ public class AdminFeignController {
         AppUser appUser = new AppUser();
         appUser.setId(admin.getId());
         appUser.setRoleId(admin.getRoleId());
-        appUser.setMerchantId(admin.getMerchantId());
-        appUser.setMerchantCode(admin.getMerchantCode());
-        appUser.setMerchantName(admin.getMerchantName());
+        appUser.setTenantId(admin.getTenantId());
+        appUser.setTenantCode(admin.getTenantCode());
+        appUser.setTenantName(admin.getTenantName());
         appUser.setAccount(admin.getAccount());
         appUser.setNickName(admin.getNickName());
         appUser.setPhone(admin.getPhone());
@@ -64,8 +64,8 @@ public class AdminFeignController {
             appUser.setPermissions(CollectionUtils.isEmpty(menuIds) ? Collections.emptySet() : menuService.listByIds(menuIds).stream().map(Menu::getPermission).collect(Collectors.toSet()));
 
             // dataScope
-            List<Merchant> merchants = merchantService.list(Wrappers.<Merchant>lambdaQuery().eq(Merchant::getId, admin.getMerchantId()).or().apply("find_in_set({0},pids)", admin.getMerchantId()));
-            appUser.setDataScopes(merchants.stream().map(Merchant::getId).collect(Collectors.toSet()));
+            List<Tenant> tenants = tenantService.list(Wrappers.<Tenant>lambdaQuery().eq(Tenant::getId, admin.getTenantId()).or().apply("find_in_set({0},pids)", admin.getTenantId()));
+            appUser.setDataScopes(tenants.stream().map(Tenant::getId).collect(Collectors.toSet()));
         }
 
         return appUser;

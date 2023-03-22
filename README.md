@@ -21,13 +21,13 @@ gradle xxx:build
 ## AppContextHolder
 
 - token 信息 用户feign request
-- dataScopes 数据权限 (商户&子级id集合)
+- dataScopes 数据权限 (当前租户&子级id集合)
 
 ## faq
 
-- `admin` `merchant` `role` 表`id`为 `1`的记录为系统超级管理员 禁止修改
+- `admin` `tenant` `role` 表`id`为 `1`的记录为系统超级管理员 禁止修改
 - 系统模块 `service-admin` 相关业务优化 : 查询`cache`
-- 值集util `LovUtil` , 微信相关的cache会额外存储一份 `appid : merchantId` 对应关系
+- 值集util `LovUtil` , 微信相关的cache会额外存储一份 `appid : tenantId` 对应关系
 
 ## todo
 

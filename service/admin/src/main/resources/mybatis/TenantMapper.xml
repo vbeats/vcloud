@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.codestepfish.admin.mapper.TenantMapper">
+    <select id="listTenant" resultType="com.codestepfish.admin.entity.Tenant">
+        select t.*,
+               if(exists(select * from tenant c where c.pid = t.id), 1, 0) as has_children
+        from tenant t
+        <where>
+            <if test="param.pid != null">
+                and t.pid = #{param.pid}
+            </if>
+            <if test="param.code != null and param.code != ''">
+                and t.code = #{param.code}
+            </if>
+            <if test="param.tenantName != null  and param.tenantName != ''">
+                and t.tenant_name = #{param.tenantName}
+            </if>
+        </where>
+        order by t.create_time asc
+    </select>
+
+    <select id="listTenantTree" resultType="com.codestepfish.admin.entity.Tenant">
+        select t.*,
+               if(exists(select * from tenant c where c.pid = t.id), 1, 0) as has_children
+        from tenant t
+        <where>
+            <if test="tenant_id != null">
+                and t.id = #{tenant_id}
+            </if>
+            <if test="tenant_id == null">
+                and t.pid = 0
+            </if>
+        </where>
+        order by t.create_time asc
+    </select>
+</mapper>

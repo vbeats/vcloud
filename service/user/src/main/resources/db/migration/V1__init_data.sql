@@ -8,7 +8,7 @@ DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`
 (
     `id`           bigint UNSIGNED                                                NOT NULL,
-    `merchant_id`  bigint                                                         NOT NULL COMMENT '商户id',
+    `tenant_id`    bigint                                                         NOT NULL COMMENT '租户id',
     `wx_union_id`  varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '微信开放平台union id',
     `wx_ma_openid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '微信小程序openid',
     `wx_mp_openid` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci   NOT NULL DEFAULT '' COMMENT '微信公众平台openid',
@@ -19,7 +19,7 @@ CREATE TABLE `user`
     `create_time`  datetime(3)                                                    NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `update_time`  datetime(3)                                                    NULL     DEFAULT NULL,
     PRIMARY KEY (`id`) USING BTREE,
-    INDEX `idx_merchant_id` (`merchant_id` ASC) USING BTREE,
+    INDEX `idx_tenant_id` (`tenant_id` ASC) USING BTREE,
     INDEX `idx_union_id` (`wx_union_id` ASC) USING BTREE,
     INDEX `idx_wx_ma_openid` (`wx_ma_openid` ASC) USING BTREE,
     INDEX `idx_wx_mp_openid` (`wx_mp_openid` ASC) USING BTREE,

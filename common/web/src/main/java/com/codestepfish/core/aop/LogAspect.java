@@ -40,7 +40,7 @@ public class LogAspect {
 
     private final Environment env;
 
-    @Around("execution(* com.codestepfish.*..*Controller.*(..)) || @within(org.springframework.web.bind.annotation.RestController))")
+    @Around("execution(* com.codestepfish..*Controller.*(..)) || @within(org.springframework.web.bind.annotation.RestController))")
     public Object logParam(ProceedingJoinPoint point) throws Throwable {
         MethodSignature ms = (MethodSignature) point.getSignature();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();

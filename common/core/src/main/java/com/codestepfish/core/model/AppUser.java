@@ -21,11 +21,11 @@ public class AppUser implements Serializable {
 
     private Long roleId;
 
-    private Long merchantId;
+    private Long tenantId;
 
-    private String merchantCode;
+    private String tenantCode;
 
-    private String merchantName;
+    private String tenantName;
 
     private String account;
 
@@ -33,6 +33,7 @@ public class AppUser implements Serializable {
 
     private String phone;
 
+    @Builder.Default
     private Boolean isSuperAdmin = false;  // 是否是超级管理员
 
     private Set<String> roles;  // 角色

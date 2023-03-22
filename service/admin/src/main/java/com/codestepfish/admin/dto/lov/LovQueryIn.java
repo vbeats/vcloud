@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class LovQueryIn extends PageIn {
-    private Long merchantId;
+    private Long tenantId;
     private Long lovCategoryId;
     private String category;
     private String key;

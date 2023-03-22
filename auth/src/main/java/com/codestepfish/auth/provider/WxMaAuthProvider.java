@@ -6,7 +6,7 @@ import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import com.codestepfish.auth.dto.AuthParam;
 import com.codestepfish.auth.dto.AuthResponse;
-import com.codestepfish.auth.dto.Merchant;
+import com.codestepfish.auth.dto.Tenant;
 import com.codestepfish.core.constant.auth.AuthConstant;
 import com.codestepfish.core.constant.auth.DeviceTypeEnum;
 import com.codestepfish.core.model.AppUser;
@@ -38,7 +38,7 @@ public class WxMaAuthProvider implements AuthProvider {
 
         AppUser user = userClient.getUserInfo(param.getWxMaParam().getCode(), param.getWxMaParam().getAppid());
 
-        Merchant merchant = adminClient.getMerchantById(user.getMerchantId());
+        Tenant tenant = adminClient.getTenantById(user.getTenantId());
 
         AuthResponse response = new AuthResponse();
 
@@ -47,9 +47,9 @@ public class WxMaAuthProvider implements AuthProvider {
         // token 4小时过期
         SaLoginModel extra = SaLoginConfig.setDevice(DeviceTypeEnum.WX_APP.getDevice())
                 .setTimeout(Duration.ofHours(4L).plus(Duration.ofMinutes(15L)).getSeconds())
-                .setExtra(AuthConstant.Extra.MERCHANT_ID, user.getMerchantId())
-                .setExtra(AuthConstant.Extra.MERCHANT_CODE, merchant.getCode())
-                .setExtra(AuthConstant.Extra.MERCHANT_NAME, merchant.getMerchantName());
+                .setExtra(AuthConstant.Extra.TENANT_ID, user.getTenantId())
+                .setExtra(AuthConstant.Extra.TENANT_CODE, tenant.getCode())
+                .setExtra(AuthConstant.Extra.TENANT_NAME, tenant.getTenantName());
 
         StpUtil.login(user.getId(), extra);
 

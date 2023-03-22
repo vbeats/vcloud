@@ -10,15 +10,11 @@ import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.util.Base64Utils;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 public class JwtUtil {
@@ -26,7 +22,7 @@ public class JwtUtil {
     private static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     // 签名密钥  长度 64
-    private static final String key = Base64Utils.encodeToString("tSG~1&OoP%PVo%8BLp(S8DA0QG!r#Q(0I#FeWlRVTwhkgm3m+DpVg6xlTyf!)VIm".getBytes());
+    private static final String key = Base64.getEncoder().encodeToString("tSG~1&OoP%PVo%8BLp(S8DA0QG!r#Q(0I#FeWlRVTwhkgm3m+DpVg6xlTyf!)VIm".getBytes());
 
     /**
      * 生成 JWT Token 字符串
@@ -109,7 +105,7 @@ public class JwtUtil {
 
     private static Verification verification() {
         Algorithm algorithm = switch (signatureAlgorithm) {
-            case HS256 -> Algorithm.HMAC256(Base64Utils.decodeFromString(key));
+            case HS256 -> Algorithm.HMAC256(Base64.getDecoder().decode(key));
             default -> throw new RuntimeException("不支持该算法");
         };
 

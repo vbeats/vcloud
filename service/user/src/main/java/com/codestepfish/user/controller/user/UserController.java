@@ -5,9 +5,9 @@ import cn.binarywang.wx.miniapp.bean.WxMaPhoneNumberInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.DesensitizedUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.codestepfish.core.constant.auth.AuthConstant;
 import com.codestepfish.core.result.AppException;
 import com.codestepfish.core.result.RCode;
+import com.codestepfish.core.util.ExtraUtil;
 import com.codestepfish.user.controller.user.dto.CodeParam;
 import com.codestepfish.user.entity.User;
 import com.codestepfish.user.service.UserService;
@@ -38,16 +38,16 @@ public class UserController {
     @PostMapping("/bindPhone")
     public String bindPhone(@RequestBody CodeParam param) {
         Long userId = StpUtil.getLoginIdAsLong();
-        Long merchantId = Long.valueOf(String.valueOf(StpUtil.getExtra(AuthConstant.Extra.MERCHANT_ID)));
+        Long tenantId = ExtraUtil.getTenantId();
 
-        WxMaService wxMaService = WechatConfig.findWxServiceByAppid(merchantId, param.getAppid(), WxMaService.class);
+        WxMaService wxMaService = WechatConfig.findWxServiceByAppid(tenantId, param.getAppid(), WxMaService.class);
         try {
             WxMaPhoneNumberInfo phoneNoInfo = wxMaService.getUserService().getNewPhoneNoInfo(param.getCode());
             String phone = phoneNoInfo.getPurePhoneNumber();
             User user = userService.getById(userId);
 
             // 1. 此手机号是否被其它用户绑定
-            User exist = userService.getOne(Wrappers.<User>lambdaQuery().eq(User::getMerchantId, merchantId).eq(User::getPhone, phone).eq(User::getDelFlag, false));
+            User exist = userService.getOne(Wrappers.<User>lambdaQuery().eq(User::getTenantId, tenantId).eq(User::getPhone, phone).eq(User::getDelFlag, false));
             Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(userId), "此手机号已绑定其它微信会员");
 
             // 2. 只有没手机号的用户set  已经有手机号的不去更新

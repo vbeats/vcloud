@@ -1,6 +1,6 @@
 package com.codestepfish.feign;
 
-import com.codestepfish.auth.dto.Merchant;
+import com.codestepfish.auth.dto.Tenant;
 import com.codestepfish.core.feign.DefaultFallbackFactory;
 import com.codestepfish.core.model.AppUser;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -12,11 +12,11 @@ public interface AdminClient {
 
     // 管理员认证
     @GetMapping("/admin/info")
-    AppUser getAdminInfo(@RequestParam("account") String account, @RequestParam("password") String password, @RequestParam("merchant_code") String merchantCode);
+    AppUser getAdminInfo(@RequestParam("account") String account, @RequestParam("password") String password, @RequestParam("tenant_code") String tenantCode);
 
-    @GetMapping("/merchant/getMerchantByCode")
-    Merchant getMerchantByCode(@RequestParam("merchant_code") String merchantCode);
+    @GetMapping("/tenant/getTenantByCode")
+    Tenant getTenantByCode(@RequestParam("tenant_code") String tenantCode);
 
-    @GetMapping("/merchant/getMerchantById")
-    Merchant getMerchantById(@RequestParam("merchant_id") Long merchantId);
+    @GetMapping("/tenant/getTenantById")
+    Tenant getTenantById(@RequestParam("tenant_id") Long tenantId);
 }

@@ -44,7 +44,7 @@ public class LovController {
     @GetMapping("/listCategory")
     public PageOut<List<LovCategory>> listCategory(LovQueryIn param) {
 
-        Page<LovCategory> categoryPage = lovCategoryService.listCategory(new Page<>(param.getCurrent(), param.getPageSize()), param.getMerchantId(), param.getCategory());
+        Page<LovCategory> categoryPage = lovCategoryService.listCategory(new Page<>(param.getCurrent(), param.getPageSize()), param.getTenantId(), param.getCategory());
         return new PageOut<>(categoryPage.getTotal(), categoryPage.getRecords());
     }
 
@@ -63,7 +63,7 @@ public class LovController {
 
     @PostMapping("/addCategory")
     public void addCategory(@RequestBody LovCategory param) {
-        LovCategory exist = lovCategoryService.getOne(Wrappers.<LovCategory>lambdaQuery().eq(LovCategory::getMerchantId, param.getMerchantId()).eq(LovCategory::getCategory, param.getCategory()));
+        LovCategory exist = lovCategoryService.getOne(Wrappers.<LovCategory>lambdaQuery().eq(LovCategory::getTenantId, param.getTenantId()).eq(LovCategory::getCategory, param.getCategory()));
         Assert.isNull(exist, "分组已存在");
 
         lovCategoryService.save(param);
@@ -76,13 +76,13 @@ public class LovController {
         Assert.isNull(exist, "值集已存在");
 
         lovService.save(param);
-        LovUtil.set(lovCategory.getMerchantId(), lovCategory.getCategory(), param.getKey(), param.getValue());
-        setWechatAppidAndMerchantIdCache(param, lovCategory);
+        LovUtil.set(lovCategory.getTenantId(), lovCategory.getCategory(), param.getKey(), param.getValue());
+        setWechatAppidAndTenantIdCache(param, lovCategory);
     }
 
     @PostMapping("/updateCategory")
     public void updateCategory(@RequestBody LovCategory param) {
-        LovCategory exist = lovCategoryService.getOne(Wrappers.<LovCategory>lambdaQuery().eq(LovCategory::getMerchantId, param.getMerchantId()).eq(LovCategory::getCategory, param.getCategory()));
+        LovCategory exist = lovCategoryService.getOne(Wrappers.<LovCategory>lambdaQuery().eq(LovCategory::getTenantId, param.getTenantId()).eq(LovCategory::getCategory, param.getCategory()));
         Assert.isTrue(ObjectUtils.isEmpty(exist) || exist.getId().equals(param.getId()), "分组已存在");
 
         // 只允许更新备注信息
@@ -101,20 +101,20 @@ public class LovController {
         lov.setRemark(param.getRemark());
 
         lovService.updateById(lov);
-        LovUtil.set(lovCategory.getMerchantId(), lovCategory.getCategory(), param.getKey(), param.getValue());
-        setWechatAppidAndMerchantIdCache(param, lovCategory);
+        LovUtil.set(lovCategory.getTenantId(), lovCategory.getCategory(), param.getKey(), param.getValue());
+        setWechatAppidAndTenantIdCache(param, lovCategory);
     }
 
     /**
-     * 设置 appid ---> merchantId 关联关系 cache
+     * 设置 appid ---> tenantId 关联关系 cache
      *
      * @param lov
      * @param lovCategory
      */
-    private void setWechatAppidAndMerchantIdCache(Lov lov, LovCategory lovCategory) {
-        // 微信 appid --> merchantId
+    private void setWechatAppidAndTenantIdCache(Lov lov, LovCategory lovCategory) {
+        // 微信 appid --> tenantId
         if (LovConstants.WECHAT_CATEGORY.equals(lovCategory.getCategory()) && (Arrays.asList(LovConstants.WX_MA_APPID, LovConstants.WX_MP_APPID, LovConstants.WX_CP_APPID).contains(lov.getKey()))) {
-            redisService.set(String.format(RedisConstants.WX_APPID_BUCKET, lov.getValue()), lovCategory.getMerchantId());
+            redisService.set(String.format(RedisConstants.WX_APPID_BUCKET, lov.getValue()), lovCategory.getTenantId());
         }
     }
 
@@ -123,8 +123,8 @@ public class LovController {
         Lov lov = lovService.getById(param.getId());
         LovCategory lovCategory = lovCategoryService.getById(lov.getLovCategoryId());
         lovService.removeById(lov);
-        LovUtil.delete(lovCategory.getMerchantId(), lovCategory.getCategory(), lov.getKey());
-        // 微信 appid --> merchantId
+        LovUtil.delete(lovCategory.getTenantId(), lovCategory.getCategory(), lov.getKey());
+        // 微信 appid --> tenantId
         if (LovConstants.WECHAT_CATEGORY.equals(lovCategory.getCategory()) && (Arrays.asList(LovConstants.WX_MA_APPID, LovConstants.WX_MP_APPID, LovConstants.WX_CP_APPID).contains(lov.getKey()))) {
             redisService.getAndDelete(String.format(RedisConstants.WX_APPID_BUCKET, lov.getValue()));
         }

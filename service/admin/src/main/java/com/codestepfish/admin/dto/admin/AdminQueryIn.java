@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class AdminQueryIn extends PageIn {
 
-    private Long merchantId;
+    private Long tenantId;
     private String account;
     private String phone;
 }

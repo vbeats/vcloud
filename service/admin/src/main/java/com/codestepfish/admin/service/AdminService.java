@@ -17,11 +17,11 @@ public class AdminService extends ServiceImpl<AdminMapper, Admin> implements ISe
 
     private final AdminMapper adminMapper;
 
-    public Admin getAdminByAccount(String account, String password, String merchantCode) {
-        return adminMapper.getAdminByAccount(account, password, merchantCode);
+    public Admin getAdminByAccount(String account, String password, String tenantCode) {
+        return adminMapper.getAdminByAccount(account, password, tenantCode);
     }
 
-    public Page<Admin> listAdmins(Page<Admin> page, String merchantCode, String account, String phone) {
-        return adminMapper.listAdmins(page, merchantCode, account, phone);
+    public Page<Admin> listAdmins(Page<Admin> page, String tenantCode, String account, String phone) {
+        return adminMapper.listAdmins(page, tenantCode, account, phone);
     }
 }

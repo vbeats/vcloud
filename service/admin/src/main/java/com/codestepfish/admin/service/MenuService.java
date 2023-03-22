@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.codestepfish.admin.entity.Menu;
 import com.codestepfish.admin.entity.RoleMenu;
 import com.codestepfish.admin.mapper.MenuMapper;
-import com.codestepfish.core.constant.auth.AuthConstant;
+import com.codestepfish.core.util.ExtraUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +36,7 @@ public class MenuService extends ServiceImpl<MenuMapper, Menu> implements IServi
 
         if (!adminId.equals(1L)) {
             // 当前用户角色能看到的菜单 按钮
-            Long roleId = Long.valueOf(String.valueOf(StpUtil.getExtra(AuthConstant.Extra.ROLE_ID)));
+            Long roleId = ExtraUtil.getRoleId();
 
             List<RoleMenu> roleMenus = roleMenuService.list(Wrappers.<RoleMenu>lambdaQuery().eq(RoleMenu::getRoleId, roleId));
 

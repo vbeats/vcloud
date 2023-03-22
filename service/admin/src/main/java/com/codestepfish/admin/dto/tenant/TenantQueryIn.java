@@ -1,4 +1,4 @@
-package com.codestepfish.admin.dto.merchant;
+package com.codestepfish.admin.dto.tenant;
 
 import com.codestepfish.core.model.PageIn;
 import lombok.AllArgsConstructor;
@@ -10,11 +10,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MerchantQueryIn extends PageIn {
+public class TenantQueryIn extends PageIn {
 
     private Long pid = 0L;
 
     private String code;
 
-    private String merchantName;
+    private String tenantName;
 }

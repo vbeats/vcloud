@@ -9,13 +9,13 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 商户
+ * 租户
  */
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
-public class Merchant implements Serializable {
+public class Tenant implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 2779190417236513615L;
@@ -23,13 +23,13 @@ public class Merchant implements Serializable {
     private Long id;
 
     /**
-     * 商户编号
+     * 租户编号
      */
     private String code;
 
     /**
-     * 商户名称
+     * 租户名称
      */
-    private String merchantName;
+    private String tenantName;
 
 }
