@@ -28,7 +28,7 @@ public class FeignConfig {
     @Bean   // 请求拦截器   请求头添加 token & same-token
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
-            Map<String, String> tokenMap = AppContextHolder.get("token", Map.class);
+            Map<String, String> tokenMap = AppContextHolder.get("token");
 
             if (!CollectionUtils.isEmpty(tokenMap)) {
                 tokenMap.forEach(requestTemplate::header);

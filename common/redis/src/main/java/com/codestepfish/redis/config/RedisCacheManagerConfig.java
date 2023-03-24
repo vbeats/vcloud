@@ -82,9 +82,10 @@ public class RedisCacheManagerConfig {
         List<Cache> cache = appConfig.getCaches();
         if (!CollectionUtils.isEmpty(cache)) {
             cache.forEach(it -> {
-                CacheConfig cacheConfig = new CacheConfig(it.getTtl(), it.getMaxIdleTime());
+                CacheConfig cacheConfig = new CacheConfig(it.getTtl().toMillis(), it.getMaxIdleTime().toMillis());
                 cacheConfig.setMaxSize(it.getMaxSize());
 
+                log.info("init cache config 【{}】 ttl: {}s max-idle-time: {}s max-size: {}", it.getCacheName(), it.getTtl().getSeconds(), it.getMaxIdleTime().getSeconds(), it.getMaxSize());
                 config.put("cache:" + it.getCacheName(), cacheConfig);
             });
         }

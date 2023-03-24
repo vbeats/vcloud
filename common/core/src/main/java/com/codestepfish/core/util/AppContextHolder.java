@@ -24,7 +24,7 @@ public class AppContextHolder<T> {
 
     }
 
-    public static <T> T get(String key, Class<T> clazz) {
+    public static <T> T get(String key) {
         Map<String, Object> map = TTL.get();
         if (!ObjectUtils.isEmpty(map)) {
             return (T) map.getOrDefault(key, null);

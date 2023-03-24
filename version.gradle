@@ -1,10 +1,10 @@
 ext {
     versions = [
-            fastjson         : '2.0.25',
+            fastjson         : '2.0.26',
             jackson          : '2.14.2',
             commonsText      : '1.10.0',
             mysql            : '8.0.32',
-            xxlJob           : '2.3.1',
+            xxlJob           : '2.4.0',
             mybatis          : '3.0.1',
             mybatisPlus      : '3.5.3.1',
             cosid            : '2.0.5',
@@ -26,7 +26,7 @@ ext {
             feign            : '12.2',
             el               : '4.0.2',
             elApi            : '5.0.1',
-            flyway           : '9.15.2'
+            flyway           : '9.16.1'
     ]
 
     libs = [

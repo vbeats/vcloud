@@ -1,6 +1,7 @@
 package com.codestepfish.core.aop;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.bean.copier.CopyOptions;
 import com.alibaba.fastjson2.JSON;
 import com.codestepfish.core.util.AppContextHolder;
 import com.google.common.base.Splitter;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -39,6 +41,8 @@ import java.util.concurrent.TimeUnit;
 public class LogAspect {
 
     private final Environment env;
+
+    private static final List<String> WORDS = Arrays.asList("sa-same-token", "authorization", "password", "newpassword");
 
     @Around("execution(* com.codestepfish..*Controller.*(..)) || @within(org.springframework.web.bind.annotation.RestController))")
     public Object logParam(ProceedingJoinPoint point) throws Throwable {
@@ -95,7 +99,13 @@ public class LogAspect {
             private String value;
         }
         List<Header> headers = new ArrayList<>();
-        request.getHeaderNames().asIterator().forEachRemaining(s -> headers.add(new Header(s, request.getHeader(s))));
+        // 过滤敏感数据
+        request.getHeaderNames().asIterator().forEachRemaining(s -> {
+            String header = request.getHeader(s);
+            String value = WORDS.contains(s.toLowerCase()) && StringUtils.hasText(header) ? "***" + header.substring(header.length() - 3) : header;
+
+            headers.add(new Header(s, value));
+        });
 
         return JSON.toJSONString(headers);
     }
@@ -133,7 +143,8 @@ public class LogAspect {
             } else if (e instanceof BindingResult || e instanceof HttpServletRequest || e instanceof HttpServletResponse) {
                 // 不处理
             } else {
-                params.putAll(BeanUtil.beanToMap(e, true, false));
+                BeanUtil.beanToMap(e, params, CopyOptions.create().ignoreNullValue().setFieldValueEditor((key, value) ->
+                        WORDS.contains(key.toLowerCase()) && !ObjectUtils.isEmpty(value) ? "***" + String.valueOf(value).substring(String.valueOf(value).length() - 3) : value));
             }
         });
 
