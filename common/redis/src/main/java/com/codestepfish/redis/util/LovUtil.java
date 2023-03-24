@@ -4,9 +4,7 @@ import cn.hutool.extra.spring.SpringUtil;
 import com.codestepfish.redis.constant.RedisConstants;
 import org.redisson.api.RBucket;
 import org.redisson.api.RedissonClient;
-import org.springframework.util.StringUtils;
-
-import java.math.BigDecimal;
+import org.springframework.util.ObjectUtils;
 
 /**
  * 值集util    namespace:   lov:tenantId:category:key ==> value
@@ -27,8 +25,8 @@ public class LovUtil {
      * @param key      key
      * @param value    value
      */
-    public static void set(Long tenantId, String category, String key, String value) {
-        RBucket<String> rBucket = getLovBucket(tenantId, category, key);
+    public static <T> void set(Long tenantId, String category, String key, T value) {
+        RBucket<T> rBucket = getLovBucket(tenantId, category, key);
         rBucket.set(value);
     }
 
@@ -38,8 +36,8 @@ public class LovUtil {
      * @param key
      * @param value
      */
-    public static void setDefault(String key, String value) {
-        RBucket<String> rBucket = getDefaultBucket(key);
+    public static <T> void setDefault(String key, T value) {
+        RBucket<T> rBucket = getDefaultBucket(key);
         rBucket.set(value);
     }
 
@@ -51,50 +49,10 @@ public class LovUtil {
      * @param key      key
      * @return
      */
-    public static String get(Long tenantId, String category, String key) {
-        RBucket<String> rBucket = getLovBucket(tenantId, category, key);
-        String value = rBucket.get();
-        return StringUtils.hasText(value) ? value : getDefaultValue(key);
-    }
-
-
-    /**
-     * 获取int value   , 不存在默认返回默认值集配置
-     *
-     * @param tenantId 租户id
-     * @param category 分组
-     * @param key      key
-     * @return
-     */
-    public static Integer getInt(Long tenantId, String category, String key) {
-        String value = get(tenantId, category, key);
-        return StringUtils.hasText(value) ? Integer.valueOf(value) : Integer.valueOf(getDefaultValue(key));
-    }
-
-    /**
-     * 获取 Long value   , 不存在默认返回默认值集配置
-     *
-     * @param tenantId 租户id
-     * @param category 分组
-     * @param key      key
-     * @return
-     */
-    public static Long getLong(Long tenantId, String category, String key) {
-        String value = get(tenantId, category, key);
-        return StringUtils.hasText(value) ? Long.valueOf(value) : Long.valueOf(getDefaultValue(key));
-    }
-
-    /**
-     * 获取 BigDecimal value   , 不存在默认返回默认值集配置
-     *
-     * @param tenantId 租户id
-     * @param category 分组
-     * @param key      key
-     * @return
-     */
-    public static BigDecimal getBigDecimal(Long tenantId, String category, String key) {
-        String value = get(tenantId, category, key);
-        return StringUtils.hasText(value) ? new BigDecimal(value) : new BigDecimal(getDefaultValue(key));
+    public static <T> T get(Long tenantId, String category, String key) {
+        RBucket<T> rBucket = getLovBucket(tenantId, category, key);
+        T value = rBucket.get();
+        return ObjectUtils.isEmpty(value) ? getDefaultValue(key) : value;
     }
 
     /**
@@ -104,8 +62,8 @@ public class LovUtil {
      * @param category 分组
      * @param key      key
      */
-    public static void delete(Long tenantId, String category, String key) {
-        RBucket<String> rBucket = getLovBucket(tenantId, category, key);
+    public static <T> void delete(Long tenantId, String category, String key) {
+        RBucket<T> rBucket = getLovBucket(tenantId, category, key);
         rBucket.delete();
     }
 
@@ -119,15 +77,15 @@ public class LovUtil {
     }
 
     /**
-     * 获取默认值集配置    不存在返回空字符串
+     * 获取默认值集配置    不存在返回null
      *
      * @param key
      * @return
      */
-    private static String getDefaultValue(String key) {
-        RBucket<String> rBucket = getDefaultBucket(key);
-        String value = rBucket.get();
-        return StringUtils.hasText(value) ? value : "";
+    private static <T> T getDefaultValue(String key) {
+        RBucket<T> rBucket = getDefaultBucket(key);
+        T value = rBucket.get();
+        return ObjectUtils.isEmpty(value) ? null : value;
     }
 
     /**
