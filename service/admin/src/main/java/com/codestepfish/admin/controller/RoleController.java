@@ -45,13 +45,9 @@ public class RoleController {
 
     @GetMapping("/list")
     public PageOut<List<Role>> list(RoleParamIn param) {
-        LambdaQueryWrapper<Role> wrapper = Wrappers.lambdaQuery();
-        if (StringUtils.hasText(param.getRoleName())) {
-            wrapper.eq(Role::getRoleName, param.getRoleName());
-        }
-        if (StringUtils.hasText(param.getAction())) {
-            wrapper.eq(Role::getAction, param.getAction());
-        }
+        LambdaQueryWrapper<Role> wrapper = Wrappers.<Role>lambdaQuery()
+                .eq(StringUtils.hasText(param.getRoleName()), Role::getRoleName, param.getRoleName())
+                .eq(StringUtils.hasText(param.getAction()), Role::getAction, param.getAction());
 
         Page<Role> pages = roleService.page(new Page<>(param.getCurrent(), param.getPageSize()), wrapper);
 

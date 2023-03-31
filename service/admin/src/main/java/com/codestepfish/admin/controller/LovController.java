@@ -50,12 +50,8 @@ public class LovController {
 
     @GetMapping("/listLov")
     public PageOut<List<Lov>> listLov(LovQueryIn param) {
-        LambdaQueryWrapper<Lov> queryWrapper = Wrappers.lambdaQuery();
-        queryWrapper.eq(Lov::getLovCategoryId, param.getLovCategoryId());
-
-        if (StringUtils.hasText(param.getKey())) {
-            queryWrapper.eq(Lov::getKey, param.getKey());
-        }
+        LambdaQueryWrapper<Lov> queryWrapper = Wrappers.<Lov>lambdaQuery().eq(Lov::getLovCategoryId, param.getLovCategoryId())
+                .eq(StringUtils.hasText(param.getKey()), Lov::getKey, param.getKey());
 
         Page<Lov> lovPage = lovService.page(new Page<>(param.getCurrent(), param.getPageSize()), queryWrapper);
         return new PageOut<>(lovPage.getTotal(), lovPage.getRecords());
@@ -141,11 +137,8 @@ public class LovController {
     //*************************值集默认配置*********************************
     @GetMapping("/listLovDefault")
     public PageOut<List<LovDefault>> listLovDefault(LovQueryIn param) {
-        LambdaQueryWrapper<LovDefault> queryWrapper = Wrappers.lambdaQuery();
-
-        if (StringUtils.hasText(param.getKey())) {
-            queryWrapper.eq(LovDefault::getKey, param.getKey());
-        }
+        LambdaQueryWrapper<LovDefault> queryWrapper = Wrappers.<LovDefault>lambdaQuery()
+                .eq(StringUtils.hasText(param.getKey()), LovDefault::getKey, param.getKey());
 
         Page<LovDefault> lovPage = lovDefaultService.page(new Page<>(param.getCurrent(), param.getPageSize()), queryWrapper);
         return new PageOut<>(lovPage.getTotal(), lovPage.getRecords());
