@@ -1,6 +1,6 @@
 ext {
     versions = [
-            fastjson         : '2.0.26',
+            fastjson         : '2.0.27',
             jackson          : '2.14.2',
             commonsText      : '1.10.0',
             mysql            : '8.0.32',
@@ -26,7 +26,7 @@ ext {
             feign            : '12.2',
             el               : '4.0.2',
             elApi            : '5.0.1',
-            flyway           : '9.16.1'
+            flyway           : '9.16.3'
     ]
 
     libs = [
